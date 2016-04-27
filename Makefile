@@ -15,8 +15,13 @@ link_fixtures:
 shell: link_fixtures
 	/bin/bash
 
-run_unit_tests: link_fixtures
+unit_tests: link_fixtures
 	py.test -c $(DOCKER_MOUNTPOINT)/unittests.cfg $(SALT_TESTS)
+
+print_lastchangelog:
+	bin/lastchangelog salt 1
+
+run_unit_tests: link_fixtures unit_tests print_lastchangelog
 
 update:
 	/root/install_salt.sh
