@@ -1,39 +1,52 @@
-SALT_TESTS            = /salt/src/salt-*/tests
-DOCKER_IMAGE          = toaster-sles12sp1
+DEFAULT_REGISTRY      = suma-docker-registry.suse.de
+DEFAULT_VERSION       = sles12sp1
 DOCKER_MOUNTPOINT     = /salt-toaster
-DOCKER_REGISTRY       = suma-docker-registry.suse.de
+DOCKER_VOLUMES        = -v "$(CURDIR)/:$(DOCKER_MOUNTPOINT)"
+SALT_TESTS            = /salt/src/salt-*/tests
 SALT_TESTS_EXPORT     = "SALT_TESTS=$(SALT_TESTS)"
 TOASTER_ROOT_EXPORT   = "TOASTER_ROOT=$(DOCKER_MOUNTPOINT)"
-DOCKER_VOLUMES        = -v "$(CURDIR)/:$(DOCKER_MOUNTPOINT)"
+
+
+ifndef DOCKER_IMAGE
+	ifndef DOCKER_REGISTRY
+		DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
+	endif
+	ifndef VERSION
+		VERSION = $(DEFAULT_VERSION)
+	endif
+	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)
+endif
 
 
 default: docker_shell
 
-link_fixtures:
-	bin/link_fixtures.sh
-
-shell: link_fixtures
-	/bin/bash
-
-unit_tests: link_fixtures
-	py.test -c $(DOCKER_MOUNTPOINT)/unittests.cfg $(SALT_TESTS)
-
-print_lastchangelog:
-	bin/lastchangelog salt 1
-
-run_unit_tests: link_fixtures unit_tests print_lastchangelog
-
 update:
 	/root/install_salt.sh
 
-jenkins_unittests: update run_unit_tests
+fixtures:
+	bin/link_fixtures.sh
 
+shell: fixtures
+	/bin/bash
+
+unittests: fixtures
+	py.test -c $(DOCKER_MOUNTPOINT)/unittests.cfg $(SALT_TESTS)
+
+lastchangelog:
+	bin/lastchangelog salt 1
+
+run_unittests: fixtures unittests lastchangelog
+
+jenkins_run_unittests: update run_unittests
 
 docker_shell ::
-	docker run -t -i -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES)  $(DOCKER_REGISTRY)/$(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) shell
+	docker run -t -i -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) shell
 
 docker_pull ::
-	docker pull $(DOCKER_REGISTRY)/$(DOCKER_IMAGE)
+	docker pull $(DOCKER_IMAGE)
 
-docker_run_unittests-sles12sp1 ::
-	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_REGISTRY)/$(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_unit_tests
+docker_run_unittests ::
+	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_unittests
+
+docker_jenkins_run_unittests ::
+	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) jenkins_run_unittests
