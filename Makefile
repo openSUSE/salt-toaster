@@ -7,6 +7,8 @@ TOASTER_ROOT_EXPORT   = "TOASTER_ROOT=$(DOCKER_MOUNTPOINT)"
 DOCKER_VOLUMES        = -v "$(CURDIR)/:$(DOCKER_MOUNTPOINT)"
 
 
+default: docker_shell
+
 link_fixtures:
 	bin/link_fixtures.sh
 
@@ -23,7 +25,10 @@ jenkins_unittests: update run_unit_tests
 
 
 docker_shell ::
-	docker run -t -i -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) shell
+	docker run -t -i -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES)  $(DOCKER_REGISTRY)/$(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) shell
+
+docker_pull ::
+	docker pull $(DOCKER_REGISTRY)/$(DOCKER_IMAGE)
 
 docker_run_unittests-sles12sp1 ::
-	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_unit_tests
+	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_REGISTRY)/$(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_unit_tests
