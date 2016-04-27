@@ -1,10 +1,10 @@
 # salt-toaster
 
-## Run with defaults:
+## Run tests in default docker image:
 ```bash
 git clone https://github.com/dincamihai/salt-toaster.git
 cd salt-toaster
-make
+make docker_run_unittests
 ```
 
 ## Examples
