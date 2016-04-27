@@ -1,6 +1,6 @@
 # Container used to run salt tests focusing on SUSE Manager use cases
 #
-# NAME                  toaster-sle12sp1
+# NAME                  toaster-sles12sp1
 # VERSION               1.0.0
 
 FROM suma-docker-registry.suse.de/sles12sp1:0.1.0
