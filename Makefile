@@ -32,12 +32,23 @@ shell: fixtures
 unittests: fixtures
 	py.test -c $(DOCKER_MOUNTPOINT)/unittests.cfg $(SALT_TESTS)
 
+integration_tests:
+	py.test
+
 lastchangelog:
 	bin/lastchangelog salt 1
 
 run_unittests: fixtures unittests lastchangelog
 
+run_integration_tests: integration_tests lastchangelog
+
+run_tests: fixtures unittests integration_tests lastchangelog
+
 jenkins_run_unittests: update run_unittests
+
+jenkins_run_integration_tests: update run_integration_tests
+
+jenkins_run_tests: update run_tests
 
 docker_shell ::
 	docker run -t -i -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) shell
@@ -48,5 +59,17 @@ docker_pull ::
 docker_run_unittests ::
 	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_unittests
 
+docker_run_integration_tests ::
+	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_integration_tests
+
+docker_run_tests ::
+	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_tests
+
 docker_jenkins_run_unittests ::
 	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) jenkins_run_unittests
+
+docker_jenkins_integration_tests ::
+	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) jenkins_run_integration_tests
+
+docker_jenkins_run_tests ::
+	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) jenkins_run_tests
