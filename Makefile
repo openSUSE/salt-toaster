@@ -32,6 +32,9 @@ shell: fixtures
 unittests: fixtures
 	py.test -c $(DOCKER_MOUNTPOINT)/unittests.cfg $(SALT_TESTS)
 
+salt_integration_tests: fixtures
+	py.test -c $(DOCKER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS)
+
 integration_tests:
 	py.test
 
@@ -39,6 +42,8 @@ lastchangelog:
 	bin/lastchangelog salt 1
 
 run_unittests: fixtures unittests lastchangelog
+
+run_salt_integration_tests: fixtures salt_integration_tests lastchangelog
 
 run_integration_tests: integration_tests lastchangelog
 
@@ -58,6 +63,9 @@ docker_pull ::
 
 docker_run_unittests ::
 	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_unittests
+
+docker_run_salt_integration_tests ::
+	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_salt_integration_tests
 
 docker_run_integration_tests ::
 	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_integration_tests
