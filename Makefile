@@ -47,9 +47,11 @@ run_salt_integration_tests: fixtures salt_integration_tests lastchangelog
 
 run_integration_tests: integration_tests lastchangelog
 
-run_tests: fixtures unittests integration_tests lastchangelog
+run_tests: fixtures unittests integration_tests salt_integration_tests lastchangelog
 
 jenkins_run_unittests: update run_unittests
+
+jenkins_run_salt_integration_tests: update run_salt_integration_tests
 
 jenkins_run_integration_tests: update run_integration_tests
 
@@ -75,6 +77,9 @@ docker_run_tests ::
 
 docker_jenkins_run_unittests ::
 	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) jenkins_run_unittests
+
+docker_jenkins_salt_integration_tests ::
+	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) jenkins_run_salt_integration_tests
 
 docker_jenkins_integration_tests ::
 	docker run -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) jenkins_run_integration_tests
