@@ -38,7 +38,7 @@ def add_options(request):
 
 
 @pytest.fixture(scope="session")
-def salt_test_deamon(add_options, transplant_configs, test_daemon, request):
+def salt_test_daemon(add_options, transplant_configs, test_daemon, request):
     from functools import partial
     finalizer = partial(test_daemon.__exit__, None, None, None)
     request.addfinalizer(finalizer)
