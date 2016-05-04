@@ -3,15 +3,18 @@ import pytest
 
 def pytest_ignore_collect(path, config):
     ignore_list = [
+        # ImportError: No module named integration
         'integration/fileclient_test.py',
         'integration/cli/batch.py',
         'integration/cli/custom_module.py',
         'integration/cli/grains.py',
+        'integration/utils/test_reactor.py',
+        'integration/renderers/pydsl_test.py',
+        # NameError: global name 'azure' is not defined 
         'integration/cloud/providers/msazure.py',
         'integration/files/file/base/*',
+        # OSError: [Errno 2] No such file or directory
         'integration/modules/git.py',
-        'integration/client/*',
-        'integration/wheel/*'
     ]
     return any(map(path.fnmatch, ignore_list))
 
@@ -36,5 +39,7 @@ def add_options(request):
 
 @pytest.fixture(scope="session")
 def salt_test_deamon(add_options, transplant_configs, test_daemon, request):
-    request.addfinalizer(test_daemon.__exit__)
+    from functools import partial
+    finalizer = partial(test_daemon.__exit__, None, None, None)
+    request.addfinalizer(finalizer)
     test_daemon.__enter__()
