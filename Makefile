@@ -1,4 +1,4 @@
-DEFAULT_REGISTRY      = suma-docker-registry.suse.de
+DEFAULT_REGISTRY      = suma-docker-registry.mgr.suse.de
 DEFAULT_VERSION       = sles12sp1
 DOCKER_MOUNTPOINT     = /salt-toaster
 DOCKER_VOLUMES        = -v "$(CURDIR)/:$(DOCKER_MOUNTPOINT)"
