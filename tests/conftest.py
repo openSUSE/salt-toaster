@@ -6,7 +6,7 @@ from jinja2 import Environment, PackageLoader
 from utils import block_until_log_shows_message
 from config import (
     SALT_MASTER_START_CMD, SALT_MINION_START_CMD, SALT_KEY_CMD,
-    SALT_PROXYMINION_START_CMD
+    SALT_PROXYMINION_START_CMD, START_PROXY_SERVER
 )
 
 
@@ -27,6 +27,29 @@ def master_config(salt_root, env):
     config = template.render(**env)
     with (salt_root / 'master').open('wb') as f:
         f.write(config)
+
+
+@pytest.fixture(scope="session")
+def pillar_root(salt_root):
+    return salt_root.mkdir('pillar')
+
+
+@pytest.fixture(scope="session")
+def master_top(pillar_root, env):
+    jinja_env = Environment(loader=PackageLoader('tests', 'config'))
+    template = jinja_env.get_template('top.sls')
+    content = template.render(**env)
+    with (pillar_root / 'top.sls').open('wb') as f:
+        f.write(content)
+
+
+@pytest.fixture(scope="session")
+def proxy_pillar(pillar_root, env):
+    jinja_env = Environment(loader=PackageLoader('tests', 'config'))
+    template = jinja_env.get_template('pillar.sls')
+    content = template.render(**env)
+    with (pillar_root / '{PROXY_ID}.sls'.format(**env)).open('wb') as f:
+        f.write(content)
 
 
 @pytest.fixture(scope="session")
@@ -53,6 +76,7 @@ def env(salt_root, user):
     env["USER"] = user
     env["SALT_ROOT"] = salt_root.strpath
     env["PROXY_ID"] = "proxy-minion"
+    env["PROXY_SERVER_PORT"] = "8010"
     return env
 
 
@@ -106,3 +130,16 @@ def minion_ready(env, salt_root, accept_keys):
         log_file=(salt_root / 'var/log/salt/minion'),
         message='Minion is ready to receive requests!'
     )
+
+
+@pytest.fixture(scope="session")
+def proxyminion_ready(env, salt_root, accept_keys):
+    block_until_log_shows_message(
+        log_file=(salt_root / 'var/log/salt/proxy'),
+        message='Proxy Minion is ready to receive requests!'
+    )
+
+
+@pytest.fixture(scope="function")
+def proxy_server(request, env):
+    return start_process(request, START_PROXY_SERVER, env)
