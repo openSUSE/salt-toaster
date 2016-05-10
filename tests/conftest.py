@@ -94,14 +94,14 @@ def wait_proxyminion_key_cached(salt_root):
 
 
 @pytest.fixture(scope="session")
-def accept_minion(env, salt_root):
+def accept_keys(env, salt_root):
     CMD = SALT_KEY_CMD + " -A --yes"
     cmd = shlex.split(CMD.format(**env))
     subprocess.check_output(cmd, env=env)
 
 
 @pytest.fixture(scope="session")
-def minion_ready(env, salt_root, accept_minion):
+def minion_ready(env, salt_root, accept_keys):
     block_until_log_shows_message(
         log_file=(salt_root / 'var/log/salt/minion'),
         message='Minion is ready to receive requests!'

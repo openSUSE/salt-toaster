@@ -13,7 +13,7 @@ def test_minion_key_cached(env):
     assert_minion_key_state(env, "unaccepted")
 
 
-def test_minion_key_accepted(env, accept_minion):
+def test_minion_key_accepted(env, accept_keys):
     assert_minion_key_state(env, "accepted")
 
 
