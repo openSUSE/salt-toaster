@@ -5,7 +5,8 @@ import subprocess
 from jinja2 import Environment, PackageLoader
 from utils import block_until_log_shows_message
 from config import (
-    SALT_MASTER_START_CMD, SALT_MINION_START_CMD, SALT_KEY_CMD
+    SALT_MASTER_START_CMD, SALT_MINION_START_CMD, SALT_KEY_CMD,
+    SALT_PROXYMINION_START_CMD
 )
 
 
@@ -38,10 +39,20 @@ def minion_config(salt_root, env):
 
 
 @pytest.fixture(scope="session")
+def proxyminion_config(salt_root, env):
+    jinja_env = Environment(loader=PackageLoader('tests', 'config'))
+    template = jinja_env.get_template('proxy')
+    config = template.render(**env)
+    with (salt_root / 'proxy').open('wb') as f:
+        f.write(config)
+
+
+@pytest.fixture(scope="session")
 def env(salt_root, user):
     env = dict(os.environ)
     env["USER"] = user
     env["SALT_ROOT"] = salt_root.strpath
+    env["PROXY_ID"] = "proxy-minion"
     return env
 
 
@@ -62,9 +73,22 @@ def minion(request, minion_config, env):
 
 
 @pytest.fixture(scope="session")
+def proxyminion(request, proxyminion_config, env):
+    return start_process(request, SALT_PROXYMINION_START_CMD, env)
+
+
+@pytest.fixture(scope="session")
 def wait_minion_key_cached(salt_root):
     block_until_log_shows_message(
         log_file=(salt_root / 'var/log/salt/minion'),
+        message='Salt Master has cached the public key'
+    )
+
+
+@pytest.fixture(scope="session")
+def wait_proxyminion_key_cached(salt_root):
+    block_until_log_shows_message(
+        log_file=(salt_root / 'var/log/salt/proxy'),
         message='Salt Master has cached the public key'
     )
 
