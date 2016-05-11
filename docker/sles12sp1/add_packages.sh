@@ -4,30 +4,10 @@ set -e
 # make sure the package repository is up to date
 zypper --non-interactive --gpg-auto-import-keys ref
 
-# Packages required to run salt-minion
-zypper -n in  --no-recommends util-linux-systemd \
-                              iproute2 \
-                              python \
-                              cronie \
-                              wicked \
-                              sysconfig \
-                              python-pyOpenSSL \
-                              postfix \
-                              dmidecode \
-                              psmisc \
-                              udev \
-                              make \
-                              python-mock \
-                              python-pip \
-                              python-salt-testing \
-                              python-unittest2 \
-                              python-pytest \
-                              net-tools \
-                              bind-utils
+zypper -n in --no-recommends \
+    python-devel \
+    libgit2-devel \
+    python-pytest
 
 # required for unit tests install with recommends
 zypper -n in quilt rpm-build
-
-zypper -n in python-devel libgit2-devel
-
-zypper -n in vim less
