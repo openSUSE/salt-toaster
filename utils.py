@@ -1,6 +1,12 @@
 import time
+import shlex
+import subprocess
 from config import TIME_LIMIT
-from exceptions import TimeLimitReached
+
+
+class TimeLimitReached(Exception):
+
+    """Used in tests to limit blocking time."""
 
 
 def time_limit_reached(start_time):
@@ -26,3 +32,9 @@ def block_until_log_shows_message(log_file, message):
         # time limit reached so we just return
         pass
     return has_message
+
+
+def start_process(request, cmd, env):
+    proc = subprocess.Popen(shlex.split(cmd.format(**env)), env=env)
+    request.addfinalizer(proc.terminate)
+    return proc

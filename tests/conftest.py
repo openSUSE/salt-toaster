@@ -1,12 +1,12 @@
 import os
+import psutil
 import shlex
 import pytest
 import subprocess
 from jinja2 import Environment, PackageLoader
-from utils import block_until_log_shows_message
+from utils import block_until_log_shows_message, start_process
 from config import (
-    SALT_MASTER_START_CMD, SALT_MINION_START_CMD, SALT_KEY_CMD,
-    SALT_PROXYMINION_START_CMD, START_PROXY_SERVER
+    SALT_MASTER_START_CMD, SALT_MINION_START_CMD, SALT_KEY_CMD
 )
 
 
@@ -35,24 +35,6 @@ def pillar_root(salt_root):
 
 
 @pytest.fixture(scope="session")
-def master_top(pillar_root, env):
-    jinja_env = Environment(loader=PackageLoader('tests', 'config'))
-    template = jinja_env.get_template('top.sls')
-    content = template.render(**env)
-    with (pillar_root / 'top.sls').open('wb') as f:
-        f.write(content)
-
-
-@pytest.fixture(scope="session")
-def proxy_pillar(pillar_root, env):
-    jinja_env = Environment(loader=PackageLoader('tests', 'config'))
-    template = jinja_env.get_template('pillar.sls')
-    content = template.render(**env)
-    with (pillar_root / '{PROXY_ID}.sls'.format(**env)).open('wb') as f:
-        f.write(content)
-
-
-@pytest.fixture(scope="session")
 def minion_config(salt_root, env):
     jinja_env = Environment(loader=PackageLoader('tests', 'config'))
     template = jinja_env.get_template('minion')
@@ -62,28 +44,25 @@ def minion_config(salt_root, env):
 
 
 @pytest.fixture(scope="session")
-def proxyminion_config(salt_root, env):
-    jinja_env = Environment(loader=PackageLoader('tests', 'config'))
-    template = jinja_env.get_template('proxy')
-    config = template.render(**env)
-    with (salt_root / 'proxy').open('wb') as f:
-        f.write(config)
+def proxy_server_port(request):
+    for port in xrange(8001, 8010):
+        if port in [it.laddr[1] for it in psutil.net_connections()]:
+            continue
+        else:
+            break
+    else:
+        raise Exception
+    return str(port)
 
 
 @pytest.fixture(scope="session")
-def env(salt_root, user):
+def env(salt_root, user, proxy_server_port):
     env = dict(os.environ)
     env["USER"] = user
     env["SALT_ROOT"] = salt_root.strpath
     env["PROXY_ID"] = "proxy-minion"
-    env["PROXY_SERVER_PORT"] = "8010"
+    env["PROXY_SERVER_PORT"] = proxy_server_port
     return env
-
-
-def start_process(request, cmd, env):
-    proc = subprocess.Popen(shlex.split(cmd.format(**env)), env=env)
-    request.addfinalizer(proc.terminate)
-    return proc
 
 
 @pytest.fixture(scope="session")
@@ -97,11 +76,6 @@ def minion(request, minion_config, env):
 
 
 @pytest.fixture(scope="session")
-def proxyminion(request, proxyminion_config, env):
-    return start_process(request, SALT_PROXYMINION_START_CMD, env)
-
-
-@pytest.fixture(scope="session")
 def wait_minion_key_cached(salt_root):
     block_until_log_shows_message(
         log_file=(salt_root / 'var/log/salt/minion'),
@@ -109,37 +83,16 @@ def wait_minion_key_cached(salt_root):
     )
 
 
-@pytest.fixture(scope="session")
-def wait_proxyminion_key_cached(salt_root):
-    block_until_log_shows_message(
-        log_file=(salt_root / 'var/log/salt/proxy'),
-        message='Salt Master has cached the public key'
-    )
-
-
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def accept_keys(env, salt_root):
     CMD = SALT_KEY_CMD + " -A --yes"
     cmd = shlex.split(CMD.format(**env))
     subprocess.check_output(cmd, env=env)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def minion_ready(env, salt_root, accept_keys):
     block_until_log_shows_message(
         log_file=(salt_root / 'var/log/salt/minion'),
         message='Minion is ready to receive requests!'
     )
-
-
-@pytest.fixture(scope="session")
-def proxyminion_ready(env, salt_root, accept_keys):
-    block_until_log_shows_message(
-        log_file=(salt_root / 'var/log/salt/proxy'),
-        message='Proxy Minion is ready to receive requests!'
-    )
-
-
-@pytest.fixture(scope="function")
-def proxy_server(request, env):
-    return start_process(request, START_PROXY_SERVER, env)

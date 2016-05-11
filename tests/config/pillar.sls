@@ -1,3 +1,3 @@
 proxy:
   proxytype: rest_sample
-  url: http://localhost:8010
+  url: http://localhost:{{PROXY_SERVER_PORT}}
