@@ -2,9 +2,8 @@ import os
 import psutil
 import shlex
 import pytest
-import subprocess
 from jinja2 import Environment, PackageLoader
-from utils import block_until_log_shows_message, start_process
+from utils import block_until_log_shows_message, start_process, check_output
 from config import (
     SALT_MASTER_START_CMD, SALT_MINION_START_CMD, SALT_KEY_CMD
 )
@@ -17,7 +16,7 @@ def salt_root(tmpdir_factory):
 
 @pytest.fixture(scope="session")
 def user():
-    return subprocess.check_output("whoami").strip()
+    return check_output(['whoami']).strip()
 
 
 @pytest.fixture(scope="session")
@@ -84,10 +83,10 @@ def wait_minion_key_cached(salt_root):
 
 
 @pytest.fixture(scope="module")
-def accept_keys(env, salt_root):
-    CMD = SALT_KEY_CMD + " -A --yes"
-    cmd = shlex.split(CMD.format(**env))
-    subprocess.check_output(cmd, env=env)
+def accept_keys(request, env, salt_root):
+    cmd = (SALT_KEY_CMD + " -A --yes").format(**env)
+    output = check_output(shlex.split(cmd), env)
+    return output
 
 
 @pytest.fixture(scope="module")

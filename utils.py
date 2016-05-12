@@ -38,3 +38,9 @@ def start_process(request, cmd, env):
     proc = subprocess.Popen(shlex.split(cmd.format(**env)), env=env)
     request.addfinalizer(proc.terminate)
     return proc
+
+
+def check_output(cmd, env=None):
+    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, env=env)
+    output, unused_err = process.communicate()
+    return output

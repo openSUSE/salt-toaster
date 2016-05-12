@@ -1,10 +1,9 @@
 import pytest
 import time
 import shlex
-import subprocess
 import requests
 from utils import (
-    block_until_log_shows_message, start_process
+    block_until_log_shows_message, start_process, check_output
 )
 from assertions import assert_proxyminion_key_state
 from jinja2 import Environment, PackageLoader
@@ -48,10 +47,7 @@ def proxyminion_config(salt_root, env):
 
 @pytest.fixture(scope="module")
 def proxy_server(request, env):
-    proc = subprocess.Popen(
-        shlex.split(START_PROXY_SERVER.format(**env)), env=env)
-    request.addfinalizer(proc.terminate)
-    return proc
+    return start_process(request, START_PROXY_SERVER, env)
 
 
 @pytest.fixture(scope="module")
@@ -101,5 +97,5 @@ def test_proxyminion_key_accepted(env, accept_keys):
 def test_ping_proxyminion(env, proxyminion_ready):
     cmd = shlex.split(SALT_PROXY_CALL.format(**env))
     cmd.append("test.ping")
-    output = subprocess.check_output(cmd, env=env)
+    output = check_output(cmd, env)
     assert [env['PROXY_ID'], 'True'] == [it.strip() for it in output.split(':')]
