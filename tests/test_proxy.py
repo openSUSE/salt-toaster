@@ -2,8 +2,10 @@ import pytest
 import time
 import shlex
 import requests
+from functools import partial
 from utils import (
-    block_until_log_shows_message, start_process, check_output
+    block_until_log_shows_message, start_process, check_output,
+    delete_minion_key
 )
 from assertions import assert_proxyminion_key_state
 from jinja2 import Environment, PackageLoader
@@ -66,7 +68,11 @@ def wait_proxy_server_ready(env, proxy_server):
 
 
 @pytest.fixture(scope="module")
-def proxyminion(request, proxyminion_config, wait_proxy_server_ready, env):
+def proxyminion(request, proxyminion_config, wait_proxy_server_ready, wheel_client, env, context):
+    context['MINION_KEY'] = env['PROXY_ID']
+    request.addfinalizer(
+        partial(delete_minion_key, wheel_client, context['MINION_KEY'], env)
+    )
     return start_process(request, SALT_PROXYMINION_START_CMD, env)
 
 
@@ -79,7 +85,7 @@ def wait_proxyminion_key_cached(salt_root):
 
 
 @pytest.fixture(scope="module")
-def proxyminion_ready(env, salt_root, accept_keys):
+def proxyminion_ready(env, salt_root, accept_key):
     block_until_log_shows_message(
         log_file=(salt_root / 'var/log/salt/proxy'),
         message='Proxy Minion is ready to receive requests!'
@@ -90,7 +96,7 @@ def test_proxyminion_key_cached(env):
     assert_proxyminion_key_state(env, "unaccepted")
 
 
-def test_proxyminion_key_accepted(env, accept_keys):
+def test_proxyminion_key_accepted(env, accept_key):
     assert_proxyminion_key_state(env, "accepted")
 
 

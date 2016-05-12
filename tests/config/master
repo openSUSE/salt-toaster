@@ -7,3 +7,10 @@ pillar_roots:
 pki_dir: {{SALT_ROOT}}/pki/
 cachedir: {{SALT_ROOT}}/cache/
 hash_type: sha256
+external_auth:
+  pam:
+    {{CLIENT_USER}}:
+      - .*
+      - '@wheel'
+      - '@runner'
+      - '@jobs'

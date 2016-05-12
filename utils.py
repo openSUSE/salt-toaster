@@ -35,7 +35,9 @@ def block_until_log_shows_message(log_file, message):
 
 
 def start_process(request, cmd, env):
-    proc = subprocess.Popen(shlex.split(cmd.format(**env)), env=env)
+    proc = subprocess.Popen(
+        shlex.split(cmd.format(**env)), stdout=subprocess.PIPE, env=env)
+    assert proc.returncode is None
     request.addfinalizer(proc.terminate)
     return proc
 
@@ -44,3 +46,16 @@ def check_output(cmd, env=None):
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, env=env)
     output, unused_err = process.communicate()
     return output
+
+
+def delete_minion_key(wheel_client, key, env):
+    output = wheel_client.cmd_sync(
+        dict(
+            fun='key.delete',
+            match=key,
+            eauth="pam",
+            username=env['CLIENT_USER'],
+            password=env['CLIENT_PASSWORD']
+        )
+    )
+    assert output['data']['success']
