@@ -34,7 +34,7 @@ def pytest_configure(config):
 
 
 @pytest.fixture(scope="session")
-def test_daemon(request):
+def test_daemon(add_options, request):
     from integration import TestDaemon
     return TestDaemon(request.instance)
 
@@ -52,7 +52,7 @@ def add_options(request):
 
 
 @pytest.fixture(scope="session")
-def salt_test_daemon(add_options, transplant_configs, test_daemon, request):
+def salt_test_daemon(transplant_configs, test_daemon, request):
     finalizer = partial(test_daemon.__exit__, None, None, None)
     request.addfinalizer(finalizer)
     test_daemon.__enter__()
