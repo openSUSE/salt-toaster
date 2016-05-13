@@ -1,6 +1,16 @@
 user: {{USER}}
 pidfile: {{SALT_ROOT}}/run/salt-master.pid
 root_dir: {{SALT_ROOT}}
+pillar_roots:
+  base:
+    - {{SALT_ROOT}}/pillar
 pki_dir: {{SALT_ROOT}}/pki/
 cachedir: {{SALT_ROOT}}/cache/
 hash_type: sha256
+external_auth:
+  pam:
+    {{CLIENT_USER}}:
+      - .*
+      - '@wheel'
+      - '@runner'
+      - '@jobs'

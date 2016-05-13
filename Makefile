@@ -39,7 +39,7 @@ integration_tests:
 	py.test
 
 lastchangelog:
-	bin/lastchangelog salt 1
+	bin/lastchangelog salt 3
 
 run_unittests: fixtures unittests lastchangelog
 
