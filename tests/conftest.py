@@ -1,6 +1,7 @@
 import os
 import psutil
 import shlex
+import crypt
 from functools import partial
 import salt.config
 import salt.wheel
@@ -23,6 +24,22 @@ def salt_root(tmpdir_factory):
 @pytest.fixture(scope="session")
 def user():
     return check_output(['whoami']).strip()
+
+
+def delete_salt_api_user(username):
+    cmd = "userdel {0}".format(username)
+    check_output(shlex.split(cmd))
+
+
+@pytest.fixture(scope="session")
+def salt_api_user(request, env):
+    user = env['CLIENT_USER']
+    salt = '00'
+    password = crypt.crypt(env['CLIENT_PASSWORD'], salt)
+    cmd = "useradd {0} -p '{1}'".format(user, password)
+    output = check_output(shlex.split(cmd))
+    request.addfinalizer(partial(delete_salt_api_user, env['CLIENT_USER']))
+    return output
 
 
 @pytest.fixture(scope="session")
@@ -76,8 +93,8 @@ def env(salt_root, user, proxy_server_port):
     env["SALT_ROOT"] = salt_root.strpath
     env["PROXY_ID"] = "proxy-minion"
     env["PROXY_SERVER_PORT"] = proxy_server_port
-    env["CLIENT_USER"] = "test"
-    env["CLIENT_PASSWORD"] = "test"
+    env["CLIENT_USER"] = "salt_api_user"
+    env["CLIENT_PASSWORD"] = "linux"
     return env
 
 
