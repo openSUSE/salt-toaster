@@ -1,7 +1,7 @@
 import os
-import psutil
 import shlex
 import crypt
+import socket
 from functools import partial
 import salt.config
 import salt.wheel
@@ -12,7 +12,7 @@ from utils import (
     check_output, delete_minion_key
 )
 from config import (
-    SALT_MASTER_START_CMD, SALT_MINION_START_CMD, SALT_KEY_CMD
+    SALT_MASTER_START_CMD, SALT_MINION_START_CMD
 )
 
 
@@ -34,8 +34,8 @@ def delete_salt_api_user(username):
 @pytest.fixture(scope="session")
 def salt_api_user(request, env):
     user = env['CLIENT_USER']
-    salt = '00'
-    password = crypt.crypt(env['CLIENT_PASSWORD'], salt)
+    password_salt = '00'
+    password = crypt.crypt(env['CLIENT_PASSWORD'], password_salt)
     cmd = "useradd {0} -p '{1}'".format(user, password)
     output = check_output(shlex.split(cmd))
     request.addfinalizer(partial(delete_salt_api_user, env['CLIENT_USER']))
@@ -76,13 +76,17 @@ def minion_config(salt_root, env):
 
 @pytest.fixture(scope="session")
 def proxy_server_port(request):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     for port in xrange(8001, 8010):
-        if port in [it.laddr[1] for it in psutil.net_connections()]:
+        result = sock.connect_ex(('127.0.0.1', port))
+        if result == 0:
             continue
         else:
             break
     else:
-        raise Exception, "Could not start the proxy server. All ports are taken"
+        raise Exception(
+            "Could not start the proxy minion api server. All ports are taken"
+        )
     return str(port)
 
 
