@@ -1,3 +1,5 @@
+include build.mk
+
 DEFAULT_REGISTRY      = registry.mgr.suse.de
 DEFAULT_VERSION       = sles12sp1
 DOCKER_MOUNTPOINT     = /salt-toaster
