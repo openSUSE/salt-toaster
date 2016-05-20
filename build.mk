@@ -19,10 +19,11 @@ DESTINATION = $(ROOT)/$(DIR)
 
 build:
 	@read -p "Enter the new container's version number: " VERSION; \
+	ROOT=$(ROOT) \
 	DESTINATION=$(DESTINATION) \
+	DIR=$(DIR) \
 	CONTAINER_NAME=$(CONTAINER_NAME) \
 	VERSION=$$VERSION \
 	$(ROOT)/generate_dockerfile.sh
-	docker build -t $(CONTAINER_NAME) $(DESTINATION)
-	rm $(DESTINATION)/Dockerfile
-	echo $$VERSION > $(DESTINATION)/VERSION
+	docker build -t $(CONTAINER_NAME) $(ROOT)
+	rm $(ROOT)/Dockerfile

@@ -3,11 +3,11 @@ MAINTAINER Mihai Dincă: '"mdinca@suse.com"'
 
 
 "# Add the repositories"
-ADD add_repositories.sh /root/add_repositories.sh
+ADD $DIR/add_repositories.sh /root/add_repositories.sh
 RUN /root/add_repositories.sh
 
 "# Install the packages required to run the cobbler tests"
-ADD add_packages.sh /root/add_packages.sh
+ADD $DIR/add_packages.sh /root/add_packages.sh
 RUN /root/add_packages.sh
 
 ADD install_salt.sh /root/install_salt.sh
