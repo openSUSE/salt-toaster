@@ -24,3 +24,5 @@ build:
 	VERSION=$$VERSION \
 	$(ROOT)/generate_dockerfile.sh
 	docker build -t $(CONTAINER_NAME) $(DESTINATION)
+	rm $(DESTINATION)/Dockerfile
+	echo $$VERSION > $(DESTINATION)/VERSION
