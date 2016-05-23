@@ -2,6 +2,8 @@ FROM registry.mgr.suse.de/suma-3.0-salt-$BASE
 MAINTAINER Mihai Dincă: '"mdinca@suse.com"'
 
 
+EXPOSE 4444
+
 "# Add the repositories"
 ADD $DIR/add_repositories.sh /root/add_repositories.sh
 RUN /root/add_repositories.sh
@@ -9,9 +11,3 @@ RUN /root/add_repositories.sh
 "# Install the packages required to run the cobbler tests"
 ADD $DIR/add_packages.sh /root/add_packages.sh
 RUN /root/add_packages.sh
-
-ADD install_salt.sh /root/install_salt.sh
-RUN /root/install_salt.sh
-
-ADD unpack_salt.sh /root/unpack_salt.sh
-RUN /root/unpack_salt.sh
