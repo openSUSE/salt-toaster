@@ -1,7 +1,7 @@
 DEFAULT_REGISTRY      = registry.mgr.suse.de
 DEFAULT_VERSION       = sles12sp1
 DOCKER_MOUNTPOINT     = /salt-toaster
-SALT_MOUNTPOINT       = /usr/lib/python2.7/site-packages/salt/
+SALT_SOURCES          = /usr/lib/python2.7/site-packages/salt/
 SALT_TESTS            = /salt/src/salt-*/tests
 DOCKER_VOLUMES        = -v "$(CURDIR)/:$(DOCKER_MOUNTPOINT)"
 SALT_TESTS_EXPORT     = "SALT_TESTS=$(SALT_TESTS)"
@@ -23,8 +23,8 @@ endif
 
 ifeq ($(DEVEL), true)
 	DOCKER_VOLUMES += \
-	 -v "$(CURDIR)/mount/salt/salt:$(SALT_MOUNTPOINT)" \
-	 -v "$(CURDIR)/mount/tests:/salt/src/"
+	 -v "$(CURDIR)/mount/$(SALT_SOURCES)/salt:$(SALT_SOURCES)" \
+	 -v "$(CURDIR)/mount/salt/src/:/salt/src/"
 endif
 
 
@@ -37,13 +37,20 @@ install_salt:
 fixtures:
 	bin/link_fixtures.sh
 
-shell: install_salt fixtures
+
+setup: install_salt fixtures
+ifeq ($(DEVEL), true)
+	pip install rpdb
+	zypper --non-interactive in netcat
+endif
+
+shell: setup
 	/bin/bash
 
-unittests: install_salt fixtures
+unittests: setup
 	py.test -c $(DOCKER_MOUNTPOINT)/unittests.cfg $(SALT_TESTS)
 
-salt_integration_tests: install_salt fixtures
+salt_integration_tests: setup
 	py.test -c $(DOCKER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS)
 
 integration_tests:
@@ -52,13 +59,13 @@ integration_tests:
 lastchangelog:
 	bin/lastchangelog salt 3
 
-run_unittests: install_salt fixtures unittests lastchangelog
+run_unittests: setup unittests lastchangelog
 
-run_salt_integration_tests: install_salt fixtures salt_integration_tests lastchangelog
+run_salt_integration_tests: setup salt_integration_tests lastchangelog
 
 run_integration_tests: integration_tests lastchangelog
 
-run_tests: install_salt fixtures unittests integration_tests salt_integration_tests lastchangelog
+run_tests: setup unittests integration_tests salt_integration_tests lastchangelog
 
 jenkins_run_unittests: run_unittests
 
