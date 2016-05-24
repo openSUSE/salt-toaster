@@ -2,8 +2,8 @@ DEFAULT_REGISTRY      = registry.mgr.suse.de
 DEFAULT_VERSION       = sles12sp1
 DOCKER_MOUNTPOINT     = /salt-toaster
 SALT_MOUNTPOINT       = /usr/lib/python2.7/site-packages/salt/
-DOCKER_VOLUMES        = -v "$(CURDIR)/:$(DOCKER_MOUNTPOINT)" -v "$(CURDIR)/src/salt/salt:$(SALT_MOUNTPOINT)"
 SALT_TESTS            = /salt/src/salt-*/tests
+DOCKER_VOLUMES        = -v "$(CURDIR)/:$(DOCKER_MOUNTPOINT)"
 SALT_TESTS_EXPORT     = "SALT_TESTS=$(SALT_TESTS)"
 TOASTER_ROOT_EXPORT   = "TOASTER_ROOT=$(DOCKER_MOUNTPOINT)"
 DEVEL_EXPORT          = "DEVEL=$(DEVEL)"
@@ -18,6 +18,13 @@ ifndef DOCKER_IMAGE
 		VERSION = $(DEFAULT_VERSION)
 	endif
 	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)
+endif
+
+
+ifeq ($(DEVEL), true)
+	DOCKER_VOLUMES += \
+	 -v "$(CURDIR)/mount/salt/salt:$(SALT_MOUNTPOINT)" \
+	 -v "$(CURDIR)/mount/tests:/salt/src/"
 endif
 
 
