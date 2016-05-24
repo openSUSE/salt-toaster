@@ -50,6 +50,11 @@ def wheel_client(master_config, master):
 
 
 @pytest.fixture(scope="session")
+def local_client(master_config, master):
+    return salt.client.LocalClient(master_config.strpath)
+
+
+@pytest.fixture(scope="session")
 def master_config(salt_root, env):
     jinja_env = Environment(loader=PackageLoader('tests', 'config'))
     template = jinja_env.get_template('master')
@@ -66,12 +71,19 @@ def pillar_root(salt_root):
 
 
 @pytest.fixture(scope="session")
+def file_roots(salt_root):
+    return salt_root.mkdir('topfiles')
+
+
+@pytest.fixture(scope="session")
 def minion_config(salt_root, env):
     jinja_env = Environment(loader=PackageLoader('tests', 'config'))
     template = jinja_env.get_template('minion')
     config = template.render(**env)
-    with (salt_root / 'minion').open('wb') as f:
+    config_file = salt_root / 'minion'
+    with config_file.open('wb') as f:
         f.write(config)
+    return config_file
 
 
 @pytest.fixture(scope="session")
@@ -91,7 +103,7 @@ def proxy_server_port(request):
 
 
 @pytest.fixture(scope="session")
-def env(salt_root, user, proxy_server_port):
+def env(salt_root, file_roots, user, proxy_server_port):
     env = dict(os.environ)
     env["USER"] = user
     env["SALT_ROOT"] = salt_root.strpath
@@ -99,6 +111,7 @@ def env(salt_root, user, proxy_server_port):
     env["PROXY_SERVER_PORT"] = proxy_server_port
     env["CLIENT_USER"] = "salt_api_user"
     env["CLIENT_PASSWORD"] = "linux"
+    env["FILE_ROOTS"] = file_roots.strpath
     return env
 
 
@@ -150,3 +163,9 @@ def minion_ready(env, salt_root, accept_key):
         log_file=(salt_root / 'var/log/salt/minion'),
         message='Minion is ready to receive requests!'
     )
+
+
+@pytest.fixture(scope="module")
+def minion_highstate(env, minion_ready, local_client):
+    res = local_client.cmd(env['HOSTNAME'], 'state.highstate')
+    assert 'pkgrepo_|-systemsmanagement_saltstack_|-systemsmanagement_saltstack_|-managed' in res[env['HOSTNAME']]
