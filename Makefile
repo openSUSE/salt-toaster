@@ -33,7 +33,6 @@ default: docker_shell
 install_salt:
 	bin/install_salt.sh
 	bin/unpack_salt.sh
-	cd $(SALT_MOUNTPOINT)
 
 fixtures:
 	bin/link_fixtures.sh
