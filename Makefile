@@ -1,13 +1,8 @@
 DEFAULT_REGISTRY      = registry.mgr.suse.de
 DEFAULT_VERSION       = sles12sp1
 DOCKER_MOUNTPOINT     = /salt-toaster
-SALT_SOURCES          = /usr/lib/python2.7/site-packages/salt/
 SALT_TESTS            = /salt/src/salt-*/tests
 DOCKER_VOLUMES        = -v "$(CURDIR)/:$(DOCKER_MOUNTPOINT)"
-SALT_TESTS_EXPORT     = "SALT_TESTS=$(SALT_TESTS)"
-TOASTER_ROOT_EXPORT   = "TOASTER_ROOT=$(DOCKER_MOUNTPOINT)"
-DEVEL_EXPORT          = "DEVEL=$(DEVEL)"
-EXPORTS = -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) -e $(DEVEL_EXPORT)
 
 
 ifndef DOCKER_IMAGE
@@ -22,27 +17,41 @@ endif
 
 
 ifeq ($(DEVEL), true)
-	DOCKER_VOLUMES += \
-	 -v "$(CURDIR)/mount/$(SALT_SOURCES)/salt:$(SALT_SOURCES)" \
-	 -v "$(CURDIR)/mount/salt/src/:/salt/src/"
+ROOT_MOUNTPOINT = /salt-devel
+SALT_REPO_MOUNTPOINT = $(ROOT_MOUNTPOINT)/src/
+DOCKER_VOLUMES += -v "$(SALT_REPO):$(SALT_REPO_MOUNTPOINT)"
+SALT_TESTS = /salt-devel/tests
 endif
+
+
+SALT_TESTS_EXPORT     = "SALT_TESTS=$(SALT_TESTS)"
+TOASTER_ROOT_EXPORT   = "TOASTER_ROOT=$(DOCKER_MOUNTPOINT)"
+DEVEL_EXPORT          = "DEVEL=$(DEVEL)"
+EXPORTS = -e $(SALT_TESTS_EXPORT) -e $(TOASTER_ROOT_EXPORT) -e $(DEVEL_EXPORT)
 
 
 default: docker_shell
 
 install_salt:
+ifeq ($(DEVEL), true)
+	zypper --non-interactive in netcat swig gcc-c++
+	pip install M2Crypto pyzmq PyYAML pycrypto msgpack-python jinja2 psutil
+	pip install -e $(SALT_REPO_MOUNTPOINT)
+	pip install rpdb
+else
 	bin/install_salt.sh
 	bin/unpack_salt.sh
+endif
 
 fixtures:
-	bin/link_fixtures.sh
+ifeq ($(DEVEL), true)
+	ln -s $(DOCKER_MOUNTPOINT)/conftest.py $(ROOT_MOUNTPOINT)
+else
+	ln -s $(DOCKER_MOUNTPOINT)/conftest.py $(cd $SALT_TESTS; pwd)
+endif
 
 
 setup: install_salt fixtures
-ifeq ($(DEVEL), true)
-	pip install rpdb
-	zypper --non-interactive in netcat
-endif
 
 shell: setup
 	/bin/bash
