@@ -48,7 +48,7 @@ salt_integration_tests: install_salt fixtures
 	py.test -c $(DOCKER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS)
 
 integration_tests:
-	py.test
+	py.test tests/
 
 lastchangelog:
 	bin/lastchangelog salt 3
