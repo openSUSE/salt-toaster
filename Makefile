@@ -18,9 +18,9 @@ endif
 
 ifeq ($(DEVEL), true)
 ROOT_MOUNTPOINT = /salt-devel
-SALT_REPO_MOUNTPOINT = $(ROOT_MOUNTPOINT)/src/
+SALT_REPO_MOUNTPOINT = $(ROOT_MOUNTPOINT)/src
 DOCKER_VOLUMES += -v "$(SALT_REPO):$(SALT_REPO_MOUNTPOINT)"
-SALT_TESTS = /salt-devel/tests
+SALT_TESTS = $(SALT_REPO_MOUNTPOINT)/tests
 endif
 
 
@@ -56,33 +56,25 @@ setup: install_salt fixtures
 shell: setup
 	/bin/bash
 
-unittests: setup
+salt_unit_tests: setup
 	py.test -c $(DOCKER_MOUNTPOINT)/unittests.cfg $(SALT_TESTS)
 
 salt_integration_tests: setup
 	py.test -c $(DOCKER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS)
 
-integration_tests:
+custom_integration_tests: setup
 	py.test tests/
 
 lastchangelog:
 	bin/lastchangelog salt 3
 
-run_unittests: setup unittests lastchangelog
+run_salt_unit_tests: salt_unit_tests lastchangelog
 
-run_salt_integration_tests: setup salt_integration_tests lastchangelog
+run_salt_integration_tests: salt_integration_tests lastchangelog
 
-run_integration_tests: integration_tests lastchangelog
+run_custom_integration_tests: custom_integration_tests lastchangelog
 
-run_tests: setup unittests integration_tests salt_integration_tests lastchangelog
-
-jenkins_run_unittests: run_unittests
-
-jenkins_run_salt_integration_tests: run_salt_integration_tests
-
-jenkins_run_integration_tests: run_integration_tests
-
-jenkins_run_tests: run_tests
+run_tests: salt_unit_tests custom_integration_tests salt_integration_tests lastchangelog
 
 docker_shell ::
 	docker run -p 4444:4444 -t -i $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) shell
@@ -90,26 +82,14 @@ docker_shell ::
 docker_pull ::
 	docker pull $(DOCKER_IMAGE)
 
-docker_run_unittests ::
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_unittests
+docker_run_salt_unit_tests ::
+	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_salt_unit_tests
 
 docker_run_salt_integration_tests ::
 	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_salt_integration_tests
 
-docker_run_integration_tests ::
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_integration_tests
+docker_run_custom_integration_tests ::
+	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_custom_integration_tests
 
 docker_run_tests ::
 	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) run_tests
-
-docker_jenkins_run_unittests ::
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) jenkins_run_unittests
-
-docker_jenkins_salt_integration_tests ::
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) jenkins_run_salt_integration_tests
-
-docker_jenkins_integration_tests ::
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) jenkins_run_integration_tests
-
-docker_jenkins_run_tests ::
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(DOCKER_MOUNTPOINT) jenkins_run_tests
