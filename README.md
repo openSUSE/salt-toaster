@@ -36,3 +36,13 @@ BASE=sle12sp1 make -f Makefile.build build
 Enter the new container's version number: 1.0.1
 ```
 This would rebuild **toaster-sles12sp1** but you still have to tag and push accordingly.
+
+
+## For development
+
+
+### Run a docker container on a specific image and install salt from a salt repository on host
+
+```bash
+DOCKER_IMAGE=toaster-sles12sp1 DEVEL=true SALT_REPO=/home/mdinca/repositories/salt/ make docker_shell
+```
