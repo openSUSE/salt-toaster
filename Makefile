@@ -5,6 +5,7 @@ ROOT_MOUNTPOINT       = /salt/src
 SALT_REPO_MOUNTPOINT  = $(ROOT_MOUNTPOINT)/salt-devel
 SALT_TESTS            = $(ROOT_MOUNTPOINT)/salt-*/tests
 DOCKER_VOLUMES        = -v "$(CURDIR)/:$(DOCKER_MOUNTPOINT)"
+EXPORTS += -e "DEVEL=$(DEVEL)"
 
 
 ifndef DOCKER_IMAGE
@@ -20,11 +21,11 @@ endif
 
 ifeq ($(DEVEL), true)
 	DOCKER_VOLUMES += -v "$(SALT_REPO):$(SALT_REPO_MOUNTPOINT)"
+	EXPORTS += -e "SALT_REPO_MOUNTPOINT=$(SALT_REPO_MOUNTPOINT)"
 else
-	DEVEL = "false"
+	DEVEL = false
 endif
 
-EXPORTS = -e "DEVEL=$(DEVEL)" -e "SALT_REPO_MOUNTPOINT=$(SALT_REPO_MOUNTPOINT)"
 
 
 default: docker_shell
