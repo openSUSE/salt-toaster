@@ -57,9 +57,8 @@ def test_zypper_refresh_repo_with_gpgkey(request, env, minion_config, local_clie
         repo_name,
         disabled=False,
         url="http://download.opensuse.org/repositories/devel:/libraries:/c_c++/SLE_12/",
-        gpgkey="http://download.opensuse.org/repositories/devel:/libraries:/c_c++/SLE_12//repodata/repomd.xml.key",
         refresh=True,
         gpgautoimport=True
     )
     res = local_client.cmd(env['HOSTNAME'], 'cmd.run', ['zypper refresh'])
-    assert 'Do you want to reject the key' not in res[env['HOSTNAME']]
+    assert "Repository '{0}' is up to date.".format(repo_name) in res[env['HOSTNAME']]
