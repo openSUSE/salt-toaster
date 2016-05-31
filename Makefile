@@ -5,7 +5,10 @@ ROOT_MOUNTPOINT       = /salt/src
 SALT_REPO_MOUNTPOINT  = $(ROOT_MOUNTPOINT)/salt-devel
 SALT_TESTS            = $(ROOT_MOUNTPOINT)/salt-*/tests
 DOCKER_VOLUMES        = -v "$(CURDIR)/:$(DOCKER_MOUNTPOINT)"
-EXPORTS += -e "DEVEL=$(DEVEL)"
+EXPORTS += \
+	-e "DEVEL=$(DEVEL)" \
+	-e "SALT_TESTS=$(SALT_TESTS)" \
+	-e "TOASTER_ROOT=$(DOCKER_MOUNTPOINT)"
 
 
 ifndef DOCKER_IMAGE
@@ -34,7 +37,7 @@ install_salt:
 	bin/install_salt.sh
 
 fixtures:
-	ln -s $(DOCKER_MOUNTPOINT)/conftest.py $(ROOT_MOUNTPOINT)
+	bin/link_fixtures.sh
 
 setup: install_salt fixtures
 
