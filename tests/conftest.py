@@ -2,11 +2,11 @@ import os
 import shlex
 import crypt
 import socket
+import yaml
 from functools import partial
 import salt.config
 import salt.wheel
 import pytest
-from jinja2 import Environment, PackageLoader
 from utils import (
     block_until_log_shows_message, start_process,
     check_output, delete_minion_key
@@ -56,12 +56,24 @@ def local_client(master_config, master):
 
 @pytest.fixture(scope="session")
 def master_config(salt_root, env):
-    jinja_env = Environment(loader=PackageLoader('tests', 'config'))
-    template = jinja_env.get_template('master')
-    config = template.render(**env)
     config_file = salt_root / 'master'
-    with config_file.open('wb') as f:
-        f.write(config)
+    config = {
+        'user': env['USER'],
+        'pidfile': '{0}/run/salt-master.pid'.format(env['SALT_ROOT']),
+        'root_dir': env['SALT_ROOT'],
+        'pki_dir': '{0}/pki/'.format(env['SALT_ROOT']),
+        'cachedir': '{0}/cache/'.format(env['SALT_ROOT']),
+        'hash_type': 'sha384',
+        'pillar_roots': {
+            'base': [env['PILLAR_ROOT']]
+        },
+        'file_roots': {
+            'base': [env['FILE_ROOTS']]
+        },
+        'external_auth': {
+            'pam': {env['CLIENT_USER']: ['.*', '@wheel', '@runner', '@jobs']}}
+    }
+    config_file.write(yaml.dump(config))
     return config_file
 
 
@@ -77,12 +89,17 @@ def file_roots(salt_root):
 
 @pytest.fixture(scope="session")
 def minion_config(salt_root, env):
-    jinja_env = Environment(loader=PackageLoader('tests', 'config'))
-    template = jinja_env.get_template('minion')
-    config = template.render(**env)
     config_file = salt_root / 'minion'
-    with config_file.open('wb') as f:
-        f.write(config)
+    config = {
+        'user': env['USER'],
+        'master': 'localhost',
+        'pidfile': '{0}/run/salt-minion.pid'.format(env['SALT_ROOT']),
+        'root_dir': env['SALT_ROOT'],
+        'pki_dir': '{0}/pki/'.format(env['SALT_ROOT']),
+        'cachedir': '{0}/cache/'.format(env['SALT_ROOT']),
+        'hash_type': 'sha384',
+    }
+    config_file.write(yaml.dump(config))
     return config_file
 
 
@@ -103,7 +120,7 @@ def proxy_server_port(request):
 
 
 @pytest.fixture(scope="session")
-def env(salt_root, file_roots, user, proxy_server_port):
+def env(salt_root, file_roots, pillar_root, user, proxy_server_port):
     env = dict(os.environ)
     env["USER"] = user
     env["SALT_ROOT"] = salt_root.strpath
@@ -112,6 +129,7 @@ def env(salt_root, file_roots, user, proxy_server_port):
     env["CLIENT_USER"] = "salt_api_user"
     env["CLIENT_PASSWORD"] = "linux"
     env["FILE_ROOTS"] = file_roots.strpath
+    env["PILLAR_ROOT"] = pillar_root.strpath
     return env
 
 

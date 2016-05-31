@@ -1,6 +1,8 @@
 import pytest
 import time
 import shlex
+import yaml
+import json
 import requests
 from functools import partial
 from utils import (
@@ -40,11 +42,18 @@ def proxy_pillar(pillar_root, env):
 
 @pytest.fixture(scope="module")
 def proxyminion_config(salt_root, env):
-    jinja_env = Environment(loader=PackageLoader('tests', 'config'))
-    template = jinja_env.get_template('proxy')
-    config = template.render(**env)
-    with (salt_root / 'proxy').open('wb') as f:
-        f.write(config)
+    config_file = salt_root / 'proxy'
+    config = {
+        'user': env['USER'],
+        'master': 'localhost',
+        'pidfile': '{0}/run/salt-proxyminion.pid'.format(env['SALT_ROOT']),
+        'root_dir': env['SALT_ROOT'],
+        'pki_dir': '{0}/pki/'.format(env['SALT_ROOT']),
+        'cachedir': '{0}/cache/'.format(env['SALT_ROOT']),
+        'hash_type': 'sha384',
+    }
+    config_file.write(yaml.dump(config))
+    return config_file
 
 
 @pytest.fixture(scope="module")
@@ -103,5 +112,5 @@ def test_proxyminion_key_accepted(env, accept_key):
 def test_ping_proxyminion(env, proxyminion_ready):
     cmd = shlex.split(SALT_PROXY_CALL.format(**env))
     cmd.append("test.ping")
-    output = check_output(cmd, env)
-    assert [env['PROXY_ID'], 'True'] == [it.strip() for it in output.split(':')]
+    output = json.loads(check_output(cmd, env))
+    assert output[env['PROXY_ID']] is True

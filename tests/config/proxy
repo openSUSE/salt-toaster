@@ -1,7 +1,0 @@
-user: {{USER}}
-master: localhost
-pidfile: {{SALT_ROOT}}/run/salt-proxyminion.pid
-root_dir: {{SALT_ROOT}}
-pki_dir: {{SALT_ROOT}}/pki/
-cachedir: {{SALT_ROOT}}/cache/
-hash_type: sha256
