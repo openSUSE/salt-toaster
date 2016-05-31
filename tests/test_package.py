@@ -1,4 +1,11 @@
+import os
 import yaml
+import pytest
+
+
+pytestmark = pytest.mark.skipif(
+    os.environ.get('DEVEL') == 'true',
+    reason="Not possible to test package with DEVEL=true")
 
 
 def test_master_shipped_with_sha256():
