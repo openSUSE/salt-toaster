@@ -1,4 +1,4 @@
-TIME_LIMIT = 30
+TIME_LIMIT = 120
 SALT_MASTER_START_CMD = "salt-master -c {SALT_ROOT}"
 SALT_MINION_START_CMD = "salt-minion -l debug -c {SALT_ROOT}"
 SALT_PROXYMINION_START_CMD = "salt-proxy -l debug -c {SALT_ROOT} --proxyid={PROXY_ID}"
