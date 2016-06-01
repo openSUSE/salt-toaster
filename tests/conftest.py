@@ -6,6 +6,7 @@ import yaml
 from functools import partial
 import salt.config
 import salt.wheel
+import salt.client
 import pytest
 from utils import (
     block_until_log_shows_message, start_process,
@@ -52,6 +53,13 @@ def wheel_client(master_config, master):
 @pytest.fixture(scope="session")
 def local_client(master_config, master):
     return salt.client.LocalClient(master_config.strpath)
+
+
+@pytest.fixture(scope="session")
+def caller_client(minion_config):
+    opts = salt.config.minion_config(minion_config.strpath)
+    caller = salt.client.Caller(mopts=opts)
+    return caller
 
 
 @pytest.fixture(scope="session")
