@@ -18,10 +18,12 @@ def get_keys_status(env):
 def assert_minion_key_state(env, expected_state):
     assert expected_state in STATES_MAPPING
     status = get_keys_status(env)
-    assert env['HOSTNAME'] in status[STATES_MAPPING[expected_state]], status
+    print('{0} in {1}'.format(env['HOSTNAME'], STATES_MAPPING[expected_state]))
+    assert env['HOSTNAME'] in status[STATES_MAPPING[expected_state]]
 
 
 def assert_proxyminion_key_state(env, expected_state):
     assert expected_state in STATES_MAPPING
     status = get_keys_status(env)
-    assert env['PROXY_ID'] in status[STATES_MAPPING[expected_state]], status
+    print('{0} in {1}'.format(env['HOSTNAME'], STATES_MAPPING[expected_state]))
+    assert env['PROXY_ID'] in status[STATES_MAPPING[expected_state]]
