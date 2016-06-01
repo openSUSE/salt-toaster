@@ -48,7 +48,7 @@ def remove_repo(local_client, identifier, env):
 def test_zypper_refresh_repo_with_gpgkey(request, env, local_client, caller_client, minion_ready):
     repo_name = 'Repo-With-GPGkey'
     request.addfinalizer(partial(remove_repo, local_client, repo_name, env))
-    caller.cmd(
+    caller_client.cmd(
         'pkg.mod_repo',
         repo_name,
         disabled=False,
