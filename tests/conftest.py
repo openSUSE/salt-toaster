@@ -71,7 +71,7 @@ def master_config(salt_root, env):
         'root_dir': env['SALT_ROOT'],
         'pki_dir': '{0}/pki/'.format(env['SALT_ROOT']),
         'cachedir': '{0}/cache/'.format(env['SALT_ROOT']),
-        'hash_type': 'sha384',
+        'hash_type': env['HASH_TYPE'],
         'pillar_roots': {
             'base': [env['PILLAR_ROOT']]
         },
@@ -138,6 +138,7 @@ def env(salt_root, file_roots, pillar_root, user, proxy_server_port):
     env["CLIENT_PASSWORD"] = "linux"
     env["FILE_ROOTS"] = file_roots.strpath
     env["PILLAR_ROOT"] = pillar_root.strpath
+    env['HASH_TYPE'] = 'sha384'
     return env
 
 

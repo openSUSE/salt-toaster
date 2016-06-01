@@ -24,3 +24,15 @@ def test_minion_shipped_with_sha256():
     with open('/etc/salt/minion', 'rb') as master_config:
         content = yaml.load(master_config)
         assert content['hash_type'] == 'sha256'
+
+
+def test_sha256_is_used(master, env, wheel_client):
+    out = wheel_client.cmd_sync(
+        dict(
+            fun='config.values',
+            eauth="pam",
+            username=env['CLIENT_USER'],
+            password=env['CLIENT_PASSWORD']
+        )
+    )
+    assert out['data']['return']['hash_type'] == env['HASH_TYPE']
