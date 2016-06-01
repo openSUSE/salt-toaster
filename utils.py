@@ -9,6 +9,20 @@ class TimeLimitReached(Exception):
     """Used in tests to limit blocking time."""
 
 
+def accept_key(wheel_client, key, user, password):
+    output = wheel_client.cmd_sync(
+        dict(
+            fun='key.accept',
+            match=key,
+            eauth="pam",
+            username=user,
+            password=password
+        )
+    )
+    assert output['data']['success']
+    return output
+
+
 def time_limit_reached(start_time):
     if TIME_LIMIT < (time.time() - start_time):
         raise TimeLimitReached

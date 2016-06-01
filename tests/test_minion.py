@@ -7,8 +7,7 @@ from config import SALT_CALL
 from utils import check_output
 
 
-pytestmark = pytest.mark.usefixtures(
-    "master", "minion", "wait_minion_key_cached")
+pytestmark = pytest.mark.usefixtures("master", "minion")
 
 
 @pytest.fixture(scope="module")
@@ -24,11 +23,11 @@ def add_repo_sls(file_roots, env):
         f.write(content)
 
 
-def test_minion_key_cached(env):
+def test_minion_key_cached(env, wait_minion_key_cached):
     assert_minion_key_state(env, "unaccepted")
 
 
-def test_minion_key_accepted(env, accept_key):
+def test_minion_key_accepted(env, accept_minion_key):
     assert_minion_key_state(env, "accepted")
 
 

@@ -7,7 +7,7 @@ import requests
 from functools import partial
 from utils import (
     block_until_log_shows_message, start_process, check_output,
-    delete_minion_key
+    delete_minion_key, accept_key
 )
 from assertions import assert_proxyminion_key_state
 from jinja2 import Environment, PackageLoader
@@ -18,8 +18,7 @@ from config import (
 )
 
 
-pytestmark = pytest.mark.usefixtures(
-    "master_top", "proxy_pillar", "master", "proxyminion", "wait_proxyminion_key_cached")
+pytestmark = pytest.mark.usefixtures("master_top", "proxy_pillar", "master")
 
 
 @pytest.fixture(scope="module")
@@ -86,7 +85,7 @@ def proxyminion(request, proxyminion_config, wait_proxy_server_ready, wheel_clie
 
 
 @pytest.fixture(scope="module")
-def wait_proxyminion_key_cached(salt_root):
+def wait_proxyminion_key_cached(salt_root, proxyminion):
     block_until_log_shows_message(
         log_file=(salt_root / 'var/log/salt/proxy'),
         message='Salt Master has cached the public key'
@@ -94,18 +93,30 @@ def wait_proxyminion_key_cached(salt_root):
 
 
 @pytest.fixture(scope="module")
-def proxyminion_ready(env, salt_root, accept_key):
+def accept_proxy_key(
+    request, context, env, salt_root, wheel_client, wait_proxyminion_key_cached
+):
+    return accept_key(
+        wheel_client,
+        context['MINION_KEY'],
+        env['CLIENT_USER'],
+        env['CLIENT_PASSWORD']
+    )
+
+
+@pytest.fixture(scope="module")
+def proxyminion_ready(env, salt_root, accept_proxy_key):
     block_until_log_shows_message(
         log_file=(salt_root / 'var/log/salt/proxy'),
         message='Minion is ready to receive requests!'
     )
 
 
-def test_proxyminion_key_cached(env):
+def test_proxyminion_key_cached(env, wait_proxyminion_key_cached):
     assert_proxyminion_key_state(env, "unaccepted")
 
 
-def test_proxyminion_key_accepted(env, accept_key):
+def test_proxyminion_key_accepted(env, accept_proxy_key):
     assert_proxyminion_key_state(env, "accepted")
 
 

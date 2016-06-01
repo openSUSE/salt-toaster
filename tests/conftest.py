@@ -10,11 +10,23 @@ import salt.client
 import pytest
 from utils import (
     block_until_log_shows_message, start_process,
-    check_output, delete_minion_key
+    check_output, delete_minion_key, accept_key
 )
 from config import (
     SALT_MASTER_START_CMD, SALT_MINION_START_CMD
 )
+
+
+def pytest_collection_modifyitems(session, config, items):
+    def sorter(item):
+        order = [
+            'tests.test_minion',
+            'tests.test_package',
+            'tests.test_grains',
+            'tests.test_proxy'
+        ]
+        return order.index(item.module.__name__)
+    items.sort(key=sorter)
 
 
 @pytest.fixture(scope="session")
@@ -156,8 +168,8 @@ def minion(request, minion_config, wheel_client, env, context):
     return start_process(request, SALT_MINION_START_CMD, env)
 
 
-@pytest.fixture(scope="session")
-def wait_minion_key_cached(salt_root):
+@pytest.fixture(scope="module")
+def wait_minion_key_cached(salt_root, minion):
     block_until_log_shows_message(
         log_file=(salt_root / 'var/log/salt/minion'),
         message='Salt Master has cached the public key'
@@ -170,22 +182,17 @@ def context():
 
 
 @pytest.fixture(scope="module")
-def accept_key(request, context, env, salt_root, wheel_client):
-    output = wheel_client.cmd_sync(
-        dict(
-            fun='key.accept',
-            match=context['MINION_KEY'],
-            eauth="pam",
-            username=env['CLIENT_USER'],
-            password=env['CLIENT_PASSWORD']
-        )
+def accept_minion_key(request, context, env, salt_root, wheel_client, wait_minion_key_cached):
+    return accept_key(
+        wheel_client,
+        context['MINION_KEY'],
+        env['CLIENT_USER'],
+        env['CLIENT_PASSWORD']
     )
-    assert output['data']['success']
-    return output
 
 
 @pytest.fixture(scope="module")
-def minion_ready(env, salt_root, accept_key):
+def minion_ready(env, salt_root, accept_minion_key):
     block_until_log_shows_message(
         log_file=(salt_root / 'var/log/salt/minion'),
         message='Minion is ready to receive requests!'
