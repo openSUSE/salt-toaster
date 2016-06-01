@@ -1,7 +1,5 @@
 import shlex
 import pytest
-import salt.config
-import salt.client
 from functools import partial
 from assertions import assert_minion_key_state
 from jinja2 import Environment, PackageLoader
@@ -47,11 +45,9 @@ def remove_repo(local_client, identifier, env):
 
 
 @pytest.mark.xfail
-def test_zypper_refresh_repo_with_gpgkey(request, env, minion_config, local_client, minion_ready):
+def test_zypper_refresh_repo_with_gpgkey(request, env, local_client, caller_client, minion_ready):
     repo_name = 'Repo-With-GPGkey'
     request.addfinalizer(partial(remove_repo, local_client, repo_name, env))
-    opts = salt.config.minion_config(minion_config.strpath)
-    caller = salt.client.Caller(mopts=opts)
     caller.cmd(
         'pkg.mod_repo',
         repo_name,
