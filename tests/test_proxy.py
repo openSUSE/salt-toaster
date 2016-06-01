@@ -97,7 +97,7 @@ def wait_proxyminion_key_cached(salt_root):
 def proxyminion_ready(env, salt_root, accept_key):
     block_until_log_shows_message(
         log_file=(salt_root / 'var/log/salt/proxy'),
-        message='Proxy Minion is ready to receive requests!'
+        message='Minion is ready to receive requests!'
     )
 
 
