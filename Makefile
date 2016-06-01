@@ -37,7 +37,7 @@ install_salt:
 	bin/install_salt.sh
 
 fixtures:
-	bin/link_fixtures.sh
+	ln -s $(TOASTER_MOUNTPOINT)/conftest.py $(ROOT_MOUNTPOINT)
 
 setup: install_salt fixtures
 

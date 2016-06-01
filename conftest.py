@@ -1,4 +1,5 @@
 import os
+import glob
 import pytest
 from functools import partial
 from fnmatch import fnmatch
@@ -30,7 +31,7 @@ def pytest_itemcollected(item):
 
 
 def pytest_configure(config):
-    os.sys.path.extend([os.path.join(os.sys.path[0], 'tests')])
+    os.sys.path.extend(glob.glob(os.environ.get('SALT_TESTS')))
 
 
 @pytest.fixture(scope="session")
