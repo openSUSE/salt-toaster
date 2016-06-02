@@ -19,13 +19,11 @@ from config import (
 
 def pytest_collection_modifyitems(session, config, items):
     def sorter(item):
-        order = [
-            'tests.test_minion',
-            'tests.test_package',
-            'tests.test_grains',
-            'tests.test_proxy'
-        ]
-        return order.index(item.module.__name__)
+        # tests.test_minion must be runned first
+        order = ['tests.test_minion', 'tests.test_proxy']
+        return order.index(item.module.__name__) \
+            if item.module.__name__ in order \
+            else os.sys.maxint
     items.sort(key=sorter)
 
 
