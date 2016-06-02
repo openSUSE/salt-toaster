@@ -56,3 +56,7 @@ def test_zypper_refresh_repo_with_gpgkey(request, env, local_client, caller_clie
     )
     res = local_client.cmd(env['HOSTNAME'], 'cmd.run', ['zypper refresh'])
     assert "Repository '{0}' is up to date.".format(repo_name) in res[env['HOSTNAME']]
+
+
+def test_pkg_list(caller_client, minion_ready):
+    assert caller_client.cmd('pkg.list_pkgs')
