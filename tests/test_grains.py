@@ -69,5 +69,7 @@ def test_get_osrelease(env, caller_client, os_release):
 
 
 def test_get_osrelease_info(env, caller_client, suse_release):
-    expected = (int(suse_release['VERSION']), int(suse_release['PATCHLEVEL']))
+    major = int(suse_release['VERSION'])
+    minor = int(suse_release['PATCHLEVEL'])
+    expected = (major, minor) if minor else (major,)
     assert caller_client.cmd('grains.get', 'osrelease_info') == expected
