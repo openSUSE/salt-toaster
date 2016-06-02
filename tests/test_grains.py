@@ -1,9 +1,12 @@
 import re
+import os
 import pytest
 from utils import check_output
 
 
 pytestmark = pytest.mark.usefixtures("master", "minion_ready")
+mark_missing_os_release = pytest.mark.skipif(
+    not os.path.isfile('/etc/os-release'), reason="/etc/os-release missing")
 
 
 @pytest.fixture(scope="session")
@@ -45,10 +48,12 @@ def test_get_os_family(caller_client):
     assert caller_client.cmd('grains.get', 'os_family') == 'Suse'
 
 
+@mark_missing_os_release
 def test_get_oscodename(env, caller_client, os_release):
     assert caller_client.cmd('grains.get', 'oscodename') == os_release['PRETTY_NAME']
 
 
+@mark_missing_os_release
 def test_get_osfullname(env, caller_client, os_release):
     assert caller_client.cmd('grains.get', 'osfullname') == os_release['NAME']
 
@@ -58,6 +63,7 @@ def test_get_osarch(env, caller_client):
     assert caller_client.cmd('grains.get', 'osarch') == expected
 
 
+@mark_missing_os_release
 def test_get_osrelease(env, caller_client, os_release):
     assert caller_client.cmd('grains.get', 'osrelease') == os_release['VERSION_ID']
 
