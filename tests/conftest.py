@@ -10,7 +10,7 @@ import salt.client
 import pytest
 from utils import (
     block_until_log_shows_message, start_process,
-    check_output, delete_minion_key, accept_key
+    check_output, delete_minion_key, accept_key, get_suse_release
 )
 from config import (
     SALT_MASTER_START_CMD, SALT_MINION_START_CMD
@@ -25,6 +25,11 @@ def pytest_collection_modifyitems(session, config, items):
             if item.module.__name__ in order \
             else os.sys.maxint
     items.sort(key=sorter)
+
+
+@pytest.fixture(scope="session")
+def suse_release(request):
+    return get_suse_release()
 
 
 @pytest.fixture(scope="session")

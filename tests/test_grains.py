@@ -1,4 +1,3 @@
-import re
 import os
 import pytest
 from utils import check_output
@@ -18,17 +17,6 @@ def os_release(request):
                 [it.strip().replace('"', '').split('=') for it in f.readlines()]
             )
         )
-    return info
-
-
-@pytest.fixture(scope="session")
-def suse_release(request):
-    info = dict()
-    with open('/etc/SuSE-release', 'rb') as f:
-        for line in f.readlines():
-            match = re.match('([a-zA-Z]+)\s*=\s*(\d+)', line)
-            if match:
-                info.update([match.groups()])
     return info
 
 
@@ -69,7 +57,7 @@ def test_get_osrelease(env, caller_client, os_release):
 
 
 def test_get_osrelease_info(env, caller_client, suse_release):
-    major = int(suse_release['VERSION'])
-    minor = int(suse_release['PATCHLEVEL'])
+    major = suse_release['VERSION']
+    minor = suse_release['PATCHLEVEL']
     expected = (major, minor) if minor else (major,)
     assert caller_client.cmd('grains.get', 'osrelease_info') == expected

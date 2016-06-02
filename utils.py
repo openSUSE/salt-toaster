@@ -1,3 +1,4 @@
+import re
 import time
 import shlex
 import subprocess
@@ -69,3 +70,13 @@ def delete_minion_key(wheel_client, key, env):
         )
     )
     assert output['data']['success']
+
+
+def get_suse_release():
+    info = dict()
+    with open('/etc/SuSE-release', 'rb') as f:
+        for line in f.readlines():
+            match = re.match('([a-zA-Z]+)\s*=\s*(\d+)', line)
+            if match:
+                info.update([[match.group(1), int(match.group(2))]])
+    return info
