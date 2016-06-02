@@ -43,7 +43,6 @@ def remove_repo(local_client, identifier, env):
         env['HOSTNAME'], 'cmd.run', ['zypper rr "{0}"'.format(identifier)])
 
 
-@pytest.mark.xfail
 def test_zypper_refresh_repo_with_gpgkey(request, env, local_client, caller_client, minion_ready):
     repo_name = 'Repo-With-GPGkey'
     request.addfinalizer(partial(remove_repo, local_client, repo_name, env))
