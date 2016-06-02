@@ -26,7 +26,7 @@ def test_minion_shipped_with_sha256():
         assert content['hash_type'] == 'sha256'
 
 
-def test_sha256_is_used(master, env, wheel_client):
+def test_hash_type_is_used(master, env, wheel_client):
     out = wheel_client.cmd_sync(
         dict(
             fun='config.values',
