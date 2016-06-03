@@ -12,24 +12,24 @@ from utils import check_output, get_suse_release
 pytestmark = pytest.mark.usefixtures("master", "minion")
 
 
-post_12_required = pytest.mark.skipif(
-    get_suse_release()['VERSION'] < 12,
-    reason="incompatible with this version")
+def post_12_required():
+    if get_suse_release()['VERSION'] < 12:
+        pytest.skip("incompatible with this version")
 
 
-pre_12_required = pytest.mark.skipif(
-    get_suse_release()['VERSION'] >= 12,
-    reason="incompatible with this version")
+def pre_12_required():
+    if get_suse_release()['VERSION'] >= 12:
+        pytest.skip("incompatible with this version")
 
 
-minor_0_required = pytest.mark.skipif(
-    get_suse_release()['PATCHLEVEL'] != 0,
-    reason="incompatible with this minor version")
+def minor_0_required():
+    if get_suse_release()['PATCHLEVEL'] != 0:
+        pytest.skip("incompatible with this minor version")
 
 
-minor_non_0_required = pytest.mark.skipif(
-    get_suse_release()['PATCHLEVEL'] == 0,
-    reason="incompatible with this minor version")
+def minor_non_0_required():
+    if get_suse_release()['PATCHLEVEL'] == 0:
+        pytest.skip("incompatible with this minor version")
 
 
 @pytest.fixture(scope="module")
@@ -72,27 +72,27 @@ def test_zypper_pkg_owner(caller_client, minion_ready):
     assert caller_client.cmd('pkg.owner', '/etc/zypp') == 'libzypp'
 
 
-@post_12_required
 def test_zypper_pkg_list_products_post_12(caller_client, minion_ready):
+    post_12_required()
     [output] = caller_client.cmd('pkg.list_products')
     assert output['name'] == 'SLES'
     assert output['release'] == '0'
 
 
-@pre_12_required
 def test_zypper_pkg_list_products_pre_12(caller_client, minion_ready):
+    pre_12_required()
     [output] = caller_client.cmd('pkg.list_products')
     assert output['name'] == 'SUSE_SLES'
 
 
-@minor_0_required
 def test_zypper_pkg_list_products_with_minor_0(caller_client, minion_ready, suse_release):
+    minor_0_required()
     [output] = caller_client.cmd('pkg.list_products')
     assert output['version'] == unicode(suse_release['VERSION'])
 
 
-@minor_non_0_required
 def test_zypper_pkg_list_products_with_minor_non_0(caller_client, minion_ready, suse_release):
+    minor_non_0_required()
     [output] = caller_client.cmd('pkg.list_products')
     assert output['version'] == "{VERSION}.{PATCHLEVEL}".format(**suse_release)
 
@@ -170,8 +170,8 @@ def test_zypper_pkg_search(request, env, caller_client, minion_ready):
     assert res['test-package-zypper']['summary'] == u"Test package for Salt's pkg.latest"
 
 
-@post_12_required
 def test_zypper_pkg_download(request, env, caller_client, minion_ready):
+    post_12_required()
     res = caller_client.cmd('pkg.download', 'test-package')
     assert res['test-package']['repository-alias'] == 'salt_testing'
 
