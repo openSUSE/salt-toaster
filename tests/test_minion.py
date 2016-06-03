@@ -1,13 +1,35 @@
+import os
+import shutil
 import shlex
 import pytest
 from functools import partial
 from assertions import assert_minion_key_state
 from jinja2 import Environment, PackageLoader
 from config import SALT_CALL
-from utils import check_output
+from utils import check_output, get_suse_release
 
 
 pytestmark = pytest.mark.usefixtures("master", "minion")
+
+
+post_12_required = pytest.mark.skipif(
+    get_suse_release()['VERSION'] < 12,
+    reason="incompatible with this version")
+
+
+pre_12_required = pytest.mark.skipif(
+    get_suse_release()['VERSION'] >= 12,
+    reason="incompatible with this version")
+
+
+minor_0_required = pytest.mark.skipif(
+    get_suse_release()['PATCHLEVEL'] != 0,
+    reason="incompatible with this minor version")
+
+
+minor_non_0_required = pytest.mark.skipif(
+    get_suse_release()['PATCHLEVEL'] == 0,
+    reason="incompatible with this minor version")
 
 
 @pytest.fixture(scope="module")
@@ -38,14 +60,13 @@ def test_ping_minion(env, minion_ready):
     assert [env['HOSTNAME'], 'True'] == [it.strip() for it in output.split(':')]
 
 
-def remove_repo(local_client, identifier, env):
-    local_client.cmd(
-        env['HOSTNAME'], 'cmd.run', ['zypper rr "{0}"'.format(identifier)])
+def remove_repo(caller_client, identifier, env):
+    caller_client.cmd('pkg.del_repo', identifier)
 
 
 def test_zypper_refresh_repo_with_gpgkey(request, env, local_client, caller_client, minion_ready):
     repo_name = 'Repo-With-GPGkey'
-    request.addfinalizer(partial(remove_repo, local_client, repo_name, env))
+    request.addfinalizer(partial(remove_repo, caller_client, repo_name, env))
     caller_client.cmd(
         'pkg.mod_repo',
         repo_name,
@@ -54,9 +75,112 @@ def test_zypper_refresh_repo_with_gpgkey(request, env, local_client, caller_clie
         refresh=True,
         gpgautoimport=True
     )
+    # do not use caller_client next
+    # assert `zypper refresh` doesn't ask for gpg confirmation anymore
     res = local_client.cmd(env['HOSTNAME'], 'cmd.run', ['zypper refresh'])
     assert "Repository '{0}' is up to date.".format(repo_name) in res[env['HOSTNAME']]
 
 
 def test_pkg_list(caller_client, minion_ready):
     assert caller_client.cmd('pkg.list_pkgs')
+
+
+def test_zypper_pkg_owner(caller_client, minion_ready):
+    assert caller_client.cmd('pkg.owner', '/etc/zypp') == 'libzypp'
+
+
+@post_12_required
+def test_zypper_pkg_list_products_post_12(caller_client, minion_ready):
+    [output] = caller_client.cmd('pkg.list_products')
+    assert output['name'] == 'SLES'
+    assert output['release'] == '0'
+
+
+@pre_12_required
+def test_zypper_pkg_list_products_pre_12(caller_client, minion_ready):
+    [output] = caller_client.cmd('pkg.list_products')
+    assert output['name'] == 'SUSE_SLES'
+
+
+@minor_0_required
+def test_zypper_pkg_list_products_with_minor_0(caller_client, minion_ready, suse_release):
+    [output] = caller_client.cmd('pkg.list_products')
+    assert output['version'] == unicode(suse_release['VERSION'])
+
+
+@minor_non_0_required
+def test_zypper_pkg_list_products_with_minor_non_0(caller_client, minion_ready, suse_release):
+    [output] = caller_client.cmd('pkg.list_products')
+    assert output['version'] == "{VERSION}.{PATCHLEVEL}".format(**suse_release)
+
+
+def test_zypper_pkg_list_products_with_OEM_release(request, caller_client, minion_ready, suse_release):
+    suse_register = '/var/lib/suseRegister'
+    filepath = suse_register + '/OEM/sles'
+    os.makedirs(suse_register + '/OEM')
+    request.addfinalizer(lambda: shutil.rmtree(suse_register))
+    with open(filepath, 'w+b') as f:
+        f.write('OEM')
+    [output] = caller_client.cmd('pkg.list_products')
+    assert output['productline'] == 'sles'
+    assert output['release'] == 'OEM'
+
+
+def test_zypper_pkg_modrepo_create(request, env, caller_client, minion_ready, tmpdir_factory):
+    repo_name = 'repotest'
+    repo_dir = tmpdir_factory.mktemp(repo_name)
+    caller_client.cmd(
+        'pkg.mod_repo', repo_name, url="file:///{0}".format(repo_dir.strpath))
+    request.addfinalizer(partial(remove_repo, caller_client, repo_name, env))
+
+
+def test_zypper_pkg_modrepo_modify(request, env, caller_client, minion_ready, tmpdir_factory):
+    repo_name = 'repotest-1'
+    request.addfinalizer(partial(remove_repo, caller_client, repo_name, env))
+    repo_dir = tmpdir_factory.mktemp(repo_name)
+    caller_client.cmd(
+        'pkg.mod_repo', repo_name, url="file:///{0}".format(repo_dir.strpath))
+    output = caller_client.cmd(
+        'pkg.mod_repo', repo_name, refresh=True, enabled=False, output="json")
+    assert output['enabled'] is False
+    assert output['autorefresh'] is True
+
+
+def test_zypper_pkg_del_repo(request, env, caller_client, minion_ready, tmpdir_factory):
+    repo_name = 'repotest-2'
+    repo_dir = tmpdir_factory.mktemp(repo_name)
+    caller_client.cmd(
+        'pkg.mod_repo', repo_name, url="file:///{0}".format(repo_dir.strpath))
+    res = caller_client.cmd('pkg.del_repo', repo_name)
+    assert res[repo_name] is True
+
+
+def test_zypper_pkg_refresh_db(request, env, caller_client, minion_ready):
+    res = caller_client.cmd('pkg.refresh_db')
+    assert res['testpackages'] is True
+
+
+def test_zypper_pkg_list_patterns(request, env, caller_client, minion_ready):
+    res = caller_client.cmd('pkg.list_patterns')
+    assert res['Minimal']['installed'] is False
+
+
+def test_zypper_pkg_search(request, env, caller_client, minion_ready):
+    res = caller_client.cmd('pkg.search', 'test-package')
+    assert res['test-package-zypper']['summary'] == u"Test package for Salt's pkg.latest"
+
+
+@post_12_required
+def test_zypper_pkg_download(request, env, caller_client, minion_ready):
+    res = caller_client.cmd('pkg.download', 'test-package')
+    assert res['test-package']['repository-alias'] == 'salt_testing'
+
+
+def install_package(caller_client, package):
+    caller_client.cmd('pkg.install', 'test-package')
+
+
+def test_zypper_pkg_remove(request, env, caller_client, minion_ready):
+    res = caller_client.cmd('pkg.remove', 'test-package')
+    request.addfinalizer(partial(install_package, caller_client, 'test-package'))
+    assert res['test-package']['new'] == ''
