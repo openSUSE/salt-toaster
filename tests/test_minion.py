@@ -64,23 +64,6 @@ def remove_repo(caller_client, identifier, env):
     caller_client.cmd('pkg.del_repo', identifier)
 
 
-def test_zypper_refresh_repo_with_gpgkey(request, env, local_client, caller_client, minion_ready):
-    repo_name = 'Repo-With-GPGkey'
-    request.addfinalizer(partial(remove_repo, caller_client, repo_name, env))
-    caller_client.cmd(
-        'pkg.mod_repo',
-        repo_name,
-        disabled=False,
-        url="http://download.opensuse.org/repositories/devel:/libraries:/c_c++/SLE_12/",
-        refresh=True,
-        gpgautoimport=True
-    )
-    # do not use caller_client next
-    # assert `zypper refresh` doesn't ask for gpg confirmation anymore
-    res = local_client.cmd(env['HOSTNAME'], 'cmd.run', ['zypper refresh'])
-    assert "Repository '{0}' is up to date.".format(repo_name) in res[env['HOSTNAME']]
-
-
 def test_pkg_list(caller_client, minion_ready):
     assert caller_client.cmd('pkg.list_pkgs')
 
@@ -144,6 +127,23 @@ def test_zypper_pkg_modrepo_modify(request, env, caller_client, minion_ready, tm
         'pkg.mod_repo', repo_name, refresh=True, enabled=False, output="json")
     assert output['enabled'] is False
     assert output['autorefresh'] is True
+
+
+def test_zypper_refresh_repo_with_gpgkey(request, env, local_client, caller_client, minion_ready):
+    repo_name = 'Repo-With-GPGkey'
+    request.addfinalizer(partial(remove_repo, caller_client, repo_name, env))
+    caller_client.cmd(
+        'pkg.mod_repo',
+        repo_name,
+        disabled=False,
+        url="http://download.opensuse.org/repositories/devel:/libraries:/c_c++/SLE_12/",
+        refresh=True,
+        gpgautoimport=True
+    )
+    # do not use caller_client next
+    # assert `zypper refresh` doesn't ask for gpg confirmation anymore
+    res = local_client.cmd(env['HOSTNAME'], 'cmd.run', ['zypper refresh'])
+    assert "Repository '{0}' is up to date.".format(repo_name) in res[env['HOSTNAME']]
 
 
 def test_zypper_pkg_del_repo(request, env, caller_client, minion_ready, tmpdir_factory):
