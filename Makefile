@@ -37,12 +37,18 @@ install_salt:
 	bin/install_salt.sh
 
 fixtures:
-	ln -s $(TOASTER_MOUNTPOINT)/conftest.py $(ROOT_MOUNTPOINT)
+	ln -s $(TOASTER_MOUNTPOINT)/conftest.py.source $(ROOT_MOUNTPOINT)/conftest.py
 
 setup: install_salt fixtures
 
 shell: setup
 	/bin/bash
+
+salt_master: install_salt
+	salt-master -l debug
+
+salt_minion: install_salt
+	salt-minion -l debug
 
 salt_unit_tests: setup
 	py.test -c $(TOASTER_MOUNTPOINT)/unittests.cfg $(SALT_TESTS)
