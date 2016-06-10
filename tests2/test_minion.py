@@ -1,4 +1,5 @@
 import pytest
+import json
 
 
 pytestmark = pytest.mark.usefixtures("master", "minion")
@@ -7,23 +8,12 @@ pytestmark = pytest.mark.usefixtures("master", "minion")
 STATES_MAPPING = dict(unaccepted='minions_pre', accepted='minions')
 
 
-def assert_minion_key_state(env, minion_id, wheel_client, expected_state):
-    assert expected_state in STATES_MAPPING
-    status = wheel_client.cmd_sync(
-        dict(
-            fun='key.list_all',
-            eauth="pam",
-            username=env['CLIENT_USER'],
-            password=env['CLIENT_PASSWORD']
-        )
-    )
-    print('{0} in {1}'.format(env['HOSTNAME'], STATES_MAPPING[expected_state]))
-    assert minion_id in status['data']['return'][STATES_MAPPING[expected_state]]
+@pytest.fixture(scope="module")
+def salt_key(docker_client):
+    SALT_KEY_CMD = "salt-key --output json"
+    return docker_client.exec_create('master', cmd=SALT_KEY_CMD)
 
 
-def test_minion_key_cached(env, context, wheel_client, wait_minion_key_cached):
-    assert_minion_key_state(env, context['minion_id'], wheel_client, "unaccepted")
-
-
-def test_minion_key_accepted(env, context, wheel_client, accept_minion_key):
-    assert_minion_key_state(env, context['minion_id'], wheel_client, "accepted")
+def test_minion_key_cached(env, context, salt_key, docker_client, wait_minion_key_cached):
+    status = json.loads(docker_client.exec_start(salt_key['Id']))
+    assert context['minion_id'] in status['minions_pre']
