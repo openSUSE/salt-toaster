@@ -15,5 +15,6 @@ def salt_key(docker_client):
 
 
 def test_minion_key_cached(env, context, salt_key, docker_client, wait_minion_key_cached):
-    status = json.loads(docker_client.exec_start(salt_key['Id']))
+    output = docker_client.exec_start(salt_key['Id'])
+    status = json.loads(output)
     assert context['minion_id'] in status['minions_pre']

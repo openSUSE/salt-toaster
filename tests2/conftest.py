@@ -1,16 +1,10 @@
 import os
 import time
 import shlex
-import crypt
-import socket
 import yaml
-from functools import partial
 from docker import Client
 import pytest
-from utils import (
-    block_until_log_shows_message,
-    check_output
-)
+from utils import check_output
 
 
 @pytest.fixture(scope="module")
@@ -35,8 +29,18 @@ def master_root(salt_root):
 
 
 @pytest.fixture(scope="module")
-def minion_root(salt_root):
-    return salt_root.mkdir("minion")
+def master_docker_image(salt_root, docker_client):
+    tag = 'registry.mgr.suse.de/toaster-sles12sp1'
+    output = docker_client.build(
+        os.getcwd() + '/tests2/docker/sles12sp1/',
+        tag=tag,
+        pull=True,
+        decode=True,
+        # nocache=True
+    )
+    for item in output:
+        print item.values()[0]
+    return tag
 
 
 @pytest.fixture(scope="module")
@@ -56,22 +60,7 @@ def salt_master_config(master_root, env):
 
 
 @pytest.fixture(scope="module")
-def salt_minion_config(master, minion_root, env, context, docker_client):
-    config_file = minion_root / 'minion'
-    data = docker_client.inspect_container('master')
-    master_ip = data['NetworkSettings']['IPAddress']
-    config = {
-        'master': master_ip,
-        'id': context['minion_id'],
-        'hash_type': 'sha384',
-    }
-    yaml_content = yaml.safe_dump(config, default_flow_style=False)
-    config_file.write(yaml_content)
-    return config_file
-
-
-@pytest.fixture(scope="module")
-def master_docker_config(env, salt_master_config, master_root, docker_client):
+def master_docker_config(env, salt_master_config, master_docker_image, master_root, docker_client):
     host_config = docker_client.create_host_config(
         port_bindings={4000: 4000, 4506: 4506},
         binds={
@@ -87,7 +76,7 @@ def master_docker_config(env, salt_master_config, master_root, docker_client):
     )
     return dict(
         name='master',
-        image='registry.mgr.suse.de/toaster-sles12sp1',
+        image=master_docker_image,
         command='/bin/bash',
         tty=True,
         stdin_open=True,
@@ -108,6 +97,26 @@ def master_container(request, docker_client, master_docker_config):
     master_container = docker_client.create_container(**master_docker_config)
     docker_client.start('master')
     return master_container
+
+
+@pytest.fixture(scope="module")
+def minion_root(salt_root):
+    return salt_root.mkdir("minion")
+
+
+@pytest.fixture(scope="module")
+def salt_minion_config(master, minion_root, env, context, docker_client):
+    config_file = minion_root / 'minion'
+    data = docker_client.inspect_container('master')
+    master_ip = data['NetworkSettings']['IPAddress']
+    config = {
+        'master': master_ip,
+        'id': context['minion_id'],
+        'hash_type': 'sha384',
+    }
+    yaml_content = yaml.safe_dump(config, default_flow_style=False)
+    config_file.write(yaml_content)
+    return config_file
 
 
 @pytest.fixture(scope="module")
@@ -148,29 +157,16 @@ def minion_container(request, docker_client, minion_docker_config):
 
 
 @pytest.fixture(scope="module")
-def install_salt_master(docker_client, master_container):
+def start_salt_master(docker_client, master_container):
     res = docker_client.exec_create(
-        'master', cmd='make -C /salt-toaster install_salt')
+        master_container['Id'], cmd='salt-master -d -l debug')
     return docker_client.exec_start(res['Id'])
 
 
 @pytest.fixture(scope="module")
-def start_salt_master(docker_client, install_salt_master):
-    res = docker_client.exec_create('master', cmd='salt-master -d -l debug')
-    return docker_client.exec_start(res['Id'])
-
-
-@pytest.fixture(scope="module")
-def install_salt_minion(docker_client, minion_container):
-    res = docker_client.exec_create(
-        'minion', cmd='make -C /salt-toaster install_salt')
-    return docker_client.exec_start(res['Id'])
-
-
-@pytest.fixture(scope="module")
-def start_salt_minion(docker_client, install_salt_minion):
+def start_salt_minion(docker_client, minion_container):
     start_minion = docker_client.exec_create(
-        'minion', cmd='salt-minion -d -l debug')
+        minion_container['Id'], cmd='salt-minion -d -l debug')
     return docker_client.exec_start(start_minion['Id'])
 
 
@@ -218,4 +214,4 @@ def minion(start_salt_minion):
 
 @pytest.fixture(scope="module")
 def wait_minion_key_cached(salt_root, minion):
-    time.sleep(15)
+    time.sleep(10)
