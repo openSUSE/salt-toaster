@@ -9,7 +9,21 @@ from utils import check_output
 
 @pytest.fixture(scope="module")
 def context():
-    return dict(minion_id='minime')
+    return dict(
+        master=dict(
+            container=dict(
+                name='master'
+            )
+        ),
+        minion=dict(
+            container=dict(
+                name='minion'
+            ),
+            salt=dict(
+                id='minime'
+            )
+        )
+    )
 
 
 @pytest.fixture(scope="session")
@@ -56,11 +70,11 @@ def salt_master_config(master_root, env):
         }
     }
     config_file.write(yaml.safe_dump(config, default_flow_style=False))
-    return config_file
+    return dict(file=config_file, config=config)
 
 
 @pytest.fixture(scope="module")
-def master_docker_config(env, salt_master_config, master_docker_image, master_root, docker_client):
+def master_docker_config(env, context, salt_master_config, master_docker_image, master_root, docker_client):
     host_config = docker_client.create_host_config(
         port_bindings={4000: 4000, 4506: 4506},
         binds={
@@ -75,7 +89,7 @@ def master_docker_config(env, salt_master_config, master_docker_image, master_ro
         }
     )
     return dict(
-        name='master',
+        name=context['master']['container']['name'],
         image=master_docker_image,
         command='/bin/bash',
         tty=True,
@@ -91,11 +105,11 @@ def master_docker_config(env, salt_master_config, master_docker_image, master_ro
 
 
 @pytest.fixture(scope="module")
-def master_container(request, docker_client, master_docker_config):
+def master_container(request, context, docker_client, master_docker_config):
     request.addfinalizer(
-        lambda: docker_client.remove_container('master', force=True))
+        lambda: docker_client.remove_container(context['master']['container']['name'], force=True))
     master_container = docker_client.create_container(**master_docker_config)
-    docker_client.start('master')
+    docker_client.start(context['master']['container']['name'])
     return master_container
 
 
@@ -105,18 +119,18 @@ def minion_root(salt_root):
 
 
 @pytest.fixture(scope="module")
-def salt_minion_config(master, minion_root, env, context, docker_client):
+def salt_minion_config(context, master_docker_config, minion_root, docker_client):
     config_file = minion_root / 'minion'
-    data = docker_client.inspect_container('master')
+    data = docker_client.inspect_container(context['master']['container']['name'])
     master_ip = data['NetworkSettings']['IPAddress']
     config = {
         'master': master_ip,
-        'id': context['minion_id'],
+        'id': context['minion']['salt']['id'],
         'hash_type': 'sha384',
     }
     yaml_content = yaml.safe_dump(config, default_flow_style=False)
     config_file.write(yaml_content)
-    return config_file
+    return dict(file=config_file, config=config)
 
 
 @pytest.fixture(scope="module")
