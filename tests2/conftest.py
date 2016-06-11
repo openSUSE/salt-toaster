@@ -224,8 +224,3 @@ def master(start_salt_master):
 @pytest.fixture(scope="module")
 def minion(start_salt_minion):
     pass
-
-
-@pytest.fixture(scope="module")
-def wait_minion_key_cached(salt_root, minion):
-    time.sleep(10)
