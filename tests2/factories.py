@@ -109,10 +109,20 @@ class ContainerFactory(BaseFactory):
 
 class MasterFactory(BaseFactory):
     container = factory.SubFactory(ContainerFactory)
-    root = None
 
     class Meta:
         model = dict
+
+    @classmethod
+    def build(cls, **kwargs):
+        obj = super(MasterFactory, cls).build(**kwargs)
+        docker_client = obj['container']['docker_client']
+        res = docker_client.exec_create(
+            obj['container']['config']['name'],
+            cmd='salt-master -d -l debug'
+        )
+        docker_client.exec_start(res['Id'])
+        return obj
 
 
 class MinionFactory(BaseFactory):
@@ -120,3 +130,14 @@ class MinionFactory(BaseFactory):
 
     class Meta:
         model = dict
+
+    @classmethod
+    def build(cls, **kwargs):
+        obj = super(MinionFactory, cls).build(**kwargs)
+        docker_client = obj['container']['docker_client']
+        res = docker_client.exec_create(
+            obj['container']['config']['name'],
+            cmd='salt-minion -d -l debug'
+        )
+        docker_client.exec_start(res['Id'])
+        return obj
