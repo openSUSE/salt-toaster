@@ -94,12 +94,10 @@ class ContainerConfigFactory(BaseFactory):
 
 class ContainerModel(dict):
 
-    def run(self, command, to_json=True):
+    def run(self, command):
         cmd_exec = self['docker_client'].exec_create(
             self['config']['name'], cmd=command)
         output = self['docker_client'].exec_start(cmd_exec['Id'])
-        if to_json:
-            return json.loads(output)
         return output
 
 
@@ -119,11 +117,31 @@ class ContainerFactory(BaseFactory):
         return obj
 
 
+class MasterModel(dict):
+
+    def salt_key_raw(self, *args):
+        command = ['salt-key']
+        command.extend(args)
+        command.append('--output=json')
+        return self['container'].run(' '.join(command))
+
+    def salt_key(self, *args):
+        return json.loads(self.salt_key_raw(*args))
+
+    def salt_key_accept(self, minion_id):
+        return self.salt_key_raw('-a', minion_id, '-y')
+
+    def salt(self, minion_id, salt_command, *args):
+        docker_command = "salt {0} {1} --output=json -l quiet".format(
+            minion_id, salt_command, ' '.join(args))
+        return json.loads(self['container'].run(docker_command))
+
+
 class MasterFactory(BaseFactory):
     container = factory.SubFactory(ContainerFactory)
 
     class Meta:
-        model = dict
+        model = MasterModel
 
     @classmethod
     def build(cls, **kwargs):
@@ -137,11 +155,19 @@ class MasterFactory(BaseFactory):
         return obj
 
 
+class MinionModel(dict):
+
+    def salt_call(self, command):
+        return json.loads(
+            self['container'].run("salt-call {0} --output=json -l quiet".format(command))
+        )
+
+
 class MinionFactory(BaseFactory):
     container = factory.SubFactory(ContainerFactory)
 
     class Meta:
-        model = dict
+        model = MinionModel
 
     @classmethod
     def build(cls, **kwargs):

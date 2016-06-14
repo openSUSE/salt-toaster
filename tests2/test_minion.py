@@ -72,30 +72,24 @@ def minion(request, minion_container):
 
 
 @pytest.fixture(scope='module')
-def minion_key_cached(master):
+def minion_key_cached(master, salt_minion_config):
     time.sleep(10)
-    status = master['container'].run("salt-key --output json")
-    assert 'minime' in status['minions_pre']
+    minion_id = salt_minion_config['config']['id']
+    assert minion_id in master.salt_key(minion_id)['minions_pre']
 
 
 @pytest.fixture(scope='module')
-def minion_key_accepted(master, salt_minion_config, minion_key_cached):
+def minion_key_accepted(master, minion, salt_minion_config, minion_key_cached):
     minion_id = salt_minion_config['config']['id']
-    master['container'].run("salt-key -a {0} -y".format(minion_id), to_json=False)
-    status = master['container'].run("salt-key --output json")
-    assert minion_id in status['minions']
+    master.salt_key_accept(minion_id)
+    assert minion_id in master.salt_key()['minions']
     time.sleep(5)
 
 
-def test_ping_minion(master, salt_minion_config, minion_key_accepted):
+def test_ping_minion(master, minion, salt_minion_config, minion_key_accepted):
     minion_id = salt_minion_config['config']['id']
-    output = master['container'].run(
-        "salt {minion_id} test.ping --output json".format(minion_id=minion_id))
-    assert output[minion_id] is True
+    assert master.salt(minion_id, "test.ping")[minion_id] is True
 
 
-def test_pkg_list(master, salt_minion_config, minion_key_accepted):
-    minion_id = salt_minion_config['config']['id']
-    output = master['container'].run(
-        "salt {minion_id} pkg.list_pkgs --output json".format(minion_id=minion_id))
-    assert output[minion_id]
+def test_pkg_list(minion, minion_key_accepted):
+    assert minion.salt_call("pkg.list_pkgs")['local']
