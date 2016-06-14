@@ -1,7 +1,10 @@
 import os
 import re
 import json
+import yaml
+import string
 import factory
+import factory.fuzzy
 from docker import Client
 
 
@@ -32,7 +35,34 @@ class ImageFactory(factory.StubFactory):
 
 
 class SaltConfigFactory(BaseFactory):
-    root = None
+    tmpdir = None
+    root = factory.LazyAttribute(lambda o: o.tmpdir.mkdir(o.factory_parent.name))
+    extraconf = None
+    topfiles = None
+    pillar = None
+    conf_type = None
+
+    class Params:
+        master = factory.Trait(
+            extraconf=factory.LazyAttribute(lambda o: o.root.mkdir('master.d')),
+            topfiles=factory.LazyAttribute(lambda o: o.root.mkdir('topfiles')),
+            pillar=factory.LazyAttribute(lambda o: o.root.mkdir('pillar')),
+            conf_type='master'
+        )
+        minion = factory.Trait(
+            extraconf=factory.LazyAttribute(lambda o: o.root.mkdir('minion.d')),
+            conf_type='minion'
+        )
+
+    @factory.post_generation
+    def post(obj, create, extracted, **kwargs):
+        config_file = obj['root'] / obj['conf_type']
+        config_file.write(yaml.safe_dump(
+            {'include': '{0}.d/*'.format(obj['conf_type'])},
+            default_flow_style=False))
+        for name, config in kwargs.items():
+            config_file = obj['extraconf'] / '{0}.conf'.format(name)
+            config_file.write(yaml.safe_dump(config, default_flow_style=False))
 
     class Meta:
         model = dict
@@ -70,7 +100,8 @@ class HostConfigFactory(factory.StubFactory):
 
 class ContainerConfigFactory(BaseFactory):
     salt_config = factory.SubFactory(SaltConfigFactory)
-    name = factory.Faker('word')
+    name = factory.fuzzy.FuzzyText(
+        length=5, prefix='toaster_', chars=string.ascii_letters)
     image_obj = factory.SubFactory(ImageFactory)
     image = factory.SelfAttribute('image_obj.tag')
     command = '/bin/bash'
@@ -103,7 +134,7 @@ class ContainerModel(dict):
 
     def get_suse_release(self):
         info = dict()
-        content = self.run('cat /etc/SuSE-release') 
+        content = self.run('cat /etc/SuSE-release')
         for line in content.split('\n'):
             match = re.match('([a-zA-Z]+)\s*=\s*(\d+)', line)
             if match:
