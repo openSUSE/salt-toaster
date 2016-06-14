@@ -1,4 +1,5 @@
 import os
+import json
 import factory
 from docker import Client
 
@@ -91,13 +92,24 @@ class ContainerConfigFactory(BaseFactory):
         exclude = ['salt_config', 'image_obj']
 
 
+class ContainerModel(dict):
+
+    def run(self, command, to_json=True):
+        cmd_exec = self['docker_client'].exec_create(
+            self['config']['name'], cmd=command)
+        output = self['docker_client'].exec_start(cmd_exec['Id'])
+        if to_json:
+            return json.loads(output)
+        return output
+
+
 class ContainerFactory(BaseFactory):
 
     docker_client = None
     config = factory.SubFactory(ContainerConfigFactory)
 
     class Meta:
-        model = dict
+        model = ContainerModel
 
     @classmethod
     def build(cls, **kwargs):

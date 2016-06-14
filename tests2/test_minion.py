@@ -1,5 +1,4 @@
 import pytest
-import json
 import yaml
 import time
 from factories import ContainerFactory, MasterFactory, MinionFactory
@@ -74,48 +73,29 @@ def minion(request, minion_container):
 
 @pytest.fixture(scope='module')
 def minion_key_cached(master):
-    docker_client = master['container']['docker_client']
-    master_name = master['container']['config']['name']
-    SALT_KEY_CMD = "salt-key --output json"
-    salt_key = docker_client.exec_create(master_name, cmd=SALT_KEY_CMD)
     time.sleep(10)
-    output = docker_client.exec_start(salt_key['Id'])
-    status = json.loads(output)
+    status = master['container'].run("salt-key --output json")
     assert 'minime' in status['minions_pre']
 
 
 @pytest.fixture(scope='module')
 def minion_key_accepted(master, salt_minion_config, minion_key_cached):
-    docker_client = master['container']['docker_client']
-    master_name = master['container']['config']['name']
     minion_id = salt_minion_config['config']['id']
-    CMD = "salt-key -a {0} -y --output json".format(minion_id)
-    cmd_exec = docker_client.exec_create(master_name, cmd=CMD)
-    docker_client.exec_start(cmd_exec['Id'])
-
-    SALT_KEY_CMD = "salt-key --output json"
-    salt_key = docker_client.exec_create(master_name, cmd=SALT_KEY_CMD)
-    output = docker_client.exec_start(salt_key['Id'])
-    status = json.loads(output)
+    master['container'].run("salt-key -a {0} -y".format(minion_id), to_json=False)
+    status = master['container'].run("salt-key --output json")
     assert minion_id in status['minions']
-    time.sleep(3)
+    time.sleep(5)
 
 
 def test_ping_minion(master, salt_minion_config, minion_key_accepted):
-    docker_client = master['container']['docker_client']
-    master_name = master['container']['config']['name']
     minion_id = salt_minion_config['config']['id']
-    CMD = "salt {minion_id} test.ping --output json".format(minion_id=minion_id)
-    cmd_exec = docker_client.exec_create(master_name, cmd=CMD)
-    output = docker_client.exec_start(cmd_exec['Id'])
-    assert json.loads(output)[minion_id] is True
+    output = master['container'].run(
+        "salt {minion_id} test.ping --output json".format(minion_id=minion_id))
+    assert output[minion_id] is True
 
 
 def test_pkg_list(master, salt_minion_config, minion_key_accepted):
-    docker_client = master['container']['docker_client']
-    master_name = master['container']['config']['name']
     minion_id = salt_minion_config['config']['id']
-    CMD = "salt {minion_id} pkg.list_pkgs --output json".format(minion_id=minion_id)
-    cmd_exec = docker_client.exec_create(master_name, cmd=CMD)
-    output = docker_client.exec_start(cmd_exec['Id'])
-    assert json.loads(output)[minion_id]
+    output = master['container'].run(
+        "salt {minion_id} pkg.list_pkgs --output json".format(minion_id=minion_id))
+    assert output[minion_id]
