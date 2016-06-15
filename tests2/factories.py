@@ -51,13 +51,14 @@ class SaltConfigFactory(BaseFactory):
             conf_type='master'
         )
         minion = factory.Trait(
-            id=factory.SelfAttribute('..name'),
             extraconf=factory.LazyAttribute(lambda o: o.root.mkdir('minion.d')),
             conf_type='minion',
+            id=factory.SelfAttribute('..name')
         )
         proxy = factory.Trait(
             extraconf=factory.LazyAttribute(lambda o: o.root.mkdir('proxy.d')),
             conf_type='proxy',
+            id=factory.SelfAttribute('..name')
         )
 
     @factory.post_generation
@@ -117,7 +118,7 @@ class HostConfigFactory(factory.StubFactory):
 class ContainerConfigFactory(BaseFactory):
     salt_config = factory.SubFactory(SaltConfigFactory)
     name = factory.fuzzy.FuzzyText(
-        length=5, prefix='toaster_', chars=string.ascii_letters)
+        length=5, prefix='container_', chars=string.ascii_letters)
     image_obj = factory.SubFactory(ImageFactory)
     image = factory.SelfAttribute('image_obj.tag')
     command = '/bin/bash'
@@ -198,7 +199,11 @@ class MasterModel(dict):
 
 
 class MasterFactory(BaseFactory):
-    container = factory.SubFactory(ContainerFactory)
+    container = factory.SubFactory(
+        ContainerFactory,
+        config__name=factory.fuzzy.FuzzyText(
+            length=5, prefix='master_', chars=string.ascii_letters)
+    )
 
     class Meta:
         model = MasterModel
@@ -225,7 +230,14 @@ class MinionModel(dict):
 
 
 class MinionFactory(BaseFactory):
-    container = factory.SubFactory(ContainerFactory)
+    id = factory.fuzzy.FuzzyText(
+        length=5, prefix='minion_', chars=string.ascii_letters)
+    container = factory.SubFactory(
+        ContainerFactory,
+        config__salt_config__id=factory.SelfAttribute('id'),
+        config__name=factory.fuzzy.FuzzyText(
+            length=5, prefix='minion_', chars=string.ascii_letters)
+    )
     cmd = 'salt-minion -d -l debug'
 
     class Meta:
