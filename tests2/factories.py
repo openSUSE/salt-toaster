@@ -86,6 +86,7 @@ class ContainerConfigFactory(BaseFactory):
     image_obj = factory.SubFactory(ImageFactory)
     image = factory.SelfAttribute('image_obj.tag')
     command = '/bin/bash'
+    environment = dict()
     tty = True
     stdin_open = True
     working_dir = "/salt-toaster/"
