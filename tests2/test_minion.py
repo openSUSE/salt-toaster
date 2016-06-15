@@ -25,8 +25,8 @@ def minor_non_0_required(info):
         pytest.skip("incompatible with this minor version")
 
 
-def test_ping_minion(master, minion, salt_minion_config):
-    minion_id = salt_minion_config['id']
+def test_ping_minion(master, minion):
+    minion_id = minion['container']['config']['name']
     assert master.salt(minion_id, "test.ping")[minion_id] is True
 
 

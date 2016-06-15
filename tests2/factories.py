@@ -41,6 +41,7 @@ class SaltConfigFactory(BaseFactory):
     topfiles = None
     pillar = None
     conf_type = None
+    id = None
 
     class Params:
         master = factory.Trait(
@@ -50,19 +51,34 @@ class SaltConfigFactory(BaseFactory):
             conf_type='master'
         )
         minion = factory.Trait(
+            id=factory.SelfAttribute('..name'),
             extraconf=factory.LazyAttribute(lambda o: o.root.mkdir('minion.d')),
-            conf_type='minion'
+            conf_type='minion',
+        )
+        proxy = factory.Trait(
+            extraconf=factory.LazyAttribute(lambda o: o.root.mkdir('proxy.d')),
+            conf_type='proxy',
         )
 
     @factory.post_generation
     def post(obj, create, extracted, **kwargs):
         config_file = obj['root'] / obj['conf_type']
-        config_file.write(yaml.safe_dump(
-            {'include': '{0}.d/*'.format(obj['conf_type'])},
-            default_flow_style=False))
-        for name, config in kwargs.items():
+        base_config = {
+            'include': '{0}.d/*'.format(obj['conf_type'])
+        }
+        if obj['conf_type'] in ['minion', 'proxy']:
+            base_config['id'] = obj['id']
+
+        config_file.write(
+            yaml.safe_dump(base_config, default_flow_style=False))
+
+        for name, config in kwargs.get('config', {}).items():
             config_file = obj['extraconf'] / '{0}.conf'.format(name)
             config_file.write(yaml.safe_dump(config, default_flow_style=False))
+
+        for name, content in kwargs.get('pillar', {}).items():
+            sls_file = obj['pillar'] / '{0}.sls'.format(name)
+            sls_file.write(yaml.safe_dump(content, default_flow_style=False))
 
     class Meta:
         model = dict
@@ -90,7 +106,7 @@ class HostConfigFactory(factory.StubFactory):
                     'bind': '/etc/salt/',
                     'mode': 'rw',
                 },
-                "/home/mdinca/repositories/salt-toaster/": {
+                os.getcwd(): {
                     'bind': "/salt-toaster/",
                     'mode': 'rw'
                 }
@@ -146,6 +162,7 @@ class ContainerFactory(BaseFactory):
 
     docker_client = None
     config = factory.SubFactory(ContainerConfigFactory)
+    ip = None
 
     class Meta:
         model = ContainerModel
@@ -155,6 +172,8 @@ class ContainerFactory(BaseFactory):
         obj = super(ContainerFactory, cls).build(**kwargs)
         obj['docker_client'].create_container(**obj['config'])
         obj['docker_client'].start(obj['config']['name'])
+        data = obj['docker_client'].inspect_container(obj['config']['name'])
+        obj['ip'] = data['NetworkSettings']['IPAddress']
         return obj
 
 
@@ -207,6 +226,7 @@ class MinionModel(dict):
 
 class MinionFactory(BaseFactory):
     container = factory.SubFactory(ContainerFactory)
+    cmd = 'salt-minion -d -l debug'
 
     class Meta:
         model = MinionModel
@@ -216,8 +236,8 @@ class MinionFactory(BaseFactory):
         obj = super(MinionFactory, cls).build(**kwargs)
         docker_client = obj['container']['docker_client']
         res = docker_client.exec_create(
-            obj['container']['config']['name'],
-            cmd='salt-minion -d -l debug'
+            obj['container']['config']['name'], obj['cmd']
         )
-        docker_client.exec_start(res['Id'])
+        output = docker_client.exec_start(res['Id'])
+        assert 'executable file not found' not in output
         return obj

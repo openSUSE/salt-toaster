@@ -1,7 +1,7 @@
 import pytest
 
 
-pytestmark = pytest.mark.usefixtures("master", "minion", "minion_key_accepted")
+pytestmark = pytest.mark.usefixtures("master_container")
 
 
 INSTALLED = [
@@ -27,13 +27,13 @@ MISSING = [
 
 
 @pytest.mark.parametrize("component", INSTALLED)
-def tests_component_installed(master, minion, component):
-    output = minion['container'].run([component, '--version'])
+def tests_component_installed(master_container, component):
+    output = master_container.run([component, '--version'])
     assert 'executable file not found' not in output
 
 
 @pytest.mark.parametrize("component", MISSING)
 @pytest.mark.xfail
-def tests_component_installed_missing(minion, component):
-    output = minion['container'].run([component, '--version'])
+def tests_component_installed_missing(master_container, component):
+    output = master_container.run([component, '--version'])
     assert 'executable file not found' in output
