@@ -9,7 +9,7 @@ from factories import ContainerFactory
 
 
 @pytest.fixture(scope="module")
-def container(request, salt_master_config, docker_client):
+def container(request, docker_client):
     obj = ContainerFactory(
         docker_client=docker_client,
         config__salt_config=None,
