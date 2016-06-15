@@ -1,6 +1,7 @@
 import time
 from docker import Client
 import pytest
+from faker import Faker
 from factories import ContainerFactory, MasterFactory, MinionFactory
 
 
@@ -52,11 +53,14 @@ def salt_minion_config(master_container, salt_root, docker_client):
 
 @pytest.fixture(scope="module")
 def master_container(request, salt_root, salt_master_config, docker_client):
+    fake = Faker()
     obj = ContainerFactory(
+        config__name='master_{0}_{1}'.format(fake.word(), fake.word()),
         config__salt_config__tmpdir=salt_root,
         docker_client=docker_client,
-        config__salt_config__master=True,
-        config__salt_config__post__config=salt_master_config
+        config__salt_config__conf_type='master',
+        config__salt_config__config=salt_master_config,
+        config__salt_config__post__id='{0}_{1}'.format(fake.word(), fake.word())
     )
     request.addfinalizer(
         lambda: obj['docker_client'].remove_container(
@@ -66,14 +70,17 @@ def master_container(request, salt_root, salt_master_config, docker_client):
 
 
 @pytest.fixture(scope="module")
-def minion_container(request, salt_root, salt_minion_config, docker_client):
+def minion_container(request, salt_root, salt_minion_config, docker_client, minion_config):
+    fake = Faker()
     obj = ContainerFactory(
+        config__name='minion_{0}_{1}'.format(fake.word(), fake.word()),
         config__salt_config__tmpdir=salt_root,
         docker_client=docker_client,
-        config__salt_config__minion=True,
-        config__salt_config__post__config={
+        config__salt_config__conf_type='minion',
+        config__salt_config__config={
             'base_config': salt_minion_config
-        }
+        },
+        config__salt_config__post__id=minion_config['id']
     )
     request.addfinalizer(
         lambda: obj['docker_client'].remove_container(
@@ -92,15 +99,14 @@ def minion(request, minion_container):
 
 
 @pytest.fixture(scope='module')
-def minion_key_cached(master, minion):
+def minion_key_cached(master, minion, minion_config):
     time.sleep(10)
-    minion_id = minion['container']['config']['name']
-    assert minion_id in master.salt_key(minion_id)['minions_pre']
+    assert minion_config['id'] in master.salt_key(minion_config['id'])['minions_pre']
 
 
 @pytest.fixture(scope='module')
-def minion_key_accepted(master, minion, minion_key_cached):
-    minion_id = minion['container']['config']['name']
+def minion_key_accepted(master, minion, minion_key_cached, minion_config):
+    minion_id = minion_config['id']
     master.salt_key_accept(minion_id)
     assert minion_id in master.salt_key()['minions']
     time.sleep(5)

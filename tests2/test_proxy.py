@@ -1,3 +1,4 @@
+import os
 import time
 import pytest
 from faker import Faker
@@ -35,31 +36,32 @@ def pillar_config(minion_config, proxy_config, proxy_server):
 def salt_master_config(salt_root, file_root, pillar_root, pillar_config):
     fake = Faker()
     return dict(
-        config__name='master_' + u'{0}_{1}'.format(fake.word(), fake.word()),
+        config__name='master_{0}_{1}'.format(fake.word(), fake.word()),
         config__salt_config__tmpdir=salt_root,
-        config__salt_config__master=True,
-        config__salt_config__post__config={
+        config__salt_config__conf_type='master',
+        config__salt_config__config={
             'base_config': {
                 'pillar_roots': {'base': [pillar_root]},
                 'file_roots': {'base': [file_root]}
             }
         },
-        config__salt_config__post__pillar=pillar_config
+        config__salt_config__pillar=pillar_config,
+        config__salt_config__post__id='{0}_{1}'.format(fake.word(), fake.word())
     )
 
 
 @pytest.fixture(scope="module")
 def salt_minion_config(salt_root, master_container, minion_config):
     return dict(
-        id=minion_config['id'],
         config__name='minion_' + minion_config['id'],
         config__salt_config__tmpdir=salt_root,
-        config__salt_config__proxy=True,
-        config__salt_config__post__config={
+        config__salt_config__conf_type='proxy',
+        config__salt_config__config={
             'base_config': {
                 'master': master_container['ip'],
             }
-        }
+        },
+        config__salt_config__post__id=minion_config['id']
     )
 
 
@@ -100,7 +102,16 @@ def proxy_server(request, salt_root, docker_client, proxy_config):
         docker_client=docker_client,
         config__command=command,
         config__name=name,
-        config__salt_config__tmpdir=salt_root,
+        config__salt_config=None,
+        config__host_config=docker_client.create_host_config(
+            binds={
+                os.getcwd(): {
+                    'bind': "/salt-toaster/",
+                    'mode': 'rw'
+                }
+            }
+        ),
+        config__volumes=[os.getcwd()]
     )
     request.addfinalizer(
         lambda: obj['docker_client'].remove_container(
@@ -109,13 +120,13 @@ def proxy_server(request, salt_root, docker_client, proxy_config):
 
 
 @pytest.fixture(scope='module')
-def minion_key_accepted(master, minion):
+def minion_key_accepted(master, minion_config, minion):
     time.sleep(10)
-    assert minion['id'] in master.salt_key(minion['id'])['minions_pre']
-    master.salt_key_accept(minion['id'])
-    assert minion['id'] in master.salt_key()['minions']
+    assert minion_config['id'] in master.salt_key(minion_config['id'])['minions_pre']
+    master.salt_key_accept(minion_config['id'])
+    assert minion_config['id'] in master.salt_key()['minions']
     time.sleep(5)
 
 
-def test_ping_proxyminion(master, minion, minion_key_accepted):
-    assert master.salt(minion['id'], "test.ping")[minion['id']] is True
+def test_ping_proxyminion(master, minion_key_accepted, minion_config):
+    assert master.salt(minion_config['id'], "test.ping")[minion_config['id']] is True

@@ -34,57 +34,6 @@ class ImageFactory(factory.StubFactory):
         return obj
 
 
-class SaltConfigFactory(BaseFactory):
-    tmpdir = None
-    root = factory.LazyAttribute(lambda o: o.tmpdir.mkdir(o.factory_parent.name))
-    extraconf = None
-    topfiles = None
-    pillar = None
-    conf_type = None
-    id = None
-
-    class Params:
-        master = factory.Trait(
-            extraconf=factory.LazyAttribute(lambda o: o.root.mkdir('master.d')),
-            topfiles=factory.LazyAttribute(lambda o: o.root.mkdir('topfiles')),
-            pillar=factory.LazyAttribute(lambda o: o.root.mkdir('pillar')),
-            conf_type='master'
-        )
-        minion = factory.Trait(
-            extraconf=factory.LazyAttribute(lambda o: o.root.mkdir('minion.d')),
-            conf_type='minion',
-            id=factory.SelfAttribute('..name')
-        )
-        proxy = factory.Trait(
-            extraconf=factory.LazyAttribute(lambda o: o.root.mkdir('proxy.d')),
-            conf_type='proxy',
-            id=factory.SelfAttribute('..name')
-        )
-
-    @factory.post_generation
-    def post(obj, create, extracted, **kwargs):
-        config_file = obj['root'] / obj['conf_type']
-        base_config = {
-            'include': '{0}.d/*'.format(obj['conf_type'])
-        }
-        if obj['conf_type'] in ['minion', 'proxy']:
-            base_config['id'] = obj['id']
-
-        config_file.write(
-            yaml.safe_dump(base_config, default_flow_style=False))
-
-        for name, config in kwargs.get('config', {}).items():
-            config_file = obj['extraconf'] / '{0}.conf'.format(name)
-            config_file.write(yaml.safe_dump(config, default_flow_style=False))
-
-        for name, content in kwargs.get('pillar', {}).items():
-            sls_file = obj['pillar'] / '{0}.sls'.format(name)
-            sls_file.write(yaml.safe_dump(content, default_flow_style=False))
-
-    class Meta:
-        model = dict
-
-
 class DockerClientFactory(factory.StubFactory):
 
     @classmethod
@@ -92,15 +41,60 @@ class DockerClientFactory(factory.StubFactory):
         return Client(base_url='unix://var/run/docker.sock')
 
 
-class HostConfigFactory(factory.StubFactory):
-    docker_client = factory.LazyAttribute(
-        lambda o: o.factory_parent.factory_parent.docker_client)
-    salt_config = factory.SubFactory(SaltConfigFactory)
+class SaltConfigFactory(BaseFactory):
 
-    @classmethod
-    def stub(cls, **kwargs):
-        obj = super(HostConfigFactory, cls).stub(**kwargs)
-        return obj.docker_client.create_host_config(
+    tmpdir = None
+    root = factory.LazyAttribute(lambda o: o.tmpdir.mkdir(o.factory_parent.name))
+    conf_type = None
+    config = {}
+    pillar = {}
+    docker_client = None
+    id = None
+
+    class Meta:
+        model = dict
+
+    @factory.post_generation
+    def post(obj, create, extracted, **kwargs):
+        assert kwargs['id']
+        obj['id'] = kwargs['id']
+        config_file = obj['root'] / obj['conf_type']
+        main_config = {
+            'include': '{0}.d/*'.format(obj['conf_type'])
+        }
+        if obj['conf_type'] in ['minion', 'proxy']:
+            main_config['id'] = obj['id']
+
+        config_file.write(
+            yaml.safe_dump(main_config, default_flow_style=False))
+
+        config_path = obj['root'].mkdir('{0}.d'.format(obj['conf_type']))
+        for name, config in obj['config'].items():
+            config_file = config_path / '{0}.conf'.format(name)
+            config_file.write(yaml.safe_dump(config, default_flow_style=False))
+
+        pillar_path = obj['root'].mkdir('pillar')
+        for name, content in obj['pillar'].items():
+            sls_file = pillar_path / '{0}.sls'.format(name)
+            sls_file.write(yaml.safe_dump(content, default_flow_style=False))
+
+
+class ContainerConfigFactory(BaseFactory):
+    name = factory.fuzzy.FuzzyText(
+        length=5, prefix='container_', chars=string.ascii_letters)
+    salt_config = factory.SubFactory(SaltConfigFactory)
+    image_obj = factory.SubFactory(ImageFactory)
+    image = factory.SelfAttribute('image_obj.tag')
+    command = '/bin/bash'
+    tty = True
+    stdin_open = True
+    working_dir = "/salt-toaster/"
+    ports = [4000, 4506]
+    volumes = factory.LazyAttribute(
+        lambda obj: [obj.salt_config['root'].strpath, os.getcwd()]
+    )
+    host_config = factory.LazyAttribute(
+        lambda obj: obj.factory_parent.docker_client.create_host_config(
             port_bindings={},
             binds={
                 obj.salt_config['root'].strpath: {
@@ -113,32 +107,11 @@ class HostConfigFactory(factory.StubFactory):
                 }
             }
         )
-
-
-class ContainerConfigFactory(BaseFactory):
-    salt_config = factory.SubFactory(SaltConfigFactory)
-    name = factory.fuzzy.FuzzyText(
-        length=5, prefix='container_', chars=string.ascii_letters)
-    image_obj = factory.SubFactory(ImageFactory)
-    image = factory.SelfAttribute('image_obj.tag')
-    command = '/bin/bash'
-    tty = True
-    stdin_open = True
-    working_dir = "/salt-toaster/"
-    ports = [4000, 4506]
-    volumes = factory.LazyAttribute(
-        lambda o: [
-            o.salt_config['root'].strpath,
-            "/home/mdinca/repositories/salt-toaster/"
-        ]
-    )
-    host_config = factory.SubFactory(
-        HostConfigFactory, salt_config=factory.SelfAttribute('..salt_config')
     )
 
     class Meta:
         model = dict
-        exclude = ['salt_config', 'image_obj']
+        exclude = ['image_obj', 'salt_config']
 
 
 class ContainerModel(dict):
@@ -157,6 +130,15 @@ class ContainerModel(dict):
             if match:
                 info.update([[match.group(1), int(match.group(2))]])
         return info
+
+    def get_os_release(self):
+        content = self.run('cat /etc/os-release')
+        return dict(
+            filter(
+                lambda it: len(it) == 2,
+                [it.replace('"', '').strip().split('=') for it in content.split('\n')]
+            )
+        )
 
 
 class ContainerFactory(BaseFactory):
@@ -230,11 +212,8 @@ class MinionModel(dict):
 
 
 class MinionFactory(BaseFactory):
-    id = factory.fuzzy.FuzzyText(
-        length=5, prefix='minion_', chars=string.ascii_letters)
     container = factory.SubFactory(
         ContainerFactory,
-        config__salt_config__id=factory.SelfAttribute('id'),
         config__name=factory.fuzzy.FuzzyText(
             length=5, prefix='minion_', chars=string.ascii_letters)
     )
