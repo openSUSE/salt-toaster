@@ -1,35 +1,14 @@
-import os
-import shlex
-import crypt
-import socket
-import yaml
-from functools import partial
-import salt.config
-import salt.wheel
-import salt.client
+from docker import Client
 import pytest
-from utils import (
-    block_until_log_shows_message, start_process,
-    check_output, delete_minion_key, accept_key, get_suse_release
-)
-from config import (
-    SALT_MASTER_START_CMD, SALT_MINION_START_CMD
-)
-
-
-def pytest_collection_modifyitems(session, config, items):
-    def sorter(item):
-        # tests.test_minion must be runned first
-        order = ['tests.test_minion', 'tests.test_proxy']
-        return order.index(item.module.__name__) \
-            if item.module.__name__ in order \
-            else os.sys.maxint
-    items.sort(key=sorter)
+from faker import Faker
+from utils import retry
+from factories import ContainerFactory, MasterFactory, MinionFactory
 
 
 @pytest.fixture(scope="session")
-def suse_release(request):
-    return get_suse_release()
+def docker_client():
+    client = Client(base_url='unix://var/run/docker.sock')
+    return client
 
 
 @pytest.fixture(scope="session")
@@ -38,171 +17,103 @@ def salt_root(tmpdir_factory):
 
 
 @pytest.fixture(scope="session")
-def user():
-    return check_output(['whoami']).strip()
-
-
-def delete_salt_api_user(username):
-    cmd = "userdel {0}".format(username)
-    check_output(shlex.split(cmd))
-
-
-@pytest.fixture(scope="session")
-def salt_api_user(request, env):
-    user = env['CLIENT_USER']
-    password_salt = '00'
-    password = crypt.crypt(env['CLIENT_PASSWORD'], password_salt)
-    cmd = "useradd {0} -p '{1}'".format(user, password)
-    output = check_output(shlex.split(cmd))
-    request.addfinalizer(partial(delete_salt_api_user, env['CLIENT_USER']))
-    return output
-
-
-@pytest.fixture(scope="session")
-def wheel_client(master_config, master):
-    opts = salt.config.master_config(master_config.strpath)
-    client = salt.wheel.WheelClient(opts)
-    return client
-
-
-@pytest.fixture(scope="session")
-def local_client(master_config, master):
-    return salt.client.LocalClient(master_config.strpath)
-
-
-@pytest.fixture(scope="session")
-def caller_client(minion_config):
-    opts = salt.config.minion_config(minion_config.strpath)
-    caller = salt.client.Caller(mopts=opts)
-    return caller
-
-
-@pytest.fixture(scope="session")
-def master_config(salt_root, env):
-    config_file = salt_root / 'master'
-    config = {
-        'user': env['USER'],
-        'pidfile': '{0}/run/salt-master.pid'.format(env['SALT_ROOT']),
-        'root_dir': env['SALT_ROOT'],
-        'pki_dir': '{0}/pki/'.format(env['SALT_ROOT']),
-        'cachedir': '{0}/cache/'.format(env['SALT_ROOT']),
-        'hash_type': env['HASH_TYPE'],
-        'pillar_roots': {
-            'base': [env['PILLAR_ROOT']]
-        },
-        'file_roots': {
-            'base': [env['FILE_ROOTS']]
-        },
-        'external_auth': {
-            'pam': {env['CLIENT_USER']: ['.*', '@wheel', '@runner', '@jobs']}}
-    }
-    config_file.write(yaml.dump(config))
-    return config_file
-
-
-@pytest.fixture(scope="session")
 def pillar_root(salt_root):
-    return salt_root.mkdir('pillar')
+    salt_root.mkdir('pillar')
+    return '/etc/salt/pillar'
 
 
 @pytest.fixture(scope="session")
-def file_roots(salt_root):
-    return salt_root.mkdir('topfiles')
+def file_root(salt_root):
+    salt_root.mkdir('topfiles')
+    return '/etc/salt/topfiles'
 
 
-@pytest.fixture(scope="session")
-def minion_config(salt_root, env):
-    config_file = salt_root / 'minion'
-    config = {
-        'user': env['USER'],
-        'master': 'localhost',
-        'pidfile': '{0}/run/salt-minion.pid'.format(env['SALT_ROOT']),
-        'root_dir': env['SALT_ROOT'],
-        'pki_dir': '{0}/pki/'.format(env['SALT_ROOT']),
-        'cachedir': '{0}/cache/'.format(env['SALT_ROOT']),
+@pytest.fixture(scope="module")
+def salt_master_config(file_root, pillar_root):
+    return {
+        'base_config': {
+            'hash_type': 'sha384',
+            'pillar_roots': {
+                'base': [pillar_root]
+            },
+            'file_roots': {
+                'base': [file_root]
+            }
+        }
+    }
+
+
+@pytest.fixture(scope="module")
+def salt_minion_config(master_container, salt_root, docker_client):
+    return {
+        'master': master_container['ip'],
         'hash_type': 'sha384',
     }
-    config_file.write(yaml.dump(config))
-    return config_file
-
-
-@pytest.fixture(scope="session")
-def proxy_server_port(request):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    for port in xrange(8001, 8010):
-        result = sock.connect_ex(('127.0.0.1', port))
-        if result == 0:
-            continue
-        else:
-            break
-    else:
-        raise Exception(
-            "Could not start the proxy minion api server. All ports are taken"
-        )
-    return str(port)
-
-
-@pytest.fixture(scope="session")
-def env(salt_root, file_roots, pillar_root, user, proxy_server_port):
-    env = dict(os.environ)
-    env["USER"] = user
-    env["SALT_ROOT"] = salt_root.strpath
-    env["PROXY_ID"] = "proxy-minion"
-    env["PROXY_SERVER_PORT"] = proxy_server_port
-    env["CLIENT_USER"] = "salt_api_user"
-    env["CLIENT_PASSWORD"] = "linux"
-    env["FILE_ROOTS"] = file_roots.strpath
-    env["PILLAR_ROOT"] = pillar_root.strpath
-    env['HASH_TYPE'] = 'sha384'
-    return env
-
-
-@pytest.fixture(scope="session")
-def master(request, master_config, env):
-    return start_process(request, SALT_MASTER_START_CMD, env)
 
 
 @pytest.fixture(scope="module")
-def minion(request, minion_config, wheel_client, env, context):
-    context['MINION_KEY'] = env['HOSTNAME']
+def master_container(request, salt_root, salt_master_config, docker_client):
+    fake = Faker()
+    obj = ContainerFactory(
+        config__name='master_{0}_{1}'.format(fake.word(), fake.word()),
+        config__salt_config__tmpdir=salt_root,
+        docker_client=docker_client,
+        config__salt_config__conf_type='master',
+        config__salt_config__config=salt_master_config,
+        config__salt_config__post__id='{0}_{1}'.format(fake.word(), fake.word())
+    )
     request.addfinalizer(
-        partial(delete_minion_key, wheel_client, context['MINION_KEY'], env)
+        lambda: obj['docker_client'].remove_container(
+            obj['config']['name'], force=True)
     )
-    return start_process(request, SALT_MINION_START_CMD, env)
+    return obj
 
 
 @pytest.fixture(scope="module")
-def wait_minion_key_cached(salt_root, minion):
-    block_until_log_shows_message(
-        log_file=(salt_root / 'var/log/salt/minion'),
-        message='Salt Master has cached the public key'
+def minion_container(request, salt_root, salt_minion_config, docker_client, minion_config):
+    fake = Faker()
+    obj = ContainerFactory(
+        config__name='minion_{0}_{1}'.format(fake.word(), fake.word()),
+        config__salt_config__tmpdir=salt_root,
+        docker_client=docker_client,
+        config__salt_config__conf_type='minion',
+        config__salt_config__config={
+            'base_config': salt_minion_config
+        },
+        config__salt_config__post__id=minion_config['id']
     )
+    request.addfinalizer(
+        lambda: obj['docker_client'].remove_container(
+            obj['config']['name'], force=True))
+    return obj
 
 
 @pytest.fixture(scope="module")
-def context():
-    return dict()
+def master(request, master_container):
+    return MasterFactory(container=master_container)
 
 
 @pytest.fixture(scope="module")
-def accept_minion_key(request, context, env, salt_root, wheel_client, wait_minion_key_cached):
-    return accept_key(
-        wheel_client,
-        context['MINION_KEY'],
-        env['CLIENT_USER'],
-        env['CLIENT_PASSWORD']
-    )
+def minion(request, minion_container):
+    return MinionFactory(container=minion_container)
 
 
-@pytest.fixture(scope="module")
-def minion_ready(env, salt_root, accept_minion_key):
-    block_until_log_shows_message(
-        log_file=(salt_root / 'var/log/salt/minion'),
-        message='Minion is ready to receive requests!'
-    )
+@pytest.fixture(scope='module')
+def minion_key_cached(master, minion, minion_config):
+    minion_id = minion_config['id']
+
+    def cache():
+        return minion_id in master.salt_key(minion_id)['minions_pre']
+
+    assert retry(cache)
 
 
-@pytest.fixture(scope="module")
-def minion_highstate(env, minion_ready, local_client):
-    res = local_client.cmd(env['HOSTNAME'], 'state.highstate')
-    assert 'pkgrepo_|-systemsmanagement_saltstack_|-systemsmanagement_saltstack_|-managed' in res[env['HOSTNAME']]
+@pytest.fixture(scope='module')
+def minion_key_accepted(master, minion, minion_key_cached, minion_config):
+    minion_id = minion_config['id']
+    master.salt_key_accept(minion_id)
+
+    def accept():
+        return minion_id in master.salt_key()['minions']
+
+    assert retry(accept)

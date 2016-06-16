@@ -23,7 +23,7 @@ class ImageFactory(factory.StubFactory):
     def stub(cls, **kwargs):
         obj = super(ImageFactory, cls).stub(**kwargs)
         output = obj.docker_client.build(
-            os.getcwd() + '/tests2/docker/sles12sp1/',
+            os.getcwd() + '/tests/docker/sles12sp1/',
             tag=obj.tag,
             pull=True,
             decode=True,

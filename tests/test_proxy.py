@@ -1,127 +1,128 @@
+import os
 import pytest
-import time
-import shlex
-import yaml
-import json
-import requests
-from functools import partial
-from utils import (
-    block_until_log_shows_message, start_process, check_output,
-    delete_minion_key, accept_key
-)
-from assertions import assert_proxyminion_key_state
-from jinja2 import Environment, PackageLoader
-from config import SALT_PROXY_CALL
-
-from config import (
-    SALT_PROXYMINION_START_CMD, START_PROXY_SERVER
-)
-
-
-pytestmark = pytest.mark.usefixtures("master_top", "proxy_pillar", "master")
+from utils import retry
+from faker import Faker
+from factories import ContainerFactory, MinionFactory
 
 
 @pytest.fixture(scope="module")
-def master_top(pillar_root, env):
-    jinja_env = Environment(loader=PackageLoader('tests', 'config'))
-    template = jinja_env.get_template('top.sls')
-    content = template.render(**env)
-    with (pillar_root / 'top.sls').open('wb') as f:
-        f.write(content)
+def minion_config():
+    fake = Faker()
+    return {'id': u'{0}_{1}'.format(fake.word(), fake.word())}
 
 
 @pytest.fixture(scope="module")
-def proxy_pillar(pillar_root, env):
-    jinja_env = Environment(loader=PackageLoader('tests', 'config'))
-    template = jinja_env.get_template('pillar.sls')
-    content = template.render(**env)
-    with (pillar_root / '{PROXY_ID}.sls'.format(**env)).open('wb') as f:
-        f.write(content)
+def proxy_config():
+    return {'port': 8000}
 
 
 @pytest.fixture(scope="module")
-def proxyminion_config(salt_root, env):
-    config_file = salt_root / 'proxy'
-    config = {
-        'user': env['USER'],
-        'master': 'localhost',
-        'pidfile': '{0}/run/salt-proxyminion.pid'.format(env['SALT_ROOT']),
-        'root_dir': env['SALT_ROOT'],
-        'pki_dir': '{0}/pki/'.format(env['SALT_ROOT']),
-        'cachedir': '{0}/cache/'.format(env['SALT_ROOT']),
-        'hash_type': 'sha384',
+def pillar_config(minion_config, proxy_config, proxy_server):
+    minion_id = minion_config['id']
+    return {
+        'top': {'base': {minion_id: [minion_id]}},
+        minion_id: {
+            'proxy': {
+                'proxytype': 'rest_sample',
+                'url': 'http://{0}:{1}'.format(
+                    proxy_server['ip'], proxy_config['port']
+                )
+            }
+        }
     }
-    config_file.write(yaml.dump(config))
-    return config_file
 
 
 @pytest.fixture(scope="module")
-def proxy_server(request, env):
-    return start_process(request, START_PROXY_SERVER, env)
+def salt_master_config(salt_root, file_root, pillar_root, pillar_config):
+    fake = Faker()
+    return dict(
+        config__name='master_{0}_{1}'.format(fake.word(), fake.word()),
+        config__salt_config__tmpdir=salt_root,
+        config__salt_config__conf_type='master',
+        config__salt_config__config={
+            'base_config': {
+                'pillar_roots': {'base': [pillar_root]},
+                'file_roots': {'base': [file_root]}
+            }
+        },
+        config__salt_config__pillar=pillar_config,
+        config__salt_config__post__id='{0}_{1}'.format(fake.word(), fake.word())
+    )
 
 
 @pytest.fixture(scope="module")
-def wait_proxy_server_ready(env, proxy_server):
-    status_code = None
-    fails = 0
-    while not status_code and fails < 10:
-        try:
-            response = requests.get(
-                'http://localhost:{PROXY_SERVER_PORT}'.format(**env)
-            )
-            status_code = response.status_code
-        except requests.ConnectionError:
-            fails += 1
-            time.sleep(0.1)
+def salt_minion_config(salt_root, master_container, minion_config):
+    return dict(
+        config__name='minion_' + minion_config['id'],
+        config__salt_config__tmpdir=salt_root,
+        config__salt_config__conf_type='proxy',
+        config__salt_config__config={
+            'base_config': {
+                'master': master_container['ip'],
+            }
+        },
+        config__salt_config__post__id=minion_config['id']
+    )
 
 
 @pytest.fixture(scope="module")
-def proxyminion(request, proxyminion_config, wait_proxy_server_ready, wheel_client, env, context):
-    context['MINION_KEY'] = env['PROXY_ID']
+def master_container(request, docker_client, salt_master_config):
+    obj = ContainerFactory(docker_client=docker_client, **salt_master_config)
     request.addfinalizer(
-        partial(delete_minion_key, wheel_client, context['MINION_KEY'], env)
+        lambda: obj['docker_client'].remove_container(
+            obj['config']['name'], force=True)
     )
-    return start_process(request, SALT_PROXYMINION_START_CMD, env)
+    return obj
 
 
 @pytest.fixture(scope="module")
-def wait_proxyminion_key_cached(salt_root, proxyminion):
-    block_until_log_shows_message(
-        log_file=(salt_root / 'var/log/salt/proxy'),
-        message='Salt Master has cached the public key'
+def minion_container(request, salt_minion_config, docker_client):
+    obj = ContainerFactory(docker_client=docker_client, **salt_minion_config)
+    request.addfinalizer(
+        lambda: obj['docker_client'].remove_container(
+            obj['config']['name'], force=True))
+    return obj
+
+
+@pytest.fixture(scope="module")
+def minion(request, minion_container, minion_config):
+    return MinionFactory(
+        container=minion_container,
+        cmd='salt-proxy -d -l debug --proxyid {0}'.format(minion_config['id']),
+        id=minion_config['id']
     )
 
 
 @pytest.fixture(scope="module")
-def accept_proxy_key(
-    request, context, env, salt_root, wheel_client, wait_proxyminion_key_cached
-):
-    return accept_key(
-        wheel_client,
-        context['MINION_KEY'],
-        env['CLIENT_USER'],
-        env['CLIENT_PASSWORD']
+def proxy_server(request, salt_root, docker_client, proxy_config):
+    fake = Faker()
+    name = u'proxy_server_{0}_{1}'.format(fake.word(), fake.word())
+    command = 'python -m tests.scripts.proxy_server {0}'.format(proxy_config['port'])
+    obj = ContainerFactory(
+        docker_client=docker_client,
+        config__command=command,
+        config__name=name,
+        config__salt_config=None,
+        config__host_config=docker_client.create_host_config(
+            binds={
+                os.getcwd(): {
+                    'bind': "/salt-toaster/",
+                    'mode': 'rw'
+                }
+            }
+        ),
+        config__volumes=[os.getcwd()]
     )
+    request.addfinalizer(
+        lambda: obj['docker_client'].remove_container(
+            obj['config']['name'], force=True))
+    return obj
 
 
-@pytest.fixture(scope="module")
-def proxyminion_ready(env, salt_root, accept_proxy_key):
-    block_until_log_shows_message(
-        log_file=(salt_root / 'var/log/salt/proxy'),
-        message='Minion is ready to receive requests!'
-    )
+def test_ping_proxyminion(master, minion_key_accepted, minion_config):
+    minion_id = minion_config['id']
 
+    def ping():
+        return master.salt(minion_id, "test.ping")[minion_id] is True
 
-def test_proxyminion_key_cached(env, wait_proxyminion_key_cached):
-    assert_proxyminion_key_state(env, "unaccepted")
-
-
-def test_proxyminion_key_accepted(env, accept_proxy_key):
-    assert_proxyminion_key_state(env, "accepted")
-
-
-def test_ping_proxyminion(env, proxyminion_ready):
-    cmd = shlex.split(SALT_PROXY_CALL.format(**env))
-    cmd.append("test.ping")
-    output = json.loads(check_output(cmd, env))
-    assert output[env['PROXY_ID']] is True
+    assert retry(ping)
