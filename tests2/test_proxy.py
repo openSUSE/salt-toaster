@@ -1,5 +1,6 @@
 import os
 import pytest
+from utils import retry
 from faker import Faker
 from factories import ContainerFactory, MinionFactory
 
@@ -119,4 +120,9 @@ def proxy_server(request, salt_root, docker_client, proxy_config):
 
 
 def test_ping_proxyminion(master, minion_key_accepted, minion_config):
-    assert master.salt(minion_config['id'], "test.ping")[minion_config['id']] is True
+    minion_id = minion_config['id']
+
+    def ping():
+        return master.salt(minion_id, "test.ping")[minion_id] is True
+
+    assert retry(ping)
