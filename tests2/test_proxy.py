@@ -1,5 +1,4 @@
 import os
-import time
 import pytest
 from faker import Faker
 from factories import ContainerFactory, MinionFactory
@@ -97,7 +96,7 @@ def minion(request, minion_container, minion_config):
 def proxy_server(request, salt_root, docker_client, proxy_config):
     fake = Faker()
     name = u'proxy_server_{0}_{1}'.format(fake.word(), fake.word())
-    command = 'python -m tests.proxy_server {0}'.format(proxy_config['port'])
+    command = 'python -m tests2.proxy_server {0}'.format(proxy_config['port'])
     obj = ContainerFactory(
         docker_client=docker_client,
         config__command=command,
@@ -117,15 +116,6 @@ def proxy_server(request, salt_root, docker_client, proxy_config):
         lambda: obj['docker_client'].remove_container(
             obj['config']['name'], force=True))
     return obj
-
-
-@pytest.fixture(scope='module')
-def minion_key_accepted(master, minion_config, minion):
-    time.sleep(10)
-    assert minion_config['id'] in master.salt_key(minion_config['id'])['minions_pre']
-    master.salt_key_accept(minion_config['id'])
-    assert minion_config['id'] in master.salt_key()['minions']
-    time.sleep(5)
 
 
 def test_ping_proxyminion(master, minion_key_accepted, minion_config):
