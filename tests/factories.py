@@ -16,8 +16,10 @@ class BaseFactory(factory.Factory):
 
 class ImageFactory(factory.StubFactory):
     version = os.environ.get('VERSION', 'sles12sp')
+    flavor = os.environ.get('FLAVOR', 'products')
     tag = factory.LazyAttribute(
-        lambda o: 'registry.mgr.suse.de/toaster-{0}'.format(o.version))
+        lambda o: 'registry.mgr.suse.de/toaster-{0}-{1}'.format(
+            o.version, o.flavor))
     docker_client = factory.LazyAttribute(
         lambda o: o.factory_parent.factory_parent.docker_client)
     build_image = True
@@ -28,10 +30,11 @@ class ImageFactory(factory.StubFactory):
         if obj.build_image:
             output = obj.docker_client.build(
                 path=os.getcwd() + '/docker/',
-                dockerfile='Dockerfile.{0}'.format(obj.version),
+                dockerfile='Dockerfile.{0}.{1}'.format(obj.version, obj.flavor),
                 tag=obj.tag,
                 pull=True,
                 decode=True,
+                rm=True,
                 # nocache=True
             )
             for item in output:
