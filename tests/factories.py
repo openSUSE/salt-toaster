@@ -34,7 +34,7 @@ class ImageFactory(factory.StubFactory):
                 tag=obj.tag,
                 pull=True,
                 decode=True,
-                rm=True,
+                forcerm=True
                 # nocache=True
             )
             for item in output:
