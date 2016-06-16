@@ -34,7 +34,7 @@ endif
 default: docker_shell
 
 install_salt:
-	bin/install_salt.sh
+	docker/bin/install_salt.sh
 
 fixtures:
 	ln -s $(TOASTER_MOUNTPOINT)/conftest.py.source $(ROOT_MOUNTPOINT)/conftest.py
@@ -60,7 +60,7 @@ custom_integration_tests: setup
 	py.test tests/
 
 lastchangelog:
-	bin/lastchangelog salt 3
+	docker/bin/lastchangelog salt 3
 
 run_salt_unit_tests: salt_unit_tests lastchangelog
 
