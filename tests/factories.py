@@ -15,22 +15,27 @@ class BaseFactory(factory.Factory):
 
 
 class ImageFactory(factory.StubFactory):
-    tag = 'registry.mgr.suse.de/toaster-sles12sp1'
+    version = os.environ.get('VERSION', 'sles12sp')
+    tag = factory.LazyAttribute(
+        lambda o: 'registry.mgr.suse.de/toaster-{0}'.format(o.version))
     docker_client = factory.LazyAttribute(
         lambda o: o.factory_parent.factory_parent.docker_client)
+    build_image = True
 
     @classmethod
     def stub(cls, **kwargs):
         obj = super(ImageFactory, cls).stub(**kwargs)
-        output = obj.docker_client.build(
-            os.getcwd() + '/tests/docker/sles12sp1/',
-            tag=obj.tag,
-            pull=True,
-            decode=True,
-            # nocache=True
-        )
-        for item in output:
-            print item.values()[0]
+        if obj.build_image:
+            output = obj.docker_client.build(
+                path=os.getcwd() + '/docker/',
+                dockerfile='Dockerfile.{0}'.format(obj.version),
+                tag=obj.tag,
+                pull=True,
+                decode=True,
+                # nocache=True
+            )
+            for item in output:
+                print item.values()[0]
         return obj
 
 

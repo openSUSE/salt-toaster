@@ -1,0 +1,14 @@
+# Container used to run salt tests focusing on SUSE Manager use cases
+#
+# NAME                  toaster-sles12sp1
+# VERSION               0
+
+FROM registry.mgr.suse.de/suma-3.0-salt-sle12sp1
+MAINTAINER Mihai Dincă: "mdinca@suse.com"
+
+
+ADD . /root
+
+RUN /root/sles12sp1/add_repositories.sh
+RUN /root/sles12sp1/add_packages.sh
+RUN /root/bin/install_salt.sh
