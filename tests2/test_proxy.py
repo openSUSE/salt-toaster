@@ -97,7 +97,7 @@ def minion(request, minion_container, minion_config):
 def proxy_server(request, salt_root, docker_client, proxy_config):
     fake = Faker()
     name = u'proxy_server_{0}_{1}'.format(fake.word(), fake.word())
-    command = 'python -m tests2.proxy_server {0}'.format(proxy_config['port'])
+    command = 'python -m tests2.scripts.proxy_server {0}'.format(proxy_config['port'])
     obj = ContainerFactory(
         docker_client=docker_client,
         config__command=command,
