@@ -1,7 +1,7 @@
-import time
 from docker import Client
 import pytest
 from faker import Faker
+from utils import retry
 from factories import ContainerFactory, MasterFactory, MinionFactory
 
 
@@ -100,13 +100,20 @@ def minion(request, minion_container):
 
 @pytest.fixture(scope='module')
 def minion_key_cached(master, minion, minion_config):
-    time.sleep(10)
-    assert minion_config['id'] in master.salt_key(minion_config['id'])['minions_pre']
+    minion_id = minion_config['id']
+
+    def cache():
+        return minion_id in master.salt_key(minion_id)['minions_pre']
+
+    assert retry(cache)
 
 
 @pytest.fixture(scope='module')
 def minion_key_accepted(master, minion, minion_key_cached, minion_config):
     minion_id = minion_config['id']
     master.salt_key_accept(minion_id)
-    assert minion_id in master.salt_key()['minions']
-    time.sleep(5)
+
+    def accept():
+        return minion_id in master.salt_key()['minions']
+
+    assert retry(accept)

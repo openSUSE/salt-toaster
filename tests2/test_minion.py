@@ -1,6 +1,7 @@
 import pytest
 from faker import Faker
 from functools import partial
+from utils import retry
 
 
 pytestmark = pytest.mark.usefixtures("master", "minion", "minion_key_accepted")
@@ -34,7 +35,11 @@ def minion_config():
 
 def test_ping_minion(master, minion, minion_config):
     minion_id = minion_config['id']
-    assert master.salt(minion_id, "test.ping")[minion_id] is True
+
+    def ping():
+        return master.salt(minion_id, "test.ping")[minion_id] is True
+
+    assert retry(ping)
 
 
 def test_pkg_list(minion):

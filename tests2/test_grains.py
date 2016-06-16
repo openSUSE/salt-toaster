@@ -71,15 +71,6 @@ def minion_container(request, salt_minion_config, docker_client):
     return obj
 
 
-@pytest.fixture(scope='module')
-def minion_key_accepted(master, minion, minion_config):
-    time.sleep(10)
-    assert minion_config['id'] in master.salt_key(minion_config['id'])['minions_pre']
-    master.salt_key_accept(minion_config['id'])
-    assert minion_config['id'] in master.salt_key()['minions']
-    time.sleep(5)
-
-
 def test_get_cpuarch(minion):
     assert minion.salt_call('grains.get', 'cpuarch') == 'x86_64'
 

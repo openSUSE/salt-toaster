@@ -1,3 +1,6 @@
+import os
+
+
 TIME_LIMIT = 120
 SALT_MASTER_START_CMD = "salt-master -c {SALT_ROOT}"
 SALT_MINION_START_CMD = "salt-minion -l debug -c {SALT_ROOT}"
