@@ -23,7 +23,7 @@ class DockerClientFactory(factory.StubFactory):
 
 class ImageFactory(BaseFactory):
     version = os.environ.get('VERSION', 'sles12sp1')
-    flavor = os.environ.get('FLAVOR', 'products')
+    flavor = os.environ.get('FLAVOR') or 'products'
     tag = factory.LazyAttribute(
         lambda o: 'registry.mgr.suse.de/toaster-{0}-{1}'.format(o.version, o.flavor))
     dockerfile = factory.LazyAttribute(

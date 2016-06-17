@@ -27,7 +27,7 @@ def retry(func):
     return success
 
 
-def build_docker_image(version, flavor):
+def build_docker_image():
     docker_client = Client(base_url='unix://var/run/docker.sock')
     path = os.getcwd() + '/docker/'
     image = ImageFactory(docker_client=docker_client, path=path)
