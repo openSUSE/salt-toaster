@@ -1,4 +1,6 @@
+import os
 import time
+from docker import Client
 from config import TIME_LIMIT
 
 
@@ -22,3 +24,23 @@ def retry(func):
             time.sleep(1)
             continue
     return success
+
+
+def get_docker_build_params(version, flavor, path):
+    tag_pattern = 'registry.mgr.suse.de/toaster-{0}-{1}'
+    file_pattern = 'Dockerfile.{0}.{1}'
+    return dict(
+        tag=tag_pattern.format(version, flavor),
+        dockerfile=file_pattern.format(version, flavor),
+        pull=True,
+        decode=True,
+        forcerm=True
+        # nocache=True
+    )
+
+
+def build_docker_image(version, flavor):
+    docker_client = Client(base_url='unix://var/run/docker.sock')
+    path = os.getcwd() + '/docker/'
+    params = get_docker_build_params(version, flavor, path)
+    return docker_client.build(path=path, **params)

@@ -5,11 +5,13 @@ import factory
 import factory.fuzzy
 from docker import Client
 from models import ContainerModel, MasterModel, MinionModel
+from utils import get_docker_build_params
 
 
 class BaseFactory(factory.Factory):
 
     class Meta:
+        model = dict
         strategy = factory.BUILD_STRATEGY
 
 
@@ -20,29 +22,24 @@ class DockerClientFactory(factory.StubFactory):
         return Client(base_url='unix://var/run/docker.sock')
 
 
-class ImageFactory(factory.StubFactory):
+class ImageFactory(BaseFactory):
     version = os.environ.get('VERSION', 'sles12sp1')
     flavor = os.environ.get('FLAVOR', 'products')
-    tag = factory.LazyAttribute(
-        lambda o: 'registry.mgr.suse.de/toaster-{0}-{1}'.format(
-            o.version, o.flavor))
+    params = factory.LazyAttribute(
+        lambda o: get_docker_build_params(o.version, o.flavor, o.path))
+    tag = factory.LazyAttribute(lambda o: o.params['tag'])
+    dockerfile = factory.LazyAttribute(lambda o: o.params['dockerfile'])
+    path = factory.LazyAttribute(lambda o: os.getcwd() + '/docker/')
     docker_client = factory.LazyAttribute(
         lambda o: o.factory_parent.factory_parent.docker_client)
+    path = os.getcwd() + '/docker/'
     build_image = True
 
     @classmethod
-    def stub(cls, **kwargs):
-        obj = super(ImageFactory, cls).stub(**kwargs)
-        if obj.build_image:
-            output = obj.docker_client.build(
-                path=os.getcwd() + '/docker/',
-                dockerfile='Dockerfile.{0}.{1}'.format(obj.version, obj.flavor),
-                tag=obj.tag,
-                pull=True,
-                decode=True,
-                forcerm=True
-                # nocache=True
-            )
+    def build(cls, **kwargs):
+        obj = super(ImageFactory, cls).build(**kwargs)
+        if obj['build_image']:
+            output = obj['docker_client'].build(path=obj['path'], **obj['params'])
             for item in output:
                 print item.values()[0]
         return obj
@@ -57,9 +54,6 @@ class SaltConfigFactory(BaseFactory):
     pillar = {}
     docker_client = None
     id = None
-
-    class Meta:
-        model = dict
 
     @factory.post_generation
     def post(obj, create, extracted, **kwargs):
@@ -91,7 +85,7 @@ class ContainerConfigFactory(BaseFactory):
         length=5, prefix='container_', chars=string.ascii_letters)
     salt_config = factory.SubFactory(SaltConfigFactory)
     image_obj = factory.SubFactory(ImageFactory)
-    image = factory.SelfAttribute('image_obj.tag')
+    image = factory.LazyAttribute(lambda o: o.image_obj['tag'])
     command = '/bin/bash'
     environment = dict()
     tty = True
@@ -118,7 +112,6 @@ class ContainerConfigFactory(BaseFactory):
     )
 
     class Meta:
-        model = dict
         exclude = ['image_obj', 'salt_config']
 
 
