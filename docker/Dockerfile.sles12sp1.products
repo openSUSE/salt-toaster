@@ -4,7 +4,7 @@
 # VERSION               0
 
 FROM registry.mgr.suse.de/suma-3.0-salt-sle12sp1
-MAINTAINER Mihai Dincă: "mdinca@suse.com"
+MAINTAINER Mihai Dinca: "mdinca@suse.com"
 
 
 ADD . /root
