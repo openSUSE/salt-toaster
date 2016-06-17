@@ -2,6 +2,7 @@ import os
 import time
 from docker import Client
 from config import TIME_LIMIT
+from tests.factories import ImageFactory
 
 
 class TimeLimitReached(Exception):
@@ -26,21 +27,15 @@ def retry(func):
     return success
 
 
-def get_docker_build_params(version, flavor, path):
-    tag_pattern = 'registry.mgr.suse.de/toaster-{0}-{1}'
-    file_pattern = 'Dockerfile.{0}.{1}'
-    return dict(
-        tag=tag_pattern.format(version, flavor),
-        dockerfile=file_pattern.format(version, flavor),
-        pull=True,
-        decode=True,
-        forcerm=True
-        # nocache=True
-    )
-
-
 def build_docker_image(version, flavor):
     docker_client = Client(base_url='unix://var/run/docker.sock')
     path = os.getcwd() + '/docker/'
-    params = get_docker_build_params(version, flavor, path)
-    return docker_client.build(path=path, **params)
+    image = ImageFactory(docker_client=docker_client, path=path)
+    return docker_client.build(
+        path=image['path'],
+        tag=image['tag'],
+        dockerfile=image['dockerfile'],
+        pull=True,
+        decode=True,
+        forcerm=True
+    )

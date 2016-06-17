@@ -5,7 +5,6 @@ import factory
 import factory.fuzzy
 from docker import Client
 from models import ContainerModel, MasterModel, MinionModel
-from utils import get_docker_build_params
 
 
 class BaseFactory(factory.Factory):
@@ -25,24 +24,14 @@ class DockerClientFactory(factory.StubFactory):
 class ImageFactory(BaseFactory):
     version = os.environ.get('VERSION', 'sles12sp1')
     flavor = os.environ.get('FLAVOR', 'products')
-    params = factory.LazyAttribute(
-        lambda o: get_docker_build_params(o.version, o.flavor, o.path))
-    tag = factory.LazyAttribute(lambda o: o.params['tag'])
-    dockerfile = factory.LazyAttribute(lambda o: o.params['dockerfile'])
+    tag = factory.LazyAttribute(
+        lambda o: 'registry.mgr.suse.de/toaster-{0}-{1}'.format(o.version, o.flavor))
+    dockerfile = factory.LazyAttribute(
+        lambda o: 'Dockerfile.{0}.{1}'.format(o.version, o.flavor))
     path = factory.LazyAttribute(lambda o: os.getcwd() + '/docker/')
     docker_client = factory.LazyAttribute(
         lambda o: o.factory_parent.factory_parent.docker_client)
     path = os.getcwd() + '/docker/'
-    build_image = True
-
-    @classmethod
-    def build(cls, **kwargs):
-        obj = super(ImageFactory, cls).build(**kwargs)
-        if obj['build_image']:
-            output = obj['docker_client'].build(path=obj['path'], **obj['params'])
-            for item in output:
-                print item.values()[0]
-        return obj
 
 
 class SaltConfigFactory(BaseFactory):
