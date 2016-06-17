@@ -69,10 +69,6 @@ run_salt_unit_tests: salt_unit_tests lastchangelog
 
 run_salt_integration_tests: salt_integration_tests lastchangelog
 
-run_custom_integration_tests: custom_integration_tests lastchangelog
-
-run_tests: salt_unit_tests custom_integration_tests salt_integration_tests lastchangelog
-
 docker_shell :: build_image
 	docker run -p 4444:4444 -t -i $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) shell
 
@@ -84,6 +80,3 @@ docker_run_salt_unit_tests ::
 
 docker_run_salt_integration_tests ::
 	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) run_salt_integration_tests
-
-docker_run_tests ::
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) run_tests
