@@ -5,6 +5,3 @@ set -e
 zypper --non-interactive --gpg-auto-import-keys ref
 
 zypper -n in --no-recommends python-devel python-pytest
-
-# required for unit tests install with recommends
-zypper -n in quilt rpm-build
