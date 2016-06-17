@@ -1,5 +1,6 @@
 DEFAULT_REGISTRY      = registry.mgr.suse.de
 DEFAULT_VERSION       = sles12sp1
+DEFAULT_FLAVOR        = products
 TOASTER_MOUNTPOINT    = /salt-toaster
 ROOT_MOUNTPOINT       = /salt/src
 SALT_REPO_MOUNTPOINT  = $(ROOT_MOUNTPOINT)/salt-devel
@@ -17,6 +18,9 @@ ifndef DOCKER_IMAGE
 	endif
 	ifndef VERSION
 		VERSION = $(DEFAULT_VERSION)
+	endif
+	ifndef FLAVOR
+		FLAVOR = $(DEFAULT_FLAVOR)
 	endif
 	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)-$(FLAVOR)
 endif
