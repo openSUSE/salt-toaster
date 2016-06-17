@@ -125,4 +125,4 @@ def test_ping_proxyminion(master, minion_key_accepted, minion_config):
     def ping():
         return master.salt(minion_id, "test.ping")[minion_id] is True
 
-    assert retry(ping)
+    assert retry(ping) is True

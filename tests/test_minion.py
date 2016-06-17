@@ -39,7 +39,7 @@ def test_ping_minion(master, minion, minion_config):
     def ping():
         return master.salt(minion_id, "test.ping")[minion_id] is True
 
-    assert retry(ping)
+    assert retry(ping) is True
 
 
 def test_pkg_list(minion):
