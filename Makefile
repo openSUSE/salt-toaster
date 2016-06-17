@@ -75,8 +75,8 @@ docker_shell :: build_image
 docker_pull ::
 	docker pull $(DOCKER_IMAGE)
 
-docker_run_salt_unit_tests ::
+docker_run_salt_unit_tests :: build_image
 	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) run_salt_unit_tests
 
-docker_run_salt_integration_tests ::
+docker_run_salt_integration_tests :: build_image
 	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) run_salt_integration_tests
