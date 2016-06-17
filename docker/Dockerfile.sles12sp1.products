@@ -10,6 +10,6 @@ MAINTAINER Mihai Dincă: "mdinca@suse.com"
 ADD . /root
 
 RUN /root/sles12sp1/products/add_repositories.sh
-RUN /root/sles12sp1/products/add_packages.sh
+RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh
 RUN /root/bin/unpack_salt.sh

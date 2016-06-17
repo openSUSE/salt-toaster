@@ -10,5 +10,5 @@ MAINTAINER Mihai Dincă: "mdinca@suse.com"
 ADD . /root
 
 RUN /root/sles12/products/add_repositories.sh
-RUN /root/sles12/products/add_packages.sh
+RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh
