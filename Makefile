@@ -18,7 +18,7 @@ ifndef DOCKER_IMAGE
 	ifndef VERSION
 		VERSION = $(DEFAULT_VERSION)
 	endif
-	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)-upstream
+	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)-$(FLAVOR)
 endif
 
 
