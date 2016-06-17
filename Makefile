@@ -18,7 +18,7 @@ ifndef DOCKER_IMAGE
 	ifndef VERSION
 		VERSION = $(DEFAULT_VERSION)
 	endif
-	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)
+	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)-upstream
 endif
 
 
@@ -33,8 +33,11 @@ endif
 
 default: docker_shell
 
+build_image:
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m scripts.docker.build
+
 install_salt:
-	docker/bin/install_salt.sh
+	docker/bin/install_salt_upstream_testing.sh
 
 fixtures:
 	ln -s $(TOASTER_MOUNTPOINT)/conftest.py.source $(ROOT_MOUNTPOINT)/conftest.py
@@ -56,8 +59,8 @@ salt_unit_tests: setup
 salt_integration_tests: setup
 	py.test -c $(TOASTER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS)
 
-custom_integration_tests: setup
-	py.test tests/
+custom_integration_tests: build_image
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) py.test tests/
 
 lastchangelog:
 	docker/bin/lastchangelog salt 3
@@ -70,7 +73,7 @@ run_custom_integration_tests: custom_integration_tests lastchangelog
 
 run_tests: salt_unit_tests custom_integration_tests salt_integration_tests lastchangelog
 
-docker_shell ::
+docker_shell :: build_image
 	docker run -p 4444:4444 -t -i $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) shell
 
 docker_pull ::
@@ -81,9 +84,6 @@ docker_run_salt_unit_tests ::
 
 docker_run_salt_integration_tests ::
 	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) run_salt_integration_tests
-
-docker_run_custom_integration_tests ::
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) run_custom_integration_tests
 
 docker_run_tests ::
 	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) run_tests
