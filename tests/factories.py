@@ -15,7 +15,7 @@ class BaseFactory(factory.Factory):
 
 
 class ImageFactory(factory.StubFactory):
-    version = os.environ.get('VERSION', 'sles12sp')
+    version = os.environ.get('VERSION', 'sles12sp1')
     flavor = os.environ.get('FLAVOR', 'products')
     tag = factory.LazyAttribute(
         lambda o: 'registry.mgr.suse.de/toaster-{0}-{1}'.format(
