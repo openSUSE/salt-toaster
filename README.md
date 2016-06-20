@@ -30,15 +30,6 @@ make docker_shell VERSION=sles12sp1
 ```
 
 
-## Building containers
-
-```bash
-BASE=sle12sp1 make -f Makefile.build build
-Enter the new container's version number: 1.0.1
-```
-This would rebuild **toaster-sles12sp1** but you still have to tag and push accordingly.
-
-
 ## For development
 
 
