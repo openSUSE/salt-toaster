@@ -5,6 +5,9 @@ from faker import Faker
 from factories import ContainerFactory
 
 
+PROXY_PORT = 8000
+
+
 @pytest.fixture(scope="module")
 def minion_id():
     fake = Faker()
@@ -12,15 +15,10 @@ def minion_id():
 
 
 @pytest.fixture(scope="module")
-def proxy_config():
-    return {'port': 8000}
-
-
-@pytest.fixture(scope="module")
-def proxy_server(request, salt_root, docker_client, proxy_config):
+def proxy_server(request, salt_root, docker_client):
     fake = Faker()
     name = u'proxy_server_{0}_{1}'.format(fake.word(), fake.word())
-    command = 'python -m tests.scripts.proxy_server {0}'.format(proxy_config['port'])
+    command = 'python -m tests.scripts.proxy_server {0}'.format(PROXY_PORT)
     obj = ContainerFactory(
         docker_client=docker_client,
         config__command=command,
@@ -43,18 +41,14 @@ def proxy_server(request, salt_root, docker_client, proxy_config):
 
 
 @pytest.fixture(scope="module")
-def master_container_extras(minion_id, proxy_server, proxy_config):
+def master_container_extras(minion_id, proxy_server):
+    proxy_url = 'http://{0}:{1}'.format(proxy_server['ip'], PROXY_PORT)
     return dict(
         config__salt_config__id=minion_id,
         config__salt_config__pillar={
             'top': {'base': {minion_id: [minion_id]}},
             minion_id: {
-                'proxy': {
-                    'proxytype': 'rest_sample',
-                    'url': 'http://{0}:{1}'.format(
-                        proxy_server['ip'], proxy_config['port']
-                    )
-                }
+                'proxy': {'proxytype': 'rest_sample', 'url': proxy_url}
             }
         }
     )
