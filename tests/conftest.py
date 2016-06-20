@@ -44,12 +44,6 @@ def salt_master_config(file_root, pillar_root):
 
 
 @pytest.fixture(scope="module")
-def minion_config():
-    fake = Faker()
-    return {'id': u'{0}_{1}'.format(fake.word(), fake.word())}
-
-
-@pytest.fixture(scope="module")
 def salt_minion_config(master_container, salt_root, docker_client):
     return {
         'master': master_container['ip'],
@@ -76,7 +70,7 @@ def master_container(request, salt_root, salt_master_config, docker_client):
 
 
 @pytest.fixture(scope="module")
-def minion_container(request, salt_root, salt_minion_config, docker_client, minion_config):
+def minion_container(request, salt_root, salt_minion_config, docker_client):
     fake = Faker()
     obj = ContainerFactory(
         config__name='minion_{0}_{1}'.format(fake.word(), fake.word()),
@@ -85,8 +79,7 @@ def minion_container(request, salt_root, salt_minion_config, docker_client, mini
         config__salt_config__conf_type='minion',
         config__salt_config__config={
             'base_config': salt_minion_config
-        },
-        config__salt_config__post__id=minion_config['id']
+        }
     )
     request.addfinalizer(
         lambda: obj['docker_client'].remove_container(
@@ -100,28 +93,25 @@ def master(request, master_container):
 
 
 @pytest.fixture(scope="module")
-def minion(request, minion_container, minion_config):
+def minion(request, minion_container):
     out = MinionFactory(container=minion_container)
-    out.setdefault('id', minion_config['id'])
     return out
 
 
 @pytest.fixture(scope='module')
-def minion_key_cached(master, minion, minion_config):
-    minion_id = minion_config['id']
+def minion_key_cached(master, minion):
 
     def cache():
-        return minion_id in master.salt_key(minion_id)['minions_pre']
+        return minion['id'] in master.salt_key(minion['id'])['minions_pre']
 
     assert retry(cache) is True
 
 
 @pytest.fixture(scope='module')
-def minion_key_accepted(master, minion, minion_key_cached, minion_config):
-    minion_id = minion_config['id']
-    master.salt_key_accept(minion_id)
+def minion_key_accepted(master, minion, minion_key_cached):
+    master.salt_key_accept(minion['id'])
 
     def accept():
-        return minion_id in master.salt_key()['minions']
+        return minion['id'] in master.salt_key()['minions']
 
     assert retry(accept) is True

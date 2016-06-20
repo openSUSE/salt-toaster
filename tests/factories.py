@@ -42,12 +42,10 @@ class SaltConfigFactory(BaseFactory):
     config = {}
     pillar = {}
     docker_client = None
-    id = None
+    id = factory.fuzzy.FuzzyText(length=5, prefix='id_', chars=string.ascii_letters)
 
     @factory.post_generation
     def post(obj, create, extracted, **kwargs):
-        assert kwargs['id']
-        obj['id'] = kwargs['id']
         config_file = obj['root'] / obj['conf_type']
         main_config = {
             'include': '{0}.d/*'.format(obj['conf_type'])
@@ -100,9 +98,6 @@ class ContainerConfigFactory(BaseFactory):
         )
     )
 
-    class Meta:
-        exclude = ['image_obj', 'salt_config']
-
 
 class ContainerFactory(BaseFactory):
 
@@ -116,7 +111,12 @@ class ContainerFactory(BaseFactory):
     @classmethod
     def build(cls, **kwargs):
         obj = super(ContainerFactory, cls).build(**kwargs)
-        obj['docker_client'].create_container(**obj['config'])
+        obj['docker_client'].create_container(
+            **{
+                k: obj['config'][k] for k in obj['config'].keys()
+                if k not in ['salt_config', 'image_obj']
+            }
+        )
         obj['docker_client'].start(obj['config']['name'])
         data = obj['docker_client'].inspect_container(obj['config']['name'])
         obj['ip'] = data['NetworkSettings']['IPAddress']
@@ -151,6 +151,7 @@ class MinionFactory(BaseFactory):
         config__name=factory.fuzzy.FuzzyText(
             length=5, prefix='minion_', chars=string.ascii_letters)
     )
+    id = factory.LazyAttribute(lambda o: o.container['config']['salt_config']['id'])
     cmd = 'salt-minion -d -l debug'
 
     class Meta:
