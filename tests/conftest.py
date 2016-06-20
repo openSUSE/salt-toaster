@@ -44,6 +44,12 @@ def salt_master_config(file_root, pillar_root):
 
 
 @pytest.fixture(scope="module")
+def minion_config():
+    fake = Faker()
+    return {'id': u'{0}_{1}'.format(fake.word(), fake.word())}
+
+
+@pytest.fixture(scope="module")
 def salt_minion_config(master_container, salt_root, docker_client):
     return {
         'master': master_container['ip'],
@@ -94,8 +100,10 @@ def master(request, master_container):
 
 
 @pytest.fixture(scope="module")
-def minion(request, minion_container):
-    return MinionFactory(container=minion_container)
+def minion(request, minion_container, minion_config):
+    out = MinionFactory(container=minion_container)
+    out.setdefault('id', minion_config['id'])
+    return out
 
 
 @pytest.fixture(scope='module')

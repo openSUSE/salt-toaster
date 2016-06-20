@@ -1,5 +1,4 @@
 import pytest
-from faker import Faker
 from functools import partial
 from utils import retry
 
@@ -27,19 +26,12 @@ def minor_non_0_required(info):
         pytest.skip("incompatible with this minor version")
 
 
-@pytest.fixture(scope="module")
-def minion_config():
-    fake = Faker()
-    return {'id': u'{0}_{1}'.format(fake.word(), fake.word())}
-
-
-def test_ping_minion(master, minion, minion_config):
-    minion_id = minion_config['id']
+def test_ping_minion(master, minion):
 
     def ping():
-        return master.salt(minion_id, "test.ping")[minion_id] is True
+        return master.salt(minion['id'], "test.ping")[minion['id']]
 
-    assert retry(ping) is True
+    assert retry(ping)
 
 
 def test_pkg_list(minion):
