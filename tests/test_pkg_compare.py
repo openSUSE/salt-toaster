@@ -1,6 +1,5 @@
 import json
 import pytest
-from faker import Faker
 
 
 pytestmark = pytest.mark.usefixtures("master", "minion", "minion_key_accepted")
@@ -27,12 +26,6 @@ def pytest_generate_tests(metafunc):
         ['1:0.2-1', '0.2-1', '1'],
     ] + PRE_SLE12 + POST_SLE12
     metafunc.parametrize("params", VERSIONS)
-
-
-@pytest.fixture(scope="module")
-def minion_config():
-    fake = Faker()
-    return {'id': u'{0}_{1}'.format(fake.word(), fake.word())}
 
 
 def check_params(major, params):

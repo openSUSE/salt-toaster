@@ -52,7 +52,12 @@ def salt_minion_config(master_container, salt_root, docker_client):
 
 
 @pytest.fixture(scope="module")
-def master_container(request, salt_root, salt_master_config, docker_client):
+def master_container_extras():
+    return dict()
+
+
+@pytest.fixture(scope="module")
+def master_container(request, salt_root, master_container_extras, salt_master_config, docker_client):
     fake = Faker()
     obj = ContainerFactory(
         config__name='master_{0}_{1}'.format(fake.word(), fake.word()),
@@ -60,7 +65,8 @@ def master_container(request, salt_root, salt_master_config, docker_client):
         docker_client=docker_client,
         config__salt_config__conf_type='master',
         config__salt_config__config=salt_master_config,
-        config__salt_config__post__id='{0}_{1}'.format(fake.word(), fake.word())
+        config__salt_config__post__id='{0}_{1}'.format(fake.word(), fake.word()),
+        **master_container_extras
     )
     request.addfinalizer(
         lambda: obj['docker_client'].remove_container(
@@ -70,7 +76,12 @@ def master_container(request, salt_root, salt_master_config, docker_client):
 
 
 @pytest.fixture(scope="module")
-def minion_container(request, salt_root, salt_minion_config, docker_client):
+def minion_container_extras():
+    return dict()
+
+
+@pytest.fixture(scope="module")
+def minion_container(request, salt_root, minion_container_extras, salt_minion_config, docker_client):
     fake = Faker()
     obj = ContainerFactory(
         config__name='minion_{0}_{1}'.format(fake.word(), fake.word()),
@@ -79,7 +90,8 @@ def minion_container(request, salt_root, salt_minion_config, docker_client):
         config__salt_config__conf_type='minion',
         config__salt_config__config={
             'base_config': salt_minion_config
-        }
+        },
+        **minion_container_extras
     )
     request.addfinalizer(
         lambda: obj['docker_client'].remove_container(
