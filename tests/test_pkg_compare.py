@@ -1,8 +1,21 @@
+import json
 import pytest
-from utils import get_suse_release
+from faker import Faker
 
 
-pytestmark = pytest.mark.usefixtures("master", "minion_ready")
+pytestmark = pytest.mark.usefixtures("master", "minion", "minion_key_accepted")
+
+
+PRE_SLE12 = [
+    ['0.2-1', '0.2~beta1-1', '-1'],
+    ['0.2~beta2-1', '0.2-1', '1']
+]
+
+
+POST_SLE12 = [
+    ['0.2-1', '0.2~beta1-1', '1'],
+    ['0.2~beta2-1', '0.2-1', '-1']
+]
 
 
 def pytest_generate_tests(metafunc):
@@ -11,24 +24,35 @@ def pytest_generate_tests(metafunc):
         ['0.2-1.0', '0.2-1', '1'],
         ['0.2.0-1', '0.2-1', '1'],
         ['0.2-1', '1:0.2-1', '-1'],
-        ['1:0.2-1', '0.2-1', '1']
-    ]
+        ['1:0.2-1', '0.2-1', '1'],
+    ] + PRE_SLE12 + POST_SLE12
+    metafunc.parametrize("params", VERSIONS)
 
-    PRE_SLE12 = [
-        ['0.2-1', '0.2~beta1-1', '-1'],
-        ['0.2~beta2-1', '0.2-1', '1']
-    ]
 
-    POST_SLE12 = [
-        ['0.2-1', '0.2~beta1-1', '1'],
-        ['0.2~beta2-1', '0.2-1', '-1']
-    ]
-    info = get_suse_release()
+@pytest.fixture(scope="module")
+def minion_config():
+    fake = Faker()
+    return {'id': u'{0}_{1}'.format(fake.word(), fake.word())}
+
+
+def check_params(major, params):
+    if (
+        (major >= 12 and params in PRE_SLE12) or
+        (major < 12 and params in POST_SLE12)
+    ):
+        pytest.skip("not for this version")
+
+
+def test_pkg_compare(params, minion):
+    info = minion['container'].get_suse_release()
     major, minor = info['VERSION'], info['PATCHLEVEL']
-    metafunc.parametrize(
-        "ver1,ver2,expected",
-        VERSIONS + POST_SLE12 if major >= 12 else VERSIONS + PRE_SLE12
-    )
 
-def test_pkg_compare(ver1, ver2, expected, caller_client):
-    assert caller_client.cmd('pkg.version_cmp', ver1, ver2) == int(expected)
+    check_params(major, params)
+
+    [ver1, ver2, expected] = params
+
+    command = "salt-call pkg.version_cmp {0} --output=json -l quiet".format(
+        ' '.join([ver1, ver2])
+    )
+    raw = minion['container'].run(command)
+    assert json.loads(raw)['local'] == int(expected)

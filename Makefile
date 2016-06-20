@@ -1,5 +1,6 @@
 DEFAULT_REGISTRY      = registry.mgr.suse.de
 DEFAULT_VERSION       = sles12sp1
+DEFAULT_FLAVOR        = products
 TOASTER_MOUNTPOINT    = /salt-toaster
 ROOT_MOUNTPOINT       = /salt/src
 SALT_REPO_MOUNTPOINT  = $(ROOT_MOUNTPOINT)/salt-devel
@@ -18,7 +19,10 @@ ifndef DOCKER_IMAGE
 	ifndef VERSION
 		VERSION = $(DEFAULT_VERSION)
 	endif
-	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)
+	ifndef FLAVOR
+		FLAVOR = $(DEFAULT_FLAVOR)
+	endif
+	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)-$(FLAVOR)
 endif
 
 
@@ -33,16 +37,25 @@ endif
 
 default: docker_shell
 
+build_image:
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m scripts.docker.build
+
 install_salt:
-	bin/install_salt.sh
+	docker/bin/install_salt_upstream_testing.sh
 
 fixtures:
-	ln -s $(TOASTER_MOUNTPOINT)/conftest.py $(ROOT_MOUNTPOINT)
+	ln -s $(TOASTER_MOUNTPOINT)/conftest.py.source $(ROOT_MOUNTPOINT)/conftest.py
 
 setup: install_salt fixtures
 
 shell: setup
 	/bin/bash
+
+salt_master: install_salt
+	salt-master -l debug
+
+salt_minion: install_salt
+	salt-minion -l debug
 
 salt_unit_tests: setup
 	py.test -c $(TOASTER_MOUNTPOINT)/unittests.cfg $(SALT_TESTS)
@@ -50,34 +63,24 @@ salt_unit_tests: setup
 salt_integration_tests: setup
 	py.test -c $(TOASTER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS)
 
-custom_integration_tests: setup
-	py.test tests/
+custom_integration_tests: build_image
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) py.test tests/
 
 lastchangelog:
-	bin/lastchangelog salt 3
+	docker/bin/lastchangelog salt 3
 
 run_salt_unit_tests: salt_unit_tests lastchangelog
 
 run_salt_integration_tests: salt_integration_tests lastchangelog
 
-run_custom_integration_tests: custom_integration_tests lastchangelog
-
-run_tests: salt_unit_tests custom_integration_tests salt_integration_tests lastchangelog
-
-docker_shell ::
+docker_shell :: build_image
 	docker run -p 4444:4444 -t -i $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) shell
 
 docker_pull ::
 	docker pull $(DOCKER_IMAGE)
 
-docker_run_salt_unit_tests ::
+docker_run_salt_unit_tests :: build_image
 	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) run_salt_unit_tests
 
-docker_run_salt_integration_tests ::
+docker_run_salt_integration_tests :: build_image
 	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) run_salt_integration_tests
-
-docker_run_custom_integration_tests ::
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) run_custom_integration_tests
-
-docker_run_tests ::
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) run_tests
