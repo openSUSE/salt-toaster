@@ -37,7 +37,7 @@ endif
 default: docker_shell
 
 build_image:
-	VERSION=$(VERSION) FLAVOR=$(FLAVOR) python -m build
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) python -m build --nocache
 
 install_salt:
 	bin/install_salt.sh

@@ -3,13 +3,24 @@
 # NAME                  toaster-sles12-products
 # VERSION               0
 
-FROM registry.mgr.suse.de/suma-3.0-salt-sle12
+FROM suma-docker-registry.mgr.suse.de/sles12
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
 
 
 ADD . /root
 
-# Use your credentials for the 'nu.novell' domain within the URL, in case required
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SERVER/12/x86_64/product/ "SLES 12 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SERVER/12/x86_64/update/ "SLES 12 Updates"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SDK/12/x86_64/product/ "SLE-SDK 12 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SDK/12/x86_64/update/ "SLE-SDK 12 Updates"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Module-Public-Cloud/12/x86_64/product/ "SLE-Module-Public-Cloud 12 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Module-Public-Cloud/12/x86_64/update/ "SLE-Module-Public-Cloud 12 Updates"
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/SLE_12/ "testpackages"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Manager-Tools/12/x86_64/product/ "tools_product"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Manager-Tools/12/x86_64/update/ "tools_update"
+
 RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products/SLE_12/ "salt"
+RUN zypper mr -p 1 salt
+
 RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh
