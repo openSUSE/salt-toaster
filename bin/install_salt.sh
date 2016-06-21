@@ -9,5 +9,5 @@ if [ $DEVEL == "true" ]
         zypper --non-interactive source-install -D salt
         zypper --non-interactive in --oldpackage test-package=42:0.0
         zypper --non-interactive up zypper libzypp
-        docker/bin/unpack_salt.sh
+        bin/unpack_salt.sh
 fi

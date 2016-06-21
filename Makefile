@@ -34,14 +34,13 @@ else
 endif
 
 
-
 default: docker_shell
 
 build_image:
-	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m scripts.docker.build
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) python -m build
 
 install_salt:
-	docker/bin/install_salt_upstream_testing.sh
+	bin/install_salt.sh
 
 fixtures:
 	ln -s $(TOASTER_MOUNTPOINT)/conftest.py.source $(ROOT_MOUNTPOINT)/conftest.py

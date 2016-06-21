@@ -79,24 +79,29 @@ class ContainerConfigFactory(BaseFactory):
     stdin_open = True
     working_dir = "/salt-toaster/"
     ports = [4000, 4506]
-    volumes = factory.LazyAttribute(
-        lambda obj: [obj.salt_config['root'].strpath, os.getcwd()]
-    )
-    host_config = factory.LazyAttribute(
-        lambda obj: obj.factory_parent.docker_client.create_host_config(
+
+    @factory.lazy_attribute
+    def volumes(self):
+        volumes = [self.salt_config['root'].strpath, os.getcwd()]
+        return volumes
+
+    @factory.lazy_attribute
+    def host_config(self):
+        params = dict(
             port_bindings={},
             binds={
-                obj.salt_config['root'].strpath: {
+                self.salt_config['root'].strpath: {
                     'bind': '/etc/salt/',
                     'mode': 'rw',
                 },
                 os.getcwd(): {
                     'bind': "/salt-toaster/",
-                    'mode': 'rw'
+                    'mode': 'ro'
                 }
             }
         )
-    )
+
+        return self.image_obj['docker_client'].create_host_config(**params)
 
 
 class ContainerFactory(BaseFactory):
@@ -118,6 +123,7 @@ class ContainerFactory(BaseFactory):
             }
         )
         obj['docker_client'].start(obj['config']['name'])
+
         data = obj['docker_client'].inspect_container(obj['config']['name'])
         obj['ip'] = data['NetworkSettings']['IPAddress']
         return obj

@@ -1,6 +1,7 @@
 import os
 import time
 from docker import Client
+
 from config import TIME_LIMIT
 from tests.factories import ImageFactory
 
@@ -27,7 +28,7 @@ def retry(func):
     return success
 
 
-def build_docker_image():
+def build_docker_image(nocache=False):
     docker_client = Client(base_url='unix://var/run/docker.sock')
     path = os.getcwd() + '/docker/'
     image = ImageFactory(docker_client=docker_client, path=path)
@@ -37,5 +38,6 @@ def build_docker_image():
         dockerfile=image['dockerfile'],
         pull=True,
         decode=True,
-        forcerm=True
+        forcerm=True,
+        nocache=nocache
     )
