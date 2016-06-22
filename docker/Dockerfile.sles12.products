@@ -16,11 +16,12 @@ RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SDK/12/x86_64/update/ "SL
 RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Module-Public-Cloud/12/x86_64/product/ "SLE-Module-Public-Cloud 12 Pool"
 RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Module-Public-Cloud/12/x86_64/update/ "SLE-Module-Public-Cloud 12 Updates"
 RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/SLE_12/ "testpackages"
-RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Manager-Tools/12/x86_64/product/ "tools_product"
-RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Manager-Tools/12/x86_64/update/ "tools_update"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Manager-Tools/12/x86_64/product/ "SLE-Manager-Tools 12 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Manager-Tools/12/x86_64/update/ "SLE-Manager-Tools 12 Updates"
 
 RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products/SLE_12/ "salt"
 RUN zypper mr -p 1 salt
+RUN zypper install -t pattern devel_basis
 
 RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh
