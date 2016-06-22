@@ -3,7 +3,7 @@
 # NAME                  toaster-sles12-products
 # VERSION               0
 
-FROM suma-docker-registry.mgr.suse.de/sles12
+FROM registry.mgr.suse.de/sles12
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
 
 
