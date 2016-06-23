@@ -1,4 +1,4 @@
-if [ $DEVEL == "true" ]
+if [ "$DEVEL" == "true" ]
     then
         docker/bin/prepare_devel.sh
         pip install -e $SALT_REPO_MOUNTPOINT
