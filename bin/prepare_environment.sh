@@ -46,7 +46,15 @@ function check_requirements() {
 }
 
 function create_virtual_env() {
-    echo "hello"
+    virtualenv --system-site-packages $1
+    source $1/bin/activate
+    pip install -r requirements.txt
 }
 
-check_requirements
+if [ -z $1 ]; then
+    echo -e "Usage:\n"
+    echo -e "\tprepare_environment /path/to/environment"
+else
+    check_requirements
+    create_virtual_env $1
+fi
