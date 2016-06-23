@@ -13,7 +13,7 @@ function check_requirements() {
 	cmd_pth=$(which $cmd 2>/dev/null)
 	if [ -z "$cmd_pth" ]; then
 	    echo "Error: command '$cmd' is missing"
-	    exit;
+	    exit 1;
 	fi
     done
 
@@ -29,12 +29,19 @@ function check_requirements() {
 	if [ -z "$pkg_name" ]; then
 	    echo "Error: Development stack needs to be installed"
 	    echo "       python dev, gcc, make etc"
-	    exit;
+	    exit 1;
 	fi
     done
 
     if [ -z "$(ps uax | grep docker | grep daemon)" ]; then
 	echo "Error: Docker daemon should run"
+	exit 1;
+    fi
+
+    python -c "import docker" 2>/dev/null
+    if [ $? -ne 0 ]; then
+	echo "Error: Python docker bindings needs to be installed."
+	exit 1;
     fi
 }
 
