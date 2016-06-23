@@ -9,7 +9,7 @@
 # Check if all required commands are in place.
 #
 function check_requirements() {
-    for cmd in "virtualenv" "python" "pip"; do
+    for cmd in "virtualenv" "python" "pip" "docker"; do
 	cmd_pth=$(which $cmd 2>/dev/null)
 	if [ -z "$cmd_pth" ]; then
 	    echo "Error: command '$cmd' is missing"
@@ -32,6 +32,10 @@ function check_requirements() {
 	    exit;
 	fi
     done
+
+    if [ -z "$(ps uax | grep docker | grep daemon)" ]; then
+	echo "Error: Docker daemon should run"
+    fi
 }
 
 function create_virtual_env() {
