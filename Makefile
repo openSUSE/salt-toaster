@@ -72,7 +72,7 @@ salt_unit_tests: setup
 salt_integration: setup
 	py.test -c $(TOASTER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS)
 
-custom_integration_tests: build_image
+custom_integration: build_image
 	VERSION=$(VERSION) FLAVOR=$(FLAVOR) py.test tests/
 
 changelog:
