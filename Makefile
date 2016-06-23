@@ -33,8 +33,16 @@ else
 	DEVEL = false
 endif
 
+help:
+	@echo "Salt Toaster: an ultimate test suite for Salt.\n\nCommands:"
+	@echo "\tdocker_shell\t\tStart Docker shell."
+	@echo "\tbuild_image\t\tBuild Docker image."
+	@echo "\tsalt_integration\tRun Salt integration tests"
+	@echo "\tcustom_integration\tRun custom integration tests"
+	@echo "\tchangelog\t\tShow the last three change log entries"
+	@echo ""
 
-default: docker_shell
+default: help
 
 build_image:
 	VERSION=$(VERSION) FLAVOR=$(FLAVOR) python -m build --nocache
@@ -59,18 +67,18 @@ salt_minion: install_salt
 salt_unit_tests: setup
 	py.test -c $(TOASTER_MOUNTPOINT)/unittests.cfg $(SALT_TESTS)
 
-salt_integration_tests: setup
+salt_integration: setup
 	py.test -c $(TOASTER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS)
 
-custom_integration_tests: build_image
+custom_integration: build_image
 	VERSION=$(VERSION) FLAVOR=$(FLAVOR) py.test tests/
 
-lastchangelog:
+changelog:
 	docker/bin/lastchangelog salt 3
 
-run_salt_unit_tests: salt_unit_tests lastchangelog
+run_salt_unit_tests: salt_unit_tests changelog
 
-run_salt_integration_tests: salt_integration_tests lastchangelog
+run_salt_integration_tests: salt_integration changelog
 
 docker_shell :: build_image
 	docker run -p 4444:4444 -t -i $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) shell
