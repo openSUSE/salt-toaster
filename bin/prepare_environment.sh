@@ -52,9 +52,17 @@ function create_virtual_env() {
 }
 
 if [ -z $1 ]; then
-    echo -e "Usage:\n"
-    echo -e "\tprepare_environment /path/to/environment"
+    echo -e "Usage: prepare_environment --create /path/to/environment"
+    echo -e "       prepare_environment --destroy /path/to/environment"
 else
     check_requirements
-    create_virtual_env $1
+    if [ "$1" == "--create" ]; then
+	if [ -z $2 ]; then
+	    echo "Error: path to the environment?"
+	    exit 1;
+	fi
+	create_virtual_env $2
+    elif [ "$1" == "--destroy" ]; then
+	rm -rf $2 2>/dev/null
+    fi
 fi
