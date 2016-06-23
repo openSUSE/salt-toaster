@@ -51,18 +51,25 @@ function create_virtual_env() {
     pip install -r requirements.txt
 }
 
-if [ -z $1 ]; then
+function usage() {
     echo -e "Usage: prepare_environment --create /path/to/environment"
     echo -e "       prepare_environment --destroy /path/to/environment"
+    exit 1;
+}
+
+if [ -z $1 ]; then
+    usage
 else
     check_requirements
     if [ "$1" == "--create" ]; then
 	if [ -z $2 ]; then
 	    echo "Error: path to the environment?"
-	    exit 1;
+	    usage;
 	fi
 	create_virtual_env $2
     elif [ "$1" == "--destroy" ]; then
 	rm -rf $2 2>/dev/null
+    else
+	usage
     fi
 fi
