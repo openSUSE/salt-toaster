@@ -37,14 +37,18 @@ help:
 	@echo "Salt Toaster: an ultimate test suite for Salt."
 	@echo
 	@echo "Commands:"
-	@echo "  docker_shell         Start Docker shell."
-	@echo "  build_image          Build Docker image."
+	@echo "  set_env              Create environment"
+	@echo "  docker_shell         Start Docker shell"
+	@echo "  build_image          Build Docker image"
 	@echo "  salt_integration     Run Salt integration tests"
 	@echo "  custom_integration   Run custom integration tests"
 	@echo "  changelog            Show the last three change log entries"
 	@echo ""
 
 default: help
+
+set_env:
+	bin/prepare_environment.sh --create sandbox
 
 build_image:
 	VERSION=$(VERSION) FLAVOR=$(FLAVOR) python -m build --nocache
