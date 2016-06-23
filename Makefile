@@ -34,12 +34,14 @@ else
 endif
 
 help:
-	@echo "Salt Toaster: an ultimate test suite for Salt.\n\nCommands:"
-	@echo "\tdocker_shell\t\tStart Docker shell."
-	@echo "\tbuild_image\t\tBuild Docker image."
-	@echo "\tsalt_integration\tRun Salt integration tests"
-	@echo "\tcustom_integration\tRun custom integration tests"
-	@echo "\tchangelog\t\tShow the last three change log entries"
+	@echo "Salt Toaster: an ultimate test suite for Salt."
+	@echo
+	@echo "Commands:"
+	@echo "  docker_shell         Start Docker shell."
+	@echo "  build_image          Build Docker image."
+	@echo "  salt_integration     Run Salt integration tests"
+	@echo "  custom_integration   Run custom integration tests"
+	@echo "  changelog            Show the last three change log entries"
 	@echo ""
 
 default: help
