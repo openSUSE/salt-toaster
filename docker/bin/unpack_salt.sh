@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 export SALT_SOURCES="/salt"
 
 #

@@ -1,17 +1,26 @@
 # Container used to run salt tests focusing on SUSE Manager use cases
 #
-# NAME                  toaster-sles12sp1-products
+# NAME                  toaster-sles12sp1-testing
 # VERSION               0
-
-FROM registry.mgr.suse.de/suma-3.0-salt-sle12sp1
+FROM registry.mgr.suse.de/sles12sp1
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
-
-
 ADD . /root
 
-# Use your credentials for the 'nu.novell' domain within the URL, in case required
-RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products/SLE_12_SP1/ "salt"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SERVER/12-SP1/x86_64/product/ "SLES 12 SP1 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SERVER/12-SP1/x86_64/update/ "SLES 12 SP1 Updates"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SDK/12-SP1/x86_64/product/ "SLE-SDK 12 SP1 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SDK/12-SP1/x86_64/update/ "SLE-SDK 12 SP1 Updates"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Module-Public-Cloud/12/x86_64/product/ "SLE-Module-Public-Cloud 12 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Module-Public-Cloud/12/x86_64/update/ "SLE-Module-Public-Cloud 12 Updates"
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/SLE_12/ "testpackages"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Manager-Tools/12/x86_64/product/ "SLE-Manager-Tools 12 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Manager-Tools/12/x86_64/update/ "SLE-Manager-Tools 12 Updates"
+
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing/SLE_12_SP1/ "salt"
 RUN zypper mr -p 1 salt
+
+RUN zypper --non-interactive --gpg-auto-import-keys ref
+RUN zypper -n install -t pattern Basis-Devel
 
 RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh
