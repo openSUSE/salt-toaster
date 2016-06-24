@@ -21,7 +21,9 @@ RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Manager-Tools/12/x86_64/u
 
 RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products/SLE_12/ "salt"
 RUN zypper mr -p 1 salt
-RUN zypper -n install -t pattern devel_basis
+
+RUN zypper --non-interactive --gpg-auto-import-keys ref
+RUN zypper -n install -t pattern Basis-Devel
 
 RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh
