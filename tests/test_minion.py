@@ -157,7 +157,8 @@ def test_zypper_pkg_list_patterns(minion):
 
 def test_zypper_pkg_search(minion):
     res = minion.salt_call('pkg.search', 'test-package')
-    assert res['test-package-zypper']['summary'] == u"Test package for Salt's pkg.latest"
+    expected = u"Test package for Salt's pkg.info_installed/pkg.latest"
+    assert res['test-package-zypper']['summary'] == expected
 
 
 def test_zypper_pkg_download(minion):
