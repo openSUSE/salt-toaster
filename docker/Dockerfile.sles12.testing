@@ -23,7 +23,7 @@ RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/sa
 RUN zypper mr -p 1 salt
 
 RUN zypper --non-interactive --gpg-auto-import-keys ref
-RUN zypper -n install -t pattern devel_basis
+RUN zypper -n install -t pattern Basis-Devel
 
 RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh
