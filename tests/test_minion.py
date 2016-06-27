@@ -1,3 +1,4 @@
+import re
 import pytest
 from functools import partial
 from utils import retry
@@ -157,8 +158,9 @@ def test_zypper_pkg_list_patterns(minion):
 
 def test_zypper_pkg_search(minion):
     res = minion.salt_call('pkg.search', 'test-package')
-    expected = u"Test package for Salt's pkg.info_installed/pkg.latest"
-    assert res['test-package-zypper']['summary'] == expected
+    assert re.match(
+        "Test package for Salt's (pkg.info_installed\/)*pkg.latest",
+        res['test-package-zypper']['summary'])
 
 
 def test_zypper_pkg_download(minion):
