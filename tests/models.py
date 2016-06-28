@@ -1,5 +1,4 @@
 import re
-import os
 import json
 
 
@@ -56,4 +55,9 @@ class MinionModel(dict):
         docker_command = "salt-call {0} {1} --output=json -l quiet".format(
             salt_command, ' '.join(args)
         )
-        return json.loads(self['container'].run(docker_command))['local']
+        raw = self['container'].run(docker_command)
+        try:
+            out = json.loads(raw)
+        except ValueError:
+            raise Exception(raw)
+        return out['local']
