@@ -10,7 +10,7 @@ def main():
     content = ''
     stream = build_docker_image(nocache=args.nocache)
     for item in stream:
-        buff = item.get('stream', item.get('status'))
+        buff = item.get('stream', item.get('status', ''))
 
         if not content or re.search('.+\[[. ]*$', content):
             content += buff
