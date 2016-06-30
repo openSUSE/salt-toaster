@@ -4,4 +4,4 @@ fake-factory==0.5.7
 pycrypto==2.6.1
 pytest==2.9.2
 PyYAML==3.11
--e git+https://github.com/dincamihai/pytest-salt-containers.git#egg=EggName
+pytest-salt-containers
