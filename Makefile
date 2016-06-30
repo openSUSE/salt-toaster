@@ -34,15 +34,21 @@ else
 endif
 
 help:
-	@echo "Salt Toaster: an ultimate test suite for Salt.\n\nCommands:"
-	@echo "\tdocker_shell\t\tStart Docker shell."
-	@echo "\tbuild_image\t\tBuild Docker image."
-	@echo "\tsalt_integration\tRun Salt integration tests"
-	@echo "\tcustom_integration\tRun custom integration tests"
-	@echo "\tchangelog\t\tShow the last three change log entries"
+	@echo "Salt Toaster: an ultimate test suite for Salt."
+	@echo
+	@echo "Commands:"
+	@echo "  set_env              Create environment"
+	@echo "  docker_shell         Start Docker shell"
+	@echo "  build_image          Build Docker image"
+	@echo "  salt_integration     Run Salt integration tests"
+	@echo "  custom_integration   Run custom integration tests"
+	@echo "  changelog            Show the last three change log entries"
 	@echo ""
 
 default: help
+
+set_env:
+	bin/prepare_environment.sh --create sandbox
 
 build_image:
 	VERSION=$(VERSION) FLAVOR=$(FLAVOR) python -m build --nocache
@@ -70,7 +76,7 @@ salt_unit_tests: setup
 salt_integration: setup
 	py.test -c $(TOASTER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS)
 
-custom_integration_tests: build_image
+custom_integration: build_image
 	VERSION=$(VERSION) FLAVOR=$(FLAVOR) py.test tests/
 
 changelog:
