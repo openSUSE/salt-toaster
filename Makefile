@@ -51,7 +51,7 @@ set_env:
 	bin/prepare_environment.sh --create sandbox
 
 build_image:
-	VERSION=$(VERSION) FLAVOR=$(FLAVOR) python -m build --nocache
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build --nocache
 
 install_salt:
 	bin/install_salt.sh
@@ -77,7 +77,7 @@ salt_integration: setup
 	py.test -c $(TOASTER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS)
 
 custom_integration: build_image
-	VERSION=$(VERSION) FLAVOR=$(FLAVOR) py.test tests/
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/py.test tests/
 
 changelog:
 	docker/bin/lastchangelog salt 3
