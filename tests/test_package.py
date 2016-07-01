@@ -5,7 +5,7 @@ from functools import partial
 from config import WHEEL_CONFIG
 import pytest
 from faker import Faker
-from factories import ContainerFactory
+from saltcontainers.factories import ContainerFactory
 
 
 @pytest.fixture(scope="module")

@@ -2,7 +2,7 @@ import os
 import pytest
 from utils import retry
 from faker import Faker
-from factories import ContainerFactory
+from saltcontainers.factories import ContainerFactory
 
 
 PROXY_PORT = 8000

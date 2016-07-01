@@ -3,7 +3,7 @@ import time
 from docker import Client
 
 from config import TIME_LIMIT
-from tests.factories import ImageFactory
+from saltcontainers.factories import ImageFactory
 
 
 class TimeLimitReached(Exception):
