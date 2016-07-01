@@ -11,13 +11,13 @@ from saltcontainers.factories import ContainerFactory
 @pytest.fixture(scope="module")
 def container(request, docker_client):
     obj = ContainerFactory(
-        docker_client=docker_client,
+        config__docker_client=docker_client,
         config__salt_config=None,
         config__volumes=None,
         config__host_config=None
     )
     request.addfinalizer(
-        lambda: obj['docker_client'].remove_container(
+        lambda: docker_client.remove_container(
             obj['config']['name'], force=True)
     )
     return obj
@@ -67,14 +67,14 @@ def master_container(request, salt_root, salt_master_config, docker_client):
     obj = ContainerFactory(
         config__name='master_{0}_{1}'.format(fake.word(), fake.word()),
         config__salt_config__tmpdir=salt_root,
-        docker_client=docker_client,
+        config__docker_client=docker_client,
         config__salt_config__conf_type='master',
         config__salt_config__config=salt_master_config,
         config__salt_config__post__id='{0}_{1}'.format(fake.word(), fake.word()),
         config__environment=dict(PYTHONPATH='/salt-toaster')
     )
     request.addfinalizer(
-        lambda: obj['docker_client'].remove_container(
+        lambda: docker_client.remove_container(
             obj['config']['name'], force=True)
     )
     return obj

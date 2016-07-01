@@ -75,7 +75,7 @@ def test_zypper_pkg_list_products_with_OEM_release(request, minion):
     filepath = suse_register + '/OEM/sles'
     minion['container'].run('mkdir -p {0}'.format(suse_register + '/OEM'))
     with open('tests/oem_sles.tar', 'rb') as f:
-        minion['container']['docker_client'].put_archive(
+        minion['container']['config']['docker_client'].put_archive(
             minion['container']['config']['name'],
             suse_register + '/OEM',
             f.read()
