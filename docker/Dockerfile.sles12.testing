@@ -24,5 +24,7 @@ RUN zypper mr -p 1 salt
 
 RUN zypper --non-interactive --gpg-auto-import-keys ref
 
+RUN zypper -n in rpm-build
+
 RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh
