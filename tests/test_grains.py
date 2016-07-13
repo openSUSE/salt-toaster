@@ -5,6 +5,18 @@ import pytest
 pytestmark = pytest.mark.usefixtures("master", "minion_key_accepted")
 
 
+@pytest.fixture(scope='module')
+def platform(minion):
+    return minion['container'].get_os_release()['ID']
+
+
+@pytest.fixture(autouse=True)
+def skip_by_platform(request, platform):
+    marker = request.node.get_marker('platform')
+    if marker and marker.args[0] != platform:
+        pytest.skip('skipped on this platform: {}'.format(platform))
+
+
 def check_os_release(minion):
     output = minion['container'].run("python tests/scripts/check_os_release.py")
     if not json.loads(output)['exists']:
@@ -15,16 +27,28 @@ def test_get_cpuarch(minion):
     assert minion.salt_call('grains.get', 'cpuarch') == 'x86_64'
 
 
-def test_get_os(minion):
+@pytest.mark.platform('sles')
+def test_get_os_sles(minion):
     assert minion.salt_call('grains.get', 'os') == "SUSE"
+
+
+@pytest.mark.platform('rhel')
+def test_get_os_rhel(minion):
+    assert minion.salt_call('grains.get', 'os') == "RedHat"
 
 
 def test_get_items(minion):
     assert minion.salt_call('grains.get', 'items') == ''
 
 
-def test_get_os_family(minion):
+@pytest.mark.platform('sles')
+def test_get_os_family_sles(minion):
     assert minion.salt_call('grains.get', 'os_family') == 'Suse'
+
+
+@pytest.mark.platform('rhel')
+def test_get_os_family_rhel(minion):
+    assert minion.salt_call('grains.get', 'os_family') == 'RedHat'
 
 
 def test_get_oscodename(minion):
@@ -50,7 +74,8 @@ def test_get_osrelease(minion):
     assert minion.salt_call('grains.get', 'osrelease') == os_release['VERSION_ID']
 
 
-def test_get_osrelease_info(minion):
+@pytest.mark.platform('sles')
+def test_get_osrelease_info_sles(minion):
     suse_release = minion['container'].get_suse_release()
     major = suse_release['VERSION']
     minor = suse_release['PATCHLEVEL']
