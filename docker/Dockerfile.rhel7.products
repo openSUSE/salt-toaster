@@ -1,0 +1,25 @@
+# Container used to run salt tests focusing on SUSE Manager use cases
+#
+# NAME                  toaster-rhel7-testing
+# VERSION               0
+
+FROM rhel7
+MAINTAINER Mihai Dinca: "mdinca@suse.com"
+
+RUN rpm -e subscription-manager
+
+
+####### Install missing dependencies from centos7 ########
+RUN yum-config-manager --add-repo http://centos.s.uw.edu/centos/7/os/x86_64/
+RUN rpm --import http://centos.s.uw.edu/centos/7/os/x86_64/RPM-GPG-KEY-CentOS-7
+
+RUN yum -y install python-devel python-backports-ssl_match_hostname python-markupsafe python-yaml python-requests logrotate make rpm-build quilt rpm-build
+
+RUN yum-config-manager --disable 'centos.s.uw.edu_centos_7_os_x86_64_'
+##########################################################
+
+
+RUN yum-config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products/RHEL_7
+RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products/RHEL_7//repodata/repomd.xml.key
+
+RUN yum -y --nogpgcheck install salt-master salt-minion salt-proxy python-salt-testing

@@ -9,7 +9,11 @@ DOCKER_VOLUMES        = -v "$(CURDIR)/:$(TOASTER_MOUNTPOINT)"
 EXPORTS += \
 	-e "DEVEL=$(DEVEL)" \
 	-e "SALT_TESTS=$(SALT_TESTS)" \
-	-e "TOASTER_MOUNTPOINT=$(TOASTER_MOUNTPOINT)"
+	-e "TOASTER_MOUNTPOINT=$(TOASTER_MOUNTPOINT)" \
+	-e "VERSION=$(VERSION)" \
+	-e "FLAVOR=$(FLAVOR)" \
+	-e "MINION_VERSION=$(MINION_VERSION)" \
+	-e "MINION_FLAVOR=$(MINION_FLAVOR)"
 
 
 ifndef DOCKER_IMAGE
@@ -51,23 +55,23 @@ set_env:
 	bin/prepare_environment.sh --create sandbox
 
 build_image:
-	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build --nocache
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build
 
-install_salt:
-	bin/install_salt.sh
+install_salt_sources:
+	VERSION=$(VERSION) bin/install_salt_sources.sh
 
 fixtures:
 	ln -s $(TOASTER_MOUNTPOINT)/conftest.py.source $(ROOT_MOUNTPOINT)/conftest.py
 
-setup: install_salt fixtures
+setup: install_salt_sources fixtures
 
 shell: setup
 	/bin/bash
 
-salt_master: install_salt
+salt_master: install_salt_sources
 	salt-master -l debug
 
-salt_minion: install_salt
+salt_minion: install_salt_sources
 	salt-minion -l debug
 
 salt_unit_tests: setup
@@ -77,7 +81,7 @@ salt_integration: setup
 	py.test -c $(TOASTER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS)
 
 custom_integration: build_image
-	IMAGE=$(DOCKER_IMAGE) sandbox/bin/py.test tests/
+	py.test -c ./configs/$(VERSION).$(FLAVOR).cfg tests/
 
 changelog:
 	docker/bin/lastchangelog salt 3

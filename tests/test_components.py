@@ -33,7 +33,6 @@ def tests_component_installed(master_container, component):
 
 
 @pytest.mark.parametrize("component", MISSING)
-@pytest.mark.xfail
 def tests_component_installed_missing(master_container, component):
     output = master_container.run([component, '--version'])
     assert 'executable file not found' in output

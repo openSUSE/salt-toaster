@@ -4,7 +4,6 @@ import crypt
 from functools import partial
 from config import WHEEL_CONFIG
 import pytest
-from faker import Faker
 from saltcontainers.factories import ContainerFactory
 
 
@@ -12,6 +11,7 @@ from saltcontainers.factories import ContainerFactory
 def container(request, docker_client):
     obj = ContainerFactory(
         config__docker_client=docker_client,
+        config__image=request.config.getini('IMAGE'),
         config__salt_config=None,
         config__volumes=None,
         config__host_config=None
@@ -21,24 +21,6 @@ def container(request, docker_client):
             obj['config']['name'], force=True)
     )
     return obj
-
-
-def test_master_shipped_with_sha256(container):
-    """
-    Test the Master is *shipped* with hash type set to SHA256.
-    """
-    master_config = container.run('cat /etc/salt/master')
-    content = yaml.load(master_config)
-    assert content['hash_type'] == 'sha256'
-
-
-def test_minion_shipped_with_sha256(container):
-    """
-    Test the Minion is *shipped* with hash type set to SHA256.
-    """
-    minion_config = container.run('cat /etc/salt/minion')
-    content = yaml.load(minion_config)
-    assert content['hash_type'] == 'sha256'
 
 
 @pytest.fixture(scope="module")
@@ -62,22 +44,26 @@ def salt_master_config(file_root, pillar_root):
 
 
 @pytest.fixture(scope="module")
-def master_container(request, salt_root, salt_master_config, docker_client):
-    fake = Faker()
-    obj = ContainerFactory(
-        config__name='master_{0}_{1}'.format(fake.word(), fake.word()),
-        config__salt_config__tmpdir=salt_root,
-        config__docker_client=docker_client,
-        config__salt_config__conf_type='master',
-        config__salt_config__config=salt_master_config,
-        config__salt_config__post__id='{0}_{1}'.format(fake.word(), fake.word()),
-        config__environment=dict(PYTHONPATH='/salt-toaster')
-    )
-    request.addfinalizer(
-        lambda: docker_client.remove_container(
-            obj['config']['name'], force=True)
-    )
-    return obj
+def master_container_extras():
+    return dict(config__environment=dict(PYTHONPATH='/salt-toaster'))
+
+
+def test_master_shipped_with_sha256(container):
+    """
+    Test the Master is *shipped* with hash type set to SHA256.
+    """
+    master_config = container.run('cat /etc/salt/master')
+    content = yaml.load(master_config)
+    assert content['hash_type'] == 'sha256'
+
+
+def test_minion_shipped_with_sha256(container):
+    """
+    Test the Minion is *shipped* with hash type set to SHA256.
+    """
+    minion_config = container.run('cat /etc/salt/minion')
+    content = yaml.load(minion_config)
+    assert content['hash_type'] == 'sha256'
 
 
 def test_hash_type_is_used(request, master, salt_master_config):
