@@ -127,17 +127,22 @@ def test_zypper_pkg_modrepo_modify(request, minion):
     assert output['autorefresh'] is True
 
 
-# TODO try to setup a local file repo with gpg key
-@pytest.mark.xfail
-def test_zypper_refresh_repo_with_gpgkey(request, minion):
+def test_zypper_refresh_repo_with_gpgkey(request, master, minion):
     repo_name = 'Repo-With-GPGkey'
+
+    with open('./tests/test_repo.tar.gz', 'rb') as f:
+        minion['container']['config']['docker_client'].put_archive(
+            minion['container']['config']['name'], '/tmp', f.read())
+
     request.addfinalizer(
         partial(minion['container'].run, 'zypper rr {0}'.format(repo_name)))
+
     minion.salt_call(
         'pkg.mod_repo',
         repo_name,
+        'name={0}'.format(repo_name),
         'disabled=False',
-        'url="http://download.opensuse.org/repositories/devel:/libraries:/c_c++/SLE_12/"',
+        'url=file:///tmp/test_repo/',
         'refresh=True',
         'gpgautoimport=True'
     )
