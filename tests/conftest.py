@@ -3,14 +3,14 @@ import pytest
 
 @pytest.fixture(autouse=True)
 def platform(request):
-    marker = request.node.get_marker('platform')
-    if marker:
-        expected = marker.args[0]
-        minion = request.getfuncargvalue('minion')
-        os_release = minion['container'].get_os_release()
-        platform = os_release.get('ID', 'sles')
-        action = marker.kwargs.get('action', 'skip')
-        if platform != expected and action == 'skip':
-            pytest.skip('skipped on this platform: {}'.format(platform))
-        elif platform == expected and action == 'xfail':
+    configtags = set(request.config.getini('CONFIG_TAG'))
+
+    platform_marker = request.node.get_marker('platform')
+    platform_xfail_marker = request.node.get_marker('platform_xfail')
+
+    if platform_marker:
+        if configtags.isdisjoint(set(platform_marker.args)):
+            pytest.skip('skipped on this configuration: {}'.format(configtags))
+    elif platform_xfail_marker:
+        if not configtags.isdisjoint(set(platform_xfail_marker.args)):
             request.node.add_marker(pytest.mark.xfail())

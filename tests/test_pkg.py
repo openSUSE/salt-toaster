@@ -5,13 +5,13 @@ import pytest
 pytestmark = pytest.mark.usefixtures("master", "minion", "minion_key_accepted")
 
 
-@pytest.mark.platform('rhel', action='xfail')
+@pytest.mark.platform_xfail('rhel')
 def test_pkg_list_updates(minion):
     res = minion.salt_call('pkg.list_updates', 'test-package')
     assert res['test-package'].startswith('42:0.1-')
 
 
-@pytest.mark.platform('rhel', action='xfail')
+@pytest.mark.platform_xfail('rhel')
 def test_pkg_info_available(minion):
     res = minion.salt_call('pkg.info_available', 'test-package')
     assert res['test-package']['summary'] == "Test package for Salt's pkg.info_installed"
@@ -20,13 +20,13 @@ def test_pkg_info_available(minion):
         res['test-package']['status'])
 
 
-@pytest.mark.platform('rhel', action='xfail')
+@pytest.mark.platform_xfail('rhel')
 def test_pkg_info_installed(minion):
     res = minion.salt_call('pkg.info_installed', 'test-package')
     assert res['test-package']['vendor'] == "obs://build.opensuse.org/systemsmanagement"
 
 
-@pytest.mark.platform('rhel', action='xfail')
+@pytest.mark.platform_xfail('rhel')
 def test_pkg_info_installed_epoch(minion):
     res = minion.salt_call('pkg.info_installed', 'test-package')
     assert res['test-package']['epoch'] == "42"
