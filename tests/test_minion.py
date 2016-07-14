@@ -4,8 +4,7 @@ from functools import partial
 from utils import retry
 
 
-pytestmark = pytest.mark.usefixtures(
-    "platform_required", "master", "minion", "minion_key_accepted")
+pytestmark = pytest.mark.usefixtures("master", "minion", "minion_key_accepted")
 
 
 def post_12_required(info):

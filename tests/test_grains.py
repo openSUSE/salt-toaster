@@ -2,7 +2,7 @@ import json
 import pytest
 
 
-pytestmark = pytest.mark.usefixtures("platform_required", "master", "minion_key_accepted")
+pytestmark = pytest.mark.usefixtures("master", "minion_key_accepted")
 
 
 def check_os_release(minion):
