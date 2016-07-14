@@ -2,19 +2,7 @@ import json
 import pytest
 
 
-pytestmark = pytest.mark.usefixtures("master", "minion_key_accepted")
-
-
-@pytest.fixture(scope='module')
-def platform(minion):
-    return minion['container'].get_os_release()['ID']
-
-
-@pytest.fixture(autouse=True)
-def skip_by_platform(request, platform):
-    marker = request.node.get_marker('platform')
-    if marker and marker.args[0] != platform:
-        pytest.skip('skipped on this platform: {}'.format(platform))
+pytestmark = pytest.mark.usefixtures("platform_required", "master", "minion_key_accepted")
 
 
 def check_os_release(minion):

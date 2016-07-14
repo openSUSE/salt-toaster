@@ -2,7 +2,8 @@ import json
 import pytest
 
 
-pytestmark = pytest.mark.usefixtures("master", "minion", "minion_key_accepted")
+pytestmark = pytest.mark.usefixtures(
+    "platform_required", "master", "minion", "minion_key_accepted")
 
 
 PRE_SLE12 = [
@@ -36,6 +37,7 @@ def check_params(major, params):
         pytest.skip("not for this version")
 
 
+@pytest.mark.platform('sles')
 def test_pkg_compare(params, minion):
     info = minion['container'].get_suse_release()
     major, minor = info['VERSION'], info['PATCHLEVEL']
