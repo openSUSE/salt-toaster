@@ -3,14 +3,14 @@ import pytest
 
 @pytest.fixture(autouse=True)
 def platform(request):
-    configtags = set(request.config.getini('CONFIG_TAG'))
+    tags = set(request.config.getini('TAGS'))
 
-    platform_marker = request.node.get_marker('platform')
-    platform_xfail_marker = request.node.get_marker('platform_xfail')
+    platform_marker = request.node.get_marker('tags')
+    platform_xfail_marker = request.node.get_marker('tags_xfail')
 
     if platform_marker:
-        if configtags.isdisjoint(set(platform_marker.args)):
-            pytest.skip('skipped on this configuration: {}'.format(configtags))
+        if tags.isdisjoint(set(platform_marker.args)):
+            pytest.skip('skipped on this configuration: {}'.format(tags))
     elif platform_xfail_marker:
-        if not configtags.isdisjoint(set(platform_xfail_marker.args)):
+        if not tags.isdisjoint(set(platform_xfail_marker.args)):
             request.node.add_marker(pytest.mark.xfail())

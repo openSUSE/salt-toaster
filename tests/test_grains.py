@@ -15,12 +15,12 @@ def test_get_cpuarch(minion):
     assert minion.salt_call('grains.get', 'cpuarch') == 'x86_64'
 
 
-@pytest.mark.platform('sles')
+@pytest.mark.tags('sles')
 def test_get_os_sles(minion):
     assert minion.salt_call('grains.get', 'os') == "SUSE"
 
 
-@pytest.mark.platform('rhel')
+@pytest.mark.tags('rhel')
 def test_get_os_rhel(minion):
     assert minion.salt_call('grains.get', 'os') == "RedHat"
 
@@ -29,12 +29,12 @@ def test_get_items(minion):
     assert minion.salt_call('grains.get', 'items') == ''
 
 
-@pytest.mark.platform('sles')
+@pytest.mark.tags('sles')
 def test_get_os_family_sles(minion):
     assert minion.salt_call('grains.get', 'os_family') == 'Suse'
 
 
-@pytest.mark.platform('rhel')
+@pytest.mark.tags('rhel')
 def test_get_os_family_rhel(minion):
     assert minion.salt_call('grains.get', 'os_family') == 'RedHat'
 
@@ -62,7 +62,7 @@ def test_get_osrelease(minion):
     assert minion.salt_call('grains.get', 'osrelease') == os_release['VERSION_ID']
 
 
-@pytest.mark.platform('sles')
+@pytest.mark.tags('sles')
 def test_get_osrelease_info_sles(minion):
     suse_release = minion['container'].get_suse_release()
     major = suse_release['VERSION']

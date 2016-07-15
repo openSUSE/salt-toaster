@@ -36,7 +36,7 @@ def check_params(major, params):
         pytest.skip("not for this version")
 
 
-@pytest.mark.platform('sles')
+@pytest.mark.tags('sles')
 def test_pkg_compare(params, minion):
     info = minion['container'].get_suse_release()
     major, minor = info['VERSION'], info['PATCHLEVEL']
