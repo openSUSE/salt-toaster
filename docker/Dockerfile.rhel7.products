@@ -23,3 +23,5 @@ RUN yum-config-manager --add-repo http://download.opensuse.org/repositories/syst
 RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products/RHEL_7//repodata/repomd.xml.key
 
 RUN yum -y --nogpgcheck install salt-master salt-minion salt-proxy python-salt-testing
+
+RUN yum -y --nogpgcheck install test-package

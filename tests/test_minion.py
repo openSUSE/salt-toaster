@@ -47,7 +47,10 @@ def test_pkg_modrepo_modify(request, minion):
     request.addfinalizer(partial(minion.salt_call, 'pkg.del_repo', repo_name))
     repo_path = '/tmp/' + repo_name
     minion.salt_call(
-        'pkg.mod_repo', repo_name, "url=file:///{0}".format(repo_path))
+        'pkg.mod_repo',
+        'name={0}'.format(repo_name),
+        "url=file:///{0}".format(repo_path)
+    )
     output = minion.salt_call(
         'pkg.mod_repo', repo_name, 'refresh=True', 'enabled=False')
     assert output['enabled'] is False
@@ -116,7 +119,6 @@ def test_pkg_download(minion):
     assert res['test-package']['repository-alias'] == 'salt'
 
 
-@pytest.mark.xfailtags('rhel')
 def test_pkg_remove(request, minion):
     res = minion.salt_call('pkg.remove', 'test-package')
     request.addfinalizer(
