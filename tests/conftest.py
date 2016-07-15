@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.fixture(autouse=True)
-def platform(request):
+def tagschecker(request):
     tags = set(request.config.getini('TAGS'))
 
     platform_marker = request.node.get_marker('tags')

@@ -7,26 +7,6 @@ from utils import retry
 pytestmark = pytest.mark.usefixtures("master", "minion", "minion_key_accepted")
 
 
-def post_12_required(info):
-    if info['VERSION'] < 12:
-        pytest.skip("incompatible with this version")
-
-
-def pre_12_required(info):
-    if info['VERSION'] >= 12:
-        pytest.skip("incompatible with this version")
-
-
-def minor_0_required(info):
-    if info['PATCHLEVEL'] != 0:
-        pytest.skip("incompatible with this minor version")
-
-
-def minor_non_0_required(info):
-    if info['PATCHLEVEL'] == 0:
-        pytest.skip("incompatible with this minor version")
-
-
 def test_ping_minion(master, minion):
 
     def ping():
@@ -44,32 +24,28 @@ def test_zypper_pkg_owner(minion):
     assert minion.salt_call('pkg.owner', '/etc/zypp') == 'libzypp'
 
 
-@pytest.mark.tags_xfail('rhel')
+@pytest.mark.tags('sles12', 'sles12sp1')
 def test_zypper_pkg_list_products_post_12(minion):
-    post_12_required(minion['container'].get_suse_release())
     [output] = minion.salt_call('pkg.list_products')
     assert output['name'] == 'SLES'
     assert output['release'] == '0'
 
 
-@pytest.mark.tags_xfail('rhel')
+@pytest.mark.tags('sles11sp3', 'sles11sp4')
 def test_zypper_pkg_list_products_pre_12(minion):
-    pre_12_required(minion['container'].get_suse_release())
     [output] = minion.salt_call('pkg.list_products')
     assert output['name'] == 'SUSE_SLES'
 
 
-@pytest.mark.tags_xfail('rhel')
+@pytest.mark.tags('sles12')
 def test_zypper_pkg_list_products_with_minor_0(minion):
-    minor_0_required(minion['container'].get_suse_release())
     info = minion['container'].get_suse_release()
     [output] = minion.salt_call('pkg.list_products')
     assert output['version'] == unicode(info['VERSION'])
 
 
-@pytest.mark.tags_xfail('rhel')
+@pytest.mark.tags('sles11sp3', 'sles11sp4', 'sles12sp1')
 def test_zypper_pkg_list_products_with_minor_non_0(minion):
-    minor_non_0_required(minion['container'].get_suse_release())
     info = minion['container'].get_suse_release()
     [output] = minion.salt_call('pkg.list_products')
     assert output['version'] == "{VERSION}.{PATCHLEVEL}".format(**info)
@@ -183,9 +159,8 @@ def test_zypper_pkg_search(minion):
         res['test-package-zypper']['summary'])
 
 
-@pytest.mark.tags_xfail('rhel')
+@pytest.mark.tags('sles12', 'sles12sp1')
 def test_zypper_pkg_download(minion):
-    post_12_required(minion['container'].get_suse_release())
     res = minion.salt_call('pkg.download', 'test-package')
     assert res['test-package']['repository-alias'] == 'salt'
 
