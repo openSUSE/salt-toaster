@@ -31,7 +31,11 @@ def test_pkg_modrepo_create(request, minion):
     repo_path = '/tmp/' + repo_name
     minion['container'].run('mkdir {0}'.format(repo_path))
     output = minion.salt_call(
-        'pkg.mod_repo', repo_name, "url=file:///{0}".format(repo_path))
+        'pkg.mod_repo',
+        'repo={0}'.format(repo_name),
+        'name={0}'.format(repo_name),
+        "baseurl=file:///{0}".format(repo_path)
+    )
     assert output == {
         u'alias': repo_name,
         u'type': None,
@@ -48,8 +52,9 @@ def test_pkg_modrepo_modify(request, minion):
     repo_path = '/tmp/' + repo_name
     minion.salt_call(
         'pkg.mod_repo',
+        'repo={0}'.format(repo_name),
         'name={0}'.format(repo_name),
-        "url=file:///{0}".format(repo_path)
+        "baseurl=file:///{0}".format(repo_path)
     )
     output = minion.salt_call(
         'pkg.mod_repo', repo_name, 'refresh=True', 'enabled=False')
@@ -69,10 +74,10 @@ def test_zypper_refresh_repo_with_gpgkey(request, master, minion):
 
     minion.salt_call(
         'pkg.mod_repo',
-        repo_name,
+        'repo={0}'.format(repo_name),
         'name={0}'.format(repo_name),
         'disabled=False',
-        'url=file:///tmp/test_repo/',
+        'baseurl=file:///tmp/test_repo/',
         'refresh=True',
         'gpgautoimport=True'
     )
@@ -87,7 +92,10 @@ def test_pkg_del_repo(minion):
     repo_name = 'repotest-2'
     repo_path = '/tmp/' + repo_name
     minion.salt_call(
-        'pkg.mod_repo', repo_name, "url=file:///{0}".format(repo_path))
+        'pkg.mod_repo',
+        'repo={0}'.format(repo_name),
+        'name={0}'.format(repo_name),
+        "baseurl=file:///{0}".format(repo_path))
     res = minion.salt_call('pkg.del_repo', repo_name)
     assert res[repo_name] is True
 
