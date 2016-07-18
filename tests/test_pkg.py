@@ -20,13 +20,11 @@ def test_pkg_info_available(minion):
         res['test-package']['status'])
 
 
-@pytest.mark.xfailtags('rhel')
 def test_pkg_info_installed(minion):
     res = minion.salt_call('pkg.info_installed', 'test-package')
     assert res['test-package']['vendor'] == "obs://build.opensuse.org/systemsmanagement"
 
 
-@pytest.mark.xfailtags('rhel')
 def test_pkg_info_installed_epoch(minion):
     res = minion.salt_call('pkg.info_installed', 'test-package')
     assert res['test-package']['epoch'] == "42"
