@@ -124,6 +124,7 @@ def test_pkg_search(minion):
 @pytest.mark.tags('sles12', 'sles12sp1')
 def test_pkg_download(minion):
     res = minion.salt_call('pkg.download', 'test-package')
+    assert 'repository-alias' in res['test-package']
     assert res['test-package']['repository-alias'] == 'salt'
 
 
