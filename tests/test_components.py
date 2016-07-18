@@ -3,6 +3,7 @@ from functools import partial
 
 
 def pytest_generate_tests(metafunc):
+
     metafunc.parametrize(
         'test_container,component,should_be_installed',
         [
@@ -42,6 +43,8 @@ def pytest_generate_tests(metafunc):
             ['minion', 'salt-ssh', False],
             ['minion', 'salt-syndic', False],
         ],
+        ids=lambda it:
+            ('installed' if it else 'not-installed') if isinstance(it, bool) else it,
         indirect=['test_container']
     )
 
