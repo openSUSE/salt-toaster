@@ -24,7 +24,7 @@ def test_pkg_owner(minion):
     assert minion.salt_call('pkg.owner', '/etc/zypp') == 'libzypp'
 
 
-@pytest.mark.xfailtags('rhel7', 'sles11sp3', 'sles11sp4')
+@pytest.mark.xfailtags('rhel', 'sles11sp3', 'sles11sp4')
 def test_pkg_modrepo_create(request, minion):
     repo_name = 'repotest'
     request.addfinalizer(partial(minion.salt_call, 'pkg.del_repo', repo_name))
