@@ -7,11 +7,24 @@ import pytest
 from saltcontainers.factories import ContainerFactory
 
 
+def pytest_generate_tests(metafunc):
+    functions = [
+        'test_master_shipped_with_sha256',
+        'test_minion_shipped_with_sha256',
+    ]
+    if metafunc.function.func_name in functions:
+        images = [metafunc.config.getini('IMAGE')]
+        minion_image = metafunc.config.getini('MINION_IMAGE')
+        if minion_image:
+            images.append(minion_image)
+        metafunc.parametrize('container', images, indirect=['container'])
+
+
 @pytest.fixture(scope="module")
 def container(request, docker_client):
     obj = ContainerFactory(
         config__docker_client=docker_client,
-        config__image=request.config.getini('IMAGE'),
+        config__image=request.param,
         config__salt_config=None,
         config__volumes=None,
         config__host_config=None
