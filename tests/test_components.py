@@ -1,38 +1,63 @@
 import pytest
+from functools import partial
 
 
-pytestmark = pytest.mark.usefixtures("master_container")
+def pytest_generate_tests(metafunc):
+    metafunc.parametrize(
+        'test_container,component,should_be_installed',
+        [
+            # installed on master
+            ['master', 'salt-minion', True],
+            ['master', 'salt-proxy', True],
+            ['master', 'salt', True],
+            ['master', 'salt-master', True],
+            ['master', 'salt-cp', True],
+            ['master', 'salt-key', True],
+            ['master', 'salt-run', True],
+            ['master', 'spm', True],
+            ['master', 'salt-call', True],
+            ['master', 'salt-unity', True],
+
+            # installed on master
+            ['minion', 'salt-minion', True],
+            ['minion', 'salt-proxy', True],
+            ['minion', 'salt', True],
+            ['minion', 'salt-master', True],
+            ['minion', 'salt-cp', True],
+            ['minion', 'salt-key', True],
+            ['minion', 'salt-run', True],
+            ['minion', 'spm', True],
+            ['minion', 'salt-call', True],
+            ['minion', 'salt-unity', True],
+
+            # not installed on master
+            ['master', 'salt-api', False],
+            ['master', 'salt-cloud', False],
+            ['master', 'salt-ssh', False],
+            ['master', 'salt-syndic', False],
+
+            # not installed on minion
+            ['minion', 'salt-api', False],
+            ['minion', 'salt-cloud', False],
+            ['minion', 'salt-ssh', False],
+            ['minion', 'salt-syndic', False],
+        ],
+        indirect=['test_container']
+    )
 
 
-INSTALLED = [
-    'salt-minion',
-    'salt-proxy',
-    'salt',
-    'salt-master',
-    'salt-cp',
-    'salt-key',
-    'salt-run',
-    'spm',
-    'salt-call',
-    'salt-unity',
-]
+@pytest.fixture()
+def test_container(request):
+    params = {
+        'master': partial(request.getfuncargvalue, 'master_container'),
+        'minion': partial(request.getfuncargvalue, 'minion_container')
+    }
+    return params[request.param]()
 
 
-MISSING = [
-    'salt-api',
-    'salt-cloud',
-    'salt-ssh',
-    'salt-syndic',
-]
-
-
-@pytest.mark.parametrize("component", INSTALLED)
-def tests_component_installed(master_container, component):
-    output = master_container.run([component, '--version'])
-    assert 'executable file not found' not in output
-
-
-@pytest.mark.parametrize("component", MISSING)
-def tests_component_installed_missing(master_container, component):
-    output = master_container.run([component, '--version'])
-    assert 'executable file not found' in output
+def tests_component(test_container, component, should_be_installed):
+    output = test_container.run([component, '--version'])
+    if should_be_installed:
+        assert 'executable file not found' not in output
+    else:
+        assert 'executable file not found' in output
