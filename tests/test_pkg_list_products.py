@@ -5,45 +5,58 @@ pytestmark = pytest.mark.usefixtures("master", "minion", "minion_key_accepted")
 
 
 def get_expectations(tags, oem=False):
-    params = dict()
 
-    if 'sles' in tags:
-        params['productline'] = 'sles'
-        params['release'] = 'OEM' if oem else '0'
-    elif 'rhel' in tags:
-        params['name'] = ''
-        params['version'] = ''
-        params['productline'] = ''
-        params['release'] = ''
+    PARAMS = {
+        'sles11sp3': {
+            'name': 'SUSE_SLES',
+            'version': '11.3',
+            'productline': 'sles',
+            'release': 'OEM' if oem else '1.201'
+        },
+        'sles11sp4': {
+            'name': 'SUSE_SLES',
+            'version': '11.4',
+            'productline': 'sles',
+            'release': 'OEM' if oem else '1.109'
+        },
+        'sles12': {
+            'name': 'SLES',
+            'version': '12',
+            'productline': 'sles',
+            'release': 'OEM' if oem else '0'
+        },
+        'sles12sp1': {
+            'name': 'SLES',
+            'version': '12.1',
+            'productline': 'sles',
+            'release': 'OEM' if oem else '0'
+        },
+        'rhel': {
+            'name': '',
+            'version': '',
+            'productline': '',
+            'release': ''
+        }
+    }
 
-    if 'sles11sp3' in tags or 'sles11sp4' in tags:
-        params['name'] = 'SUSE_SLES'
-    elif 'sles12' in tags or 'sles12sp1' in tags:
-        params['name'] = 'SLES'
-
-    if 'sles11sp3' in tags:
-        params['version'] = '11.3'
-    elif 'sles11sp4' in tags:
-        params['version'] = '11.4'
-    elif 'sles12' in tags:
-        params['version'] = '12'
-    elif 'sles12sp1' in tags:
-        params['version'] = '12.1'
+    tag = set(tags).intersection(set(PARAMS)).pop()
 
     message = 'The config with this tags: {0} is not tested'.format(tags)
     assert not tags.isdisjoint({'sles', 'rhel'}), message
-    assert not set(params).symmetric_difference(
+    assert not set(PARAMS[tag]).symmetric_difference(
         {'name', 'release', 'version', 'productline'}
     )
 
-    return [['oem' if oem else 'nonoem'], params]
+    return [['oem' if oem else 'nonoem'], PARAMS[tag]]
 
 
 def pytest_generate_tests(metafunc):
     tags = set(metafunc.config.getini('TAGS'))
+    oem_params = get_expectations(tags, oem=True)
+    non_oem_params = get_expectations(tags)
     metafunc.parametrize(
         'oem,expected',
-        [get_expectations(tags), get_expectations(tags, oem=True)],
+        [non_oem_params, oem_params],
         ids=lambda it: ':'.join(it),
         indirect=['oem']
     )
@@ -57,7 +70,8 @@ def oem(request, minion):
             minion['container']['config']['docker_client'].put_archive(
                 minion['container']['config']['name'], '/', f.read())
         request.addfinalizer(
-            lambda: minion['container'].run('rm -rf {0}'.format(suse_register)))
+            lambda: minion['container'].run('rm -rf {0}'.format(suse_register))
+        )
     return request.param == 'oem'
 
 
