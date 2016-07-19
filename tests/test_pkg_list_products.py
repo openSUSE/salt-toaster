@@ -65,13 +65,11 @@ def pytest_generate_tests(metafunc):
 @pytest.fixture()
 def oem(request, minion):
     if request.param[0] == 'oem':
-        suse_register = '/var/lib/suseRegister'
         with open('tests/oem.tar.gz', 'rb') as f:
             minion['container']['config']['docker_client'].put_archive(
                 minion['container']['config']['name'], '/', f.read())
         request.addfinalizer(
-            lambda: minion['container'].run('rm -rf {0}'.format(suse_register))
-        )
+            lambda: minion['container'].run('rm -rf /var/lib/suseRegister'))
     return request.param == 'oem'
 
 
