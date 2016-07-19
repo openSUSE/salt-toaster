@@ -11,11 +11,20 @@ RUN rpm -e subscription-manager
 
 ####### Install missing dependencies from centos6 ########
 RUN yum-config-manager --add-repo http://centos.s.uw.edu/centos/6/os/x86_64/
+RUN yum-config-manager --add-repo http://centos.s.uw.edu/centos/6/updates/x86_64/
+RUN yum-config-manager --add-repo http://centos.s.uw.edu/centos/6/extras/x86_64/
+
 RUN rpm --import http://centos.s.uw.edu/centos/6/os/x86_64/RPM-GPG-KEY-CentOS-6
 
-RUN yum -y install python-markupsafe logrotate make rpm-build quilt
+RUN yum -y install tar make rpm-build quilt
+
+RUN yum -y install \
+    python-devel python-argparse python-setuptools python-simplejson python-six python-tornado python-yaml \
+    python-markupsafe logrotate bind-utils 
 
 RUN yum-config-manager --disable 'centos.s.uw.edu_centos_6_os_x86_64_'
+RUN yum-config-manager --disable 'centos.s.uw.edu_centos_6_updates_x86_64_'
+RUN yum-config-manager --disable 'centos.s.uw.edu_centos_6_extras_x86_64_'
 ##########################################################
 
 
