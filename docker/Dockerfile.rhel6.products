@@ -21,6 +21,23 @@ RUN yum -y install tar make rpm-build quilt
 RUN yum -y install \
     python-devel python-argparse python-setuptools python-simplejson python-six python-tornado python-yaml \
     python-markupsafe logrotate bind-utils 
+  # python-requests 
+  # libzmq4 \
+  # python-zmq
+  # python-jinja2 \
+  # python-backports \
+  # python-certifi \
+  # python-funcsigs \
+  # python-futures \
+  # python-linecache2 \
+  # python-mock \
+  # python-msgpack-python \
+  # python-pbr \
+  # python-pip \
+  # python-psutil \
+  # python-pycrypto \
+  # python-traceback2 \
+  # python-unittest2
 
 RUN yum-config-manager --disable 'centos.s.uw.edu_centos_6_os_x86_64_'
 RUN yum-config-manager --disable 'centos.s.uw.edu_centos_6_updates_x86_64_'
