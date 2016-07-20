@@ -19,7 +19,8 @@ RUN yum -y install python-devel python-backports-ssl_match_hostname python-marku
 
 RUN yum -y install \
     python-setuptools \
-    python-tornado
+    python-tornado \
+    iproute
     # python-jinja2
     # python-pip \
     # python-pbr \
