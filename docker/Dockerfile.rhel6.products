@@ -20,7 +20,7 @@ RUN yum -y install tar make rpm-build quilt
 
 RUN yum -y install \
     python-devel python-argparse python-setuptools python-simplejson python-six python-tornado python-yaml \
-    python-markupsafe logrotate bind-utils iproute
+    python-sphinx python-markupsafe logrotate bind-utils iproute
   # python-requests 
   # libzmq4 \
   # python-zmq

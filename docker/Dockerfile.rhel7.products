@@ -18,6 +18,7 @@ RUN rpm --import http://centos.s.uw.edu/centos/7/os/x86_64/RPM-GPG-KEY-CentOS-7
 RUN yum -y install python-devel python-backports-ssl_match_hostname python-markupsafe python-yaml python-requests logrotate make rpm-build quilt rpm-build
 
 RUN yum -y install \
+    python-sphinx \
     python-setuptools \
     python-tornado \
     iproute
