@@ -5,5 +5,5 @@ set -e
 zypper --non-interactive --gpg-auto-import-keys ref
 
 zypper -n in --no-recommends python-devel python-pip make
-pip install pytest
+pip install pytest mock
 
