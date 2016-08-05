@@ -29,10 +29,7 @@ def container(request, docker_client):
         config__volumes=None,
         config__host_config=None
     )
-    request.addfinalizer(
-        lambda: docker_client.remove_container(
-            obj['config']['name'], force=True)
-    )
+    request.addfinalizer(obj.remove)
     return obj
 
 

@@ -35,9 +35,7 @@ def proxy_server(request, salt_root, docker_client):
         ),
         config__volumes=[os.getcwd()]
     )
-    request.addfinalizer(
-        lambda: docker_client.remove_container(
-            obj['config']['name'], force=True))
+    request.addfinalizer(obj.remove)
     return obj
 
 
