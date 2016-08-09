@@ -55,7 +55,7 @@ set_env:
 	bin/prepare_environment.sh --create sandbox
 
 build_image:
-	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build --nocache
 
 install_salt_sources:
 	VERSION=$(VERSION) bin/install_salt_sources.sh
