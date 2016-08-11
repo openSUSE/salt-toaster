@@ -28,12 +28,6 @@ ifndef DOCKER_IMAGE
 	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)-$(FLAVOR)
 endif
 
-
-ifdef SALT_REPO
-	DOCKER_VOLUMES += -v "$(SALT_REPO):$(SALT_REPO_MOUNTPOINT)"
-	EXPORTS += -e "SALT_REPO_MOUNTPOINT=$(SALT_REPO_MOUNTPOINT)"
-endif
-
 help:
 	@echo "Salt Toaster: an ultimate test suite for Salt."
 	@echo
@@ -57,8 +51,12 @@ ifdef SALT_REPO
 	tar --exclude=.git --exclude=.cache --exclude="*.pyc" -cvzf docker/salt.archive -C $(SALT_REPO) .
 	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build --nopull --nocache
 else
-	curl https://codeload.github.com/saltstack/salt/zip/develop > docker/salt.archive
+	curl https://codeload.github.com/saltstack/salt/zip/develop > docker/develop.zip
+	rm -rf docker/salt.archive
+	unzip docker/develop.zip -d docker
+	mv docker/salt-develop docker/salt.archive
 	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build --nopull --nocache
+	rm -rf docker/salt.archive
 endif
 else
 	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build
