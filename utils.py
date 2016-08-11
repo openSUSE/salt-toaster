@@ -27,7 +27,7 @@ def retry(func):
     return success
 
 
-def build_docker_image(nocache=False):
+def build_docker_image(nocache=False, pull=True):
     version = os.environ.get('VERSION', 'sles12sp1')
     flavor = os.environ.get('FLAVOR') or 'products'
     docker_client = Client(base_url='unix://var/run/docker.sock')
@@ -36,7 +36,7 @@ def build_docker_image(nocache=False):
         tag='registry.mgr.suse.de/toaster-{0}-{1}'.format(version, flavor),
         dockerfile='Dockerfile.{0}.{1}'.format(version, flavor),
         path=os.getcwd() + '/docker/',
-        pull=True,
+        pull=pull,
         decode=True,
         forcerm=True,
         nocache=nocache

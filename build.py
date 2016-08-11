@@ -6,9 +6,10 @@ from utils import build_docker_image
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--nocache', action='store_true', default=False)
+    parser.add_argument('--nopull', action='store_true', default=False)
     args = parser.parse_args()
     content = ''
-    stream = build_docker_image(nocache=args.nocache)
+    stream = build_docker_image(nocache=args.nocache, pull=not args.nopull)
     for item in stream:
         buff = item.get('stream', item.get('status', ''))
 
