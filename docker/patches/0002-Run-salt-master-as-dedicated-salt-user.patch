@@ -1,0 +1,53 @@
+From 808dd461f1ab4b1598d451675b2df204d8876297 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Klaus=20K=C3=A4mpf?= <kkaempf@suse.de>
+Date: Wed, 20 Jan 2016 11:01:06 +0100
+Subject: [PATCH 2/5] Run salt master as dedicated salt user
+
+---
+ conf/master               | 3 ++-
+ pkg/salt-common.logrotate | 3 +++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/conf/master b/conf/master
+index 3f621d0..53d391e 100644
+--- a/conf/master
++++ b/conf/master
+@@ -25,7 +25,8 @@
+ # permissions to allow the specified user to run the master. The exception is
+ # the job cache, which must be deleted if this user is changed. If the
+ # modified files cause conflicts, set verify_env to False.
+-#user: root
++user: salt
++syndic_user: salt
+ 
+ # The port used by the communication interface. The ret (return) port is the
+ # interface used for the file server, authentication, job returns, etc.
+diff --git a/pkg/salt-common.logrotate b/pkg/salt-common.logrotate
+index 3cd0023..8d970c0 100644
+--- a/pkg/salt-common.logrotate
++++ b/pkg/salt-common.logrotate
+@@ -1,4 +1,5 @@
+ /var/log/salt/master {
++	su salt salt
+ 	weekly
+ 	missingok
+ 	rotate 7
+@@ -7,6 +8,7 @@
+ }
+ 
+ /var/log/salt/minion {
++	su salt salt
+ 	weekly
+ 	missingok
+ 	rotate 7
+@@ -15,6 +17,7 @@
+ }
+ 
+ /var/log/salt/key {
++	su salt salt
+ 	weekly
+ 	missingok
+ 	rotate 7
+-- 
+2.9.2
+

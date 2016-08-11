@@ -1,0 +1,53 @@
+From 25c6b12e0fb8d24c63be2b52cc5879301ee69514 Mon Sep 17 00:00:00 2001
+From: Bo Maryniuk <bo@suse.de>
+Date: Thu, 17 Mar 2016 12:30:23 +0100
+Subject: [PATCH 5/5] Use SHA256 hash type by default
+
+---
+ conf/master | 2 +-
+ conf/minion | 2 +-
+ conf/proxy  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/conf/master b/conf/master
+index 53d391e..a350223 100644
+--- a/conf/master
++++ b/conf/master
+@@ -532,7 +532,7 @@ syndic_user: salt
+ #
+ # Prior to changing this value, the master should be stopped and all Salt
+ # caches should be cleared.
+-#hash_type: sha256
++hash_type: sha256
+ 
+ # The buffer size in the file server can be adjusted here:
+ #file_buffer_size: 1048576
+diff --git a/conf/minion b/conf/minion
+index f3a044b..df8f9ab 100644
+--- a/conf/minion
++++ b/conf/minion
+@@ -562,7 +562,7 @@
+ #
+ # Warning: Prior to changing this value, the minion should be stopped and all
+ # Salt caches should be cleared.
+-#hash_type: sha256
++hash_type: sha256
+ 
+ # The Salt pillar is searched for locally if file_client is set to local. If
+ # this is the case, and pillar data is defined, then the pillar_roots need to
+diff --git a/conf/proxy b/conf/proxy
+index 2f5942a..55d8303 100644
+--- a/conf/proxy
++++ b/conf/proxy
+@@ -448,7 +448,7 @@
+ #
+ # Warning: Prior to changing this value, the minion should be stopped and all
+ # Salt caches should be cleared.
+-#hash_type: sha256
++hash_type: sha256
+ 
+ # The Salt pillar is searched for locally if file_client is set to local. If
+ # this is the case, and pillar data is defined, then the pillar_roots need to
+-- 
+2.9.2
+

@@ -51,7 +51,7 @@ ifdef SALT_REPO
 	tar --exclude=.git --exclude=.cache --exclude="*.pyc" -cvzf docker/salt.archive -C $(SALT_REPO) .
 	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build --nopull --nocache
 else
-	curl https://codeload.github.com/saltstack/salt/zip/develop > docker/develop.zip
+	# curl https://codeload.github.com/saltstack/salt/zip/develop > docker/develop.zip
 	rm -rf docker/salt.archive
 	unzip docker/develop.zip -d docker
 	mv docker/salt-develop docker/salt.archive

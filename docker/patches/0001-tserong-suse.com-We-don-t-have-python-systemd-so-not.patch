@@ -1,0 +1,27 @@
+From b16845b3de9549bbfe4d03d7bf717ad549534a82 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Klaus=20K=C3=A4mpf?= <kkaempf@suse.de>
+Date: Wed, 20 Jan 2016 11:00:15 +0100
+Subject: [PATCH 1/5] tserong@suse.com -- We don't have python-systemd, so
+ notify can't work
+
+---
+ pkg/salt-master.service | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/pkg/salt-master.service b/pkg/salt-master.service
+index 1f4650f..59be503 100644
+--- a/pkg/salt-master.service
++++ b/pkg/salt-master.service
+@@ -4,8 +4,7 @@ After=network.target
+ 
+ [Service]
+ LimitNOFILE=16384
+-Type=notify
+-NotifyAccess=all
++Type=simple
+ ExecStart=/usr/bin/salt-master
+ 
+ [Install]
+-- 
+2.9.2
+
