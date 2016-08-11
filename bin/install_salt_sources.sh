@@ -1,10 +1,7 @@
 set -e
 
-if [ "$DEVEL" == "true" ]
+if [ "$FLAVOR" != "devel" ]
     then
-        docker/bin/prepare_devel.sh
-        pip install -e $SALT_REPO_MOUNTPOINT
-    else
         if [[ "$VERSION" =~ ^rhel ]]
             then
                 bin/rhel_unpack_salt.sh

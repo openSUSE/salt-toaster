@@ -7,7 +7,6 @@ SALT_REPO_MOUNTPOINT  = $(ROOT_MOUNTPOINT)/salt-devel
 SALT_TESTS            = $(ROOT_MOUNTPOINT)/salt-*/tests
 DOCKER_VOLUMES        = -v "$(CURDIR)/:$(TOASTER_MOUNTPOINT)"
 EXPORTS += \
-	-e "DEVEL=$(DEVEL)" \
 	-e "SALT_TESTS=$(SALT_TESTS)" \
 	-e "TOASTER_MOUNTPOINT=$(TOASTER_MOUNTPOINT)" \
 	-e "VERSION=$(VERSION)" \
@@ -30,11 +29,9 @@ ifndef DOCKER_IMAGE
 endif
 
 
-ifeq ($(DEVEL), true)
+ifdef SALT_REPO
 	DOCKER_VOLUMES += -v "$(SALT_REPO):$(SALT_REPO_MOUNTPOINT)"
 	EXPORTS += -e "SALT_REPO_MOUNTPOINT=$(SALT_REPO_MOUNTPOINT)"
-else
-	DEVEL = false
 endif
 
 help:
@@ -55,7 +52,17 @@ set_env:
 	bin/prepare_environment.sh --create sandbox
 
 build_image:
-	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build --nocache
+ifeq ("$(FLAVOR)", "devel")
+ifdef SALT_REPO
+	tar --exclude=.git --exclude=.cache --exclude="*.pyc" -cvzf docker/salt.archive -C $(SALT_REPO) .
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build --nopull --nocache
+else
+	curl https://github.com/saltstack/salt/archive/develop.zip > docker/salt.archive
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build --nopull --nocache
+endif
+else
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build
+endif
 
 install_salt_sources:
 	VERSION=$(VERSION) bin/install_salt_sources.sh
