@@ -1,8 +1,8 @@
 # Container used to run salt tests focusing on SUSE Manager use cases
 #
-# NAME                  toaster-sles12sp1-devel
+# NAME                  toaster-sles12-devel
 # VERSION               0
-FROM registry.mgr.suse.de/toaster-sles12sp1-products
+FROM registry.mgr.suse.de/toaster-sles12-products
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
 
 ADD salt.archive /salt/src/salt-devel
