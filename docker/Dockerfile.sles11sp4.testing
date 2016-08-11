@@ -7,7 +7,7 @@ FROM registry.mgr.suse.de/suma-3.0-salt-sle11sp4
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
 
 
-ADD . /root
+COPY bin/ /root/bin/
 
 # Use your credentials for the 'nu.novell' domain within the URL, in case required
 RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing/SLE_11_SP4/ "salt"

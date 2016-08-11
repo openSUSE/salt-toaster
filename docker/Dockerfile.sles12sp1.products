@@ -1,10 +1,11 @@
 # Container used to run salt tests focusing on SUSE Manager use cases
 #
-# NAME                  toaster-sles12sp1-testing
+# NAME                  toaster-sles12sp1-products
 # VERSION               0
 FROM registry.mgr.suse.de/sles12sp1
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
-ADD . /root
+
+COPY bin/ /root/bin/
 
 RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SERVER/12-SP1/x86_64/product/ "SLES 12 SP1 Pool"
 RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SERVER/12-SP1/x86_64/update/ "SLES 12 SP1 Updates"
