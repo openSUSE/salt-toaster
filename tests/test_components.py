@@ -19,7 +19,7 @@ def pytest_generate_tests(metafunc):
             ['master', 'salt-call', True],
             ['master', 'salt-unity', True],
 
-            # installed on master
+            # installed on minion
             ['minion', 'salt-minion', True],
             ['minion', 'salt-proxy', True],
             ['minion', 'salt', True],
@@ -58,6 +58,7 @@ def test_container(request):
     return params[request.param]()
 
 
+@pytest.mark.skiptags('devel')
 def tests_component(test_container, component, should_be_installed):
     output = test_container.run([component, '--version'])
     if should_be_installed:

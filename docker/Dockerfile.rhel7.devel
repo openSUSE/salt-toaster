@@ -1,8 +1,8 @@
 # Container used to run salt tests focusing on SUSE Manager use cases
 #
-# NAME                  toaster-sles12-devel
+# NAME                  toaster-rhel7-devel
 # VERSION               0
-FROM registry.mgr.suse.de/toaster-sles12-products
+FROM registry.mgr.suse.de/toaster-rhel7-products
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
 
 ADD patches/ /salt/src/
