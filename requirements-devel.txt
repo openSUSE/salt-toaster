@@ -1,0 +1,2 @@
+-r requirements-common.txt
+git+ssh://git@github.com/dincamihai/pytest-salt-containers
