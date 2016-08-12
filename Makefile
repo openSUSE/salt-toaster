@@ -54,7 +54,9 @@ else
 	curl https://codeload.github.com/saltstack/salt/zip/develop > docker/develop.zip
 	rm -rf docker/salt.archive
 	unzip docker/develop.zip -d docker
-	mv docker/salt-develop docker/salt.archive
+	rm -rf docker/develop.zip
+	tar -cvzf docker/salt.archive -C docker/salt-develop .
+	rm -rf docker/salt-develop
 	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build --nopull --nocache
 	rm -rf docker/salt.archive
 endif
