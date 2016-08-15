@@ -6,6 +6,7 @@ FROM registry.mgr.suse.de/toaster-sles11sp4-products
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
 
 COPY bin/patch.sh /root/bin
+COPY bin/prepare_devel.sh /root/bin
 ADD patches/ /salt/src/
 
 RUN zypper --non-interactive rm salt

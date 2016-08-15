@@ -11,7 +11,6 @@ COPY bin/add_packages.sh /root/bin/add_packages.sh
 COPY bin/unpack_salt.sh /root/bin/unpack_salt.sh
 COPY bin/install_salt.sh /root/bin/install_salt.sh
 COPY bin/lastchangelog.sh /root/bin/lastchangelog.sh
-COPY bin/prepare_devel.sh /root/bin/prepare_devel.sh
 
 # Use your credentials for the 'nu.novell' domain within the URL, in case required
 RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products/SLE_11_SP4/ "salt"
