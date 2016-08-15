@@ -47,9 +47,9 @@ set_env:
 
 build_image:
 ifeq ("$(FLAVOR)", "devel")
+	$(eval BUILD_OPTS:=--nopull)
 ifdef SALT_REPO
 	tar --exclude=.git --exclude=.cache --exclude="*.pyc" -cvzf docker/salt.archive -C $(SALT_REPO) .
-	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build --nopull --nocache
 else
 	curl https://codeload.github.com/saltstack/salt/zip/develop > docker/develop.zip
 	rm -rf docker/salt.archive
@@ -57,12 +57,10 @@ else
 	rm -rf docker/develop.zip
 	tar -cvzf docker/salt.archive -C docker/salt-develop .
 	rm -rf docker/salt-develop
-	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build --nopull --nocache
 	rm -rf docker/salt.archive
 endif
-else
-	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build
 endif
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build $(BUILD_OPTS)
 
 install_salt_sources:
 	VERSION=$(VERSION) bin/install_salt_sources.sh
