@@ -1,7 +1,18 @@
 set -e
-zypper --non-interactive in netcat swig gcc-c++ libopenssl-devel
+zypper --non-interactive in \
+    swig \
+    gcc-c++ \
+    libopenssl-devel \
+    python-m2crypto \
+    python-pycrypto \
+    python-msgpack-python \
+    python-PyYAML \
+    python-Jinja2 \
+    python-psutil \
+    python-pyzmq
+
 zypper --non-interactive in --oldpackage test-package=42:0.0
-pip install M2Crypto pyzmq PyYAML pycrypto msgpack-python jinja2 psutil
+zypper --non-interactive in netcat
 pip install rpdb
 
 mkdir -p /etc/salt
