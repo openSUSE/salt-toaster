@@ -60,6 +60,9 @@ else
 	rm -rf docker/salt.archive
 endif
 endif
+ifeq ("$(FLAVOR)", "devel")
+	VERSION=$(VERSION) FLAVOR=products sandbox/bin/python -m build
+endif
 	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build $(BUILD_OPTS)
 
 install_salt_sources:
