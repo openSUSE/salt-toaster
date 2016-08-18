@@ -6,6 +6,8 @@
 FROM rhel6
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
 
+COPY Makefile /root/Makefile
+
 RUN rpm -e subscription-manager
 
 
