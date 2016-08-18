@@ -18,3 +18,6 @@ RUN zypper mr -p 1 salt
 
 RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh
+
+ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
+CMD ["shell"]

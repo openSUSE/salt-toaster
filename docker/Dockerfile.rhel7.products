@@ -26,3 +26,6 @@ RUN yum -y --nogpgcheck install test-package
 
 RUN yum -y --nogpgcheck install which make rpm-build quilt python-devel python-pip bind-utils
 RUN yum -y --nogpgcheck install python-salt-testing
+
+ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
+CMD ["shell"]

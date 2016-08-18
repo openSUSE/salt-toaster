@@ -8,11 +8,12 @@ SALT_TESTS            = $(ROOT_MOUNTPOINT)/salt-*/tests
 DOCKER_VOLUMES        = -v "$(CURDIR)/:$(TOASTER_MOUNTPOINT)"
 EXPORTS += \
 	-e "SALT_TESTS=$(SALT_TESTS)" \
-	-e "TOASTER_MOUNTPOINT=$(TOASTER_MOUNTPOINT)" \
 	-e "VERSION=$(VERSION)" \
 	-e "FLAVOR=$(FLAVOR)" \
 	-e "MINION_VERSION=$(MINION_VERSION)" \
-	-e "MINION_FLAVOR=$(MINION_FLAVOR)"
+	-e "MINION_FLAVOR=$(MINION_FLAVOR)" \
+	-e "ROOT_MOUNTPOINT=$(ROOT_MOUNTPOINT)" \
+	-e "TOASTER_MOUNTPOINT=$(TOASTER_MOUNTPOINT)"
 
 
 ifndef DOCKER_IMAGE
@@ -37,7 +38,6 @@ help:
 	@echo "  build_image          Build Docker image"
 	@echo "  salt_integration     Run Salt integration tests"
 	@echo "  custom_integration   Run custom integration tests"
-	@echo "  changelog            Show the last three change log entries"
 	@echo ""
 
 default: help
@@ -45,67 +45,38 @@ default: help
 set_env:
 	bin/prepare_environment.sh --create sandbox
 
-build_image:
+
+archive-salt:
+ifeq ("$(FLAVOR)", "devel")
+ifdef SALT_REPO
+	tar --exclude=.git --exclude=.cache --exclude="*.pyc" -cvzf docker/salt.archive -C $(SALT_REPO) . > /dev/null
+else
+	curl -s https://codeload.github.com/saltstack/salt/zip/develop > docker/develop.zip
+	rm -f docker/salt.archive
+	unzip docker/develop.zip -d docker > /dev/null
+	rm -f docker/develop.zip
+	tar -cvzf docker/salt.archive -C docker/salt-develop . > /dev/null
+	rm -rf docker/salt-develop
+endif
+endif
+
+build_image: archive-salt
+	@echo "Building images"
 ifeq ("$(FLAVOR)", "devel")
 	$(eval BUILD_OPTS:=--nopull)
-ifdef SALT_REPO
-	tar --exclude=.git --exclude=.cache --exclude="*.pyc" -cvzf docker/salt.archive -C $(SALT_REPO) .
-else
-	curl https://codeload.github.com/saltstack/salt/zip/develop > docker/develop.zip
-	rm -rf docker/salt.archive
-	unzip docker/develop.zip -d docker
-	rm -rf docker/develop.zip
-	tar -cvzf docker/salt.archive -C docker/salt-develop .
-	rm -rf docker/salt-develop
-	rm -rf docker/salt.archive
+	VERSION=$(VERSION) FLAVOR=products sandbox/bin/python -m build > $(VERSION).products.build.log
 endif
-endif
-ifeq ("$(FLAVOR)", "devel")
-	VERSION=$(VERSION) FLAVOR=products sandbox/bin/python -m build
-endif
-	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build $(BUILD_OPTS)
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build $(BUILD_OPTS) > $(VERSION).$(FLAVOR).build.log
+	rm -f docker/salt.archive
 
-install_salt_sources:
-	VERSION=$(VERSION) bin/install_salt_sources.sh
+docker_shell :: build_image
+	docker run -p 4444:4444 -it $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
 
-fixtures:
-	ln -s $(TOASTER_MOUNTPOINT)/conftest.py.source $(ROOT_MOUNTPOINT)/conftest.py
+docker_run_salt_unit_tests :: build_image
+	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) run_salt_unit_tests
 
-setup: install_salt_sources fixtures
-
-shell: setup
-	/bin/bash
-
-salt_master: install_salt_sources
-	salt-master -l debug
-
-salt_minion: install_salt_sources
-	salt-minion -l debug
-
-salt_unit_tests: setup
-	py.test -c $(TOASTER_MOUNTPOINT)/unittests.cfg $(SALT_TESTS)
-
-salt_integration: setup
-	py.test -c $(TOASTER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS)
+docker_run_salt_integration_tests :: build_image
+	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) run_salt_integration_tests
 
 custom_integration: build_image
 	py.test -c ./configs/$(VERSION).$(FLAVOR).cfg tests/
-
-changelog:
-	docker/bin/lastchangelog salt 3
-
-run_salt_unit_tests: salt_unit_tests changelog
-
-run_salt_integration_tests: salt_integration changelog
-
-docker_shell :: build_image
-	docker run -p 4444:4444 -t -i $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) shell
-
-docker_pull ::
-	docker pull $(DOCKER_IMAGE)
-
-docker_run_salt_unit_tests :: build_image
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) run_salt_unit_tests
-
-docker_run_salt_integration_tests :: build_image
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) make -C $(TOASTER_MOUNTPOINT) run_salt_integration_tests
