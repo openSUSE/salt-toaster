@@ -1,5 +1,5 @@
 install_salt_sources:
-	echo "Installing salt sources"
+	@echo "Installing salt sources"
 	VERSION=$(VERSION) bin/install_salt_sources.sh > /salt-toaster/install_salt_sources.log
 
 fixtures:
