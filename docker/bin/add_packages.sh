@@ -5,4 +5,4 @@ set -e
 zypper --non-interactive --gpg-auto-import-keys ref
 
 zypper -n in --no-recommends python-devel python-pip make bind-utils
-pip install pytest mock==1.0.0
+pip install pytest mock==1.0.0 timelib
