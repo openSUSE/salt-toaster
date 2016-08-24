@@ -63,3 +63,4 @@ target/
 
 docker/salt.archive
 docker/develop.zip
+junit.report.xml

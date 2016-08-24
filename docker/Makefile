@@ -11,10 +11,10 @@ shell: setup
 	/bin/bash
 
 salt_unit_tests: setup
-	py.test -c $(TOASTER_MOUNTPOINT)/unittests.cfg $(SALT_TESTS)
+	py.test -c $(TOASTER_MOUNTPOINT)/unittests.cfg $(SALT_TESTS) --junitxml=junit.report.xml
 
 salt_integration: setup
-	py.test -c $(TOASTER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS)
+	py.test -c $(TOASTER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS) --junitxml=junit.report.xml
 
 changelog:
 	docker/bin/lastchangelog salt 3

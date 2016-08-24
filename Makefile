@@ -79,4 +79,4 @@ docker_run_salt_integration_tests :: build_image
 	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) run_salt_integration_tests
 
 custom_integration: build_image
-	py.test -c ./configs/$(VERSION).$(FLAVOR).cfg tests/
+	py.test -c ./configs/$(VERSION).$(FLAVOR).cfg tests/ --junitxml=junit.report.xml
