@@ -69,14 +69,14 @@ endif
 	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build $(BUILD_OPTS) > $(VERSION).$(FLAVOR).build.log
 	rm -f docker/salt.archive
 
-docker_shell :: build_image
+docker_shell ::
 	docker run -p 4444:4444 -it $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
 
-docker_run_salt_unit_tests :: build_image
+docker_run_salt_unit_tests ::
 	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) run_salt_unit_tests
 
-docker_run_salt_integration_tests :: build_image
+docker_run_salt_integration_tests ::
 	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) run_salt_integration_tests
 
-custom_integration: build_image
+custom_integration:
 	py.test -c ./configs/$(VERSION).$(FLAVOR).cfg tests/ --junitxml=reports/`date +%d%m%Y.%H%M%S`.xml
