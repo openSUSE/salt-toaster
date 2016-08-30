@@ -11,6 +11,7 @@ mkdir -p /usr/src/packages/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 echo '%_topdir /usr/src/packages' > ~/.rpmmacros
 echo '%_tmppath %{_topdir}/tmp' >> ~/.rpmmacros
 rm -f salt-*.src.rpm
+yum clean expire-cache
 yumdownloader --source salt
 rpm -ivh salt-*.src.rpm
 rm -f salt-*.src.rpm
