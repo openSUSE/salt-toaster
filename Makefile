@@ -82,4 +82,4 @@ docker_run_salt_integration_tests :: pull_image
 	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) run_salt_integration_tests
 
 custom_integration: pull_image
-	py.test -c ./configs/$(VERSION).$(FLAVOR).cfg tests/ # --junitxml=reports/`date +%d%m%Y.%H%M%S`.xml
+	sandbox/bin/py.test -c ./configs/$(VERSION).$(FLAVOR).cfg tests/ # --junitxml=reports/`date +%d%m%Y.%H%M%S`.xml
