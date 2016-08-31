@@ -1,4 +1,11 @@
 import pytest
+from docker import Client
+
+
+@pytest.fixture(scope="session")
+def docker_client():
+    client = Client(base_url='unix://var/run/docker.sock', timeout=180)
+    return client
 
 
 @pytest.fixture(autouse=True)
