@@ -11,6 +11,8 @@ def main():
     content = ''
     stream = build_docker_image(nocache=args.nocache, pull=not args.nopull)
     for item in stream:
+        if 'error' in item:
+            raise Exception(item['error'])
         buff = item.get('stream', item.get('status', ''))
 
         if not content or re.search('.+\[[. ]*$', content):
