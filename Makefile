@@ -73,7 +73,11 @@ pull_image:
 	docker pull $(DOCKER_IMAGE)
 
 docker_shell :: pull_image
-	docker run -p 4444:4444 -it $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
+ifndef RPDB_PORT
+	docker run -it $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
+else
+	docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
+endif
 
 docker_run_salt_unit_tests :: pull_image
 	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) run_salt_unit_tests
