@@ -29,6 +29,16 @@ make docker_shell DOCKER_IMAGE=registry.mgr.suse.de/toaster-sles12sp1
 make docker_shell VERSION=sles12sp1
 ```
 
+#### Run docker shell in repository image based on version and flavor
+```bash
+make docker_shell VERSION=sles12sp1 FLAVOR="testing"
+```
+
+#### Run docker shell in repository image based on version and bind rpdb port
+```bash
+make docker_shell VERSION=sles12sp1 RPDB_PORT="4444"
+```
+
 
 ## For development
 
