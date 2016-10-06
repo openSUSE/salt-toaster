@@ -1,0 +1,13 @@
+language: python
+python:
+ - 2.7
+services:
+ - docker
+
+before_install:
+- tar xvfz sandbox.tar.gz > /dev/null
+- source sandbox/bin/activate
+- sandbox/bin/pip install -r requirements.txt --exists-action w --upgrade
+
+script:
+- VERSION=sles11sp3 make -s custom_integration
