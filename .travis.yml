@@ -8,7 +8,11 @@ before_install:
 - tar xvfz sandbox.tar.gz > /dev/null
 - source sandbox/bin/activate
 - sandbox/bin/pip install -r requirements.txt --exists-action w --upgrade
+- BUILD_OPTS=--nopull make build_image
 
-script:
-- BUILD_OPTS:=--nopull VERSION=leap42sp1 make -s build_image
-- VERSION=leap42sp1 make -s custom_integration
+env:
+- VERSION=leap42sp1 FLAVOR=products NOPULL=true TARGET=custom_integration
+- VERSION=leap42sp1 FLAVOR=products NOPULL=true TARGET=docker_run_salt_unit_tests
+- VERSION=leap42sp1 FLAVOR=products NOPULL=true TARGET=docker_run_salt_integration_tests
+
+script: make $TARGET

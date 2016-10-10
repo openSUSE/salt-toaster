@@ -70,7 +70,9 @@ endif
 	rm -f docker/salt.archive
 
 pull_image:
+ifndef NOPULL
 	docker pull $(DOCKER_IMAGE)
+endif
 
 docker_shell :: pull_image
 ifndef RPDB_PORT
