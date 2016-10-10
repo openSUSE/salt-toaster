@@ -10,5 +10,5 @@ before_install:
 - sandbox/bin/pip install -r requirements.txt --exists-action w --upgrade
 
 script:
-- VERSION=leap42sp1 make -s build_image
+- BUILD_OPTS:=--nopull VERSION=leap42sp1 make -s build_image
 - VERSION=leap42sp1 make -s custom_integration
