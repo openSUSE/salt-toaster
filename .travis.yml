@@ -10,4 +10,5 @@ before_install:
 - sandbox/bin/pip install -r requirements.txt --exists-action w --upgrade
 
 script:
-- VERSION=sles11sp3 make -s custom_integration
+- VERSION=leap42sp1 make -s build_image
+- VERSION=leap42sp1 make -s custom_integration

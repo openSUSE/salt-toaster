@@ -61,6 +61,14 @@ def pytest_generate_tests(metafunc):
             'osfullname': 'SLES',
             'osrelease': '12.1',
             'osrelease_info': [12, 1],
+        },
+        'leap42sp1': {
+            'os': 'openSUSE Leap',
+            'oscodename': 'openSUSE Leap 42.1 (x86_64)',
+            'os_family': 'Suse',
+            'osfullname': 'openSUSE Leap',
+            'osrelease': '42.1',
+            'osrelease_info': [42, 1],
         }
     }
     tags = set(metafunc.config.getini('TAGS'))

@@ -118,6 +118,7 @@ def test_pkg_refresh_db(minion):
     assert res['testpackages'] is True
 
 
+@pytest.mark.skiptags('leap')
 @pytest.mark.xfailtags('rhel')
 def test_pkg_list_patterns(minion):
     res = minion.salt_call('pkg.list_patterns')

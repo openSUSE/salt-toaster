@@ -58,7 +58,7 @@ def master_container_extras():
     return dict(config__environment=dict(PYTHONPATH='/salt-toaster'))
 
 
-@pytest.mark.skiptags('devel')
+@pytest.mark.skiptags('devel', 'leap')
 def test_master_shipped_with_sha256(container):
     """
     Test the Master is *shipped* with hash type set to SHA256.
@@ -68,7 +68,7 @@ def test_master_shipped_with_sha256(container):
     assert content['hash_type'] == 'sha256'
 
 
-@pytest.mark.skiptags('devel')
+@pytest.mark.skiptags('devel', 'leap')
 def test_minion_shipped_with_sha256(container):
     """
     Test the Minion is *shipped* with hash type set to SHA256.
