@@ -79,9 +79,9 @@ endif
 
 docker_shell :: pull_image
 ifndef RPDB_PORT
-	docker run -it $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
+	docker run -it $(EXPORTS) -e "CMD=/bin/bash" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
 else
-	docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
+	docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) -e "CMD=/bin/bash" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
 endif
 
 docker_run :: pull_image
