@@ -12,7 +12,7 @@ before_install:
 
 env:
 - VERSION=leap42sp1 FLAVOR=products NOPULL=true TARGET=run CMD="sandbox/bin/py.test -c ./configs/suse/products/leap42sp1.cfg tests/"
-- VERSION=leap42sp1 FLAVOR=products NOPULL=true TARGET=docker_run CMD="py.test -c ./configs/saltstack/products/unit.cfg /salt/src/salt-*/tests/"
-- VERSION=leap42sp1 FLAVOR=products NOPULL=true TARGET=docker_run CMD="py.test -c ./configs/saltstack/products/integration.cfg /salt/src/salt-*/tests/"
+- VERSION=leap42sp1 FLAVOR=products NOPULL=true TARGET=docker_run CMD="py.test -c ./configs/saltstack/products/leap42sp1.unit.cfg /salt/src/salt-*/tests/"
+- VERSION=leap42sp1 FLAVOR=products NOPULL=true TARGET=docker_run CMD="py.test -c ./configs/saltstack/products/leap42sp1.integration.cfg /salt/src/salt-*/tests/"
 
 script: make $TARGET
