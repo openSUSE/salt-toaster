@@ -15,6 +15,9 @@ EXPORTS += \
 	-e "ROOT_MOUNTPOINT=$(ROOT_MOUNTPOINT)" \
 	-e "TOASTER_MOUNTPOINT=$(TOASTER_MOUNTPOINT)"
 
+ifndef CMD
+	CMD = /bin/bash
+endif
 
 ifndef DOCKER_IMAGE
 	ifndef DOCKER_REGISTRY
@@ -81,11 +84,8 @@ else
 	docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
 endif
 
-docker_run_salt_unit_tests :: pull_image
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) run_salt_unit_tests
+docker_run :: pull_image
+	docker run $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
 
-docker_run_salt_integration_tests :: pull_image
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) run_salt_integration_tests
-
-custom_integration: pull_image
-	sandbox/bin/py.test -c ./configs/$(VERSION).$(FLAVOR).cfg tests/ # --junitxml=reports/`date +%d%m%Y.%H%M%S`.xml
+run: pull_image
+	$(CMD)

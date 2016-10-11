@@ -7,18 +7,10 @@ fixtures:
 
 setup: install_salt_sources fixtures
 
-shell: setup
-	/bin/bash
-
-salt_unit_tests: setup
-	py.test -c $(TOASTER_MOUNTPOINT)/unittests.cfg $(SALT_TESTS) # --junitxml=reports/`date +%d%m%Y.%H%M%S`.xml
-
-salt_integration: setup
-	py.test -c $(TOASTER_MOUNTPOINT)/integration_tests.cfg $(SALT_TESTS) # --junitxml=reports/`date +%d%m%Y.%H%M%S`.xml
+default: setup
+	$(CMD)
 
 changelog:
 	docker/bin/lastchangelog salt 3
 
-run_salt_unit_tests: salt_unit_tests changelog
-
-run_salt_integration_tests: salt_integration changelog
+tests: default changelog

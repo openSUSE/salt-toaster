@@ -11,8 +11,8 @@ before_install:
 - BUILD_OPTS=--nopull make build_image
 
 env:
-- VERSION=leap42sp1 FLAVOR=products NOPULL=true TARGET=custom_integration
-- VERSION=leap42sp1 FLAVOR=products NOPULL=true TARGET=docker_run_salt_unit_tests
-- VERSION=leap42sp1 FLAVOR=products NOPULL=true TARGET=docker_run_salt_integration_tests
+- VERSION=leap42sp1 FLAVOR=products NOPULL=true TARGET=run CMD="sandbox/bin/py.test -c ./configs/suse/products/leap42sp1.cfg tests/"
+- VERSION=leap42sp1 FLAVOR=products NOPULL=true TARGET=docker_run CMD="py.test -c ./configs/saltstack/products/unit.cfg /salt/src/salt-*/tests/"
+- VERSION=leap42sp1 FLAVOR=products NOPULL=true TARGET=docker_run CMD="py.test -c ./configs/saltstack/products/integration.cfg /salt/src/salt-*/tests/"
 
 script: make $TARGET
