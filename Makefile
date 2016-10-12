@@ -87,7 +87,7 @@ saltstack.unit : PYTEST_CFG=./configs/saltstack/$(FLAVOR)/default.unit.cfg
 saltstack.unit :: pull_image
 	$(EXEC)
 
-saltstack.integration : PYTEST_CFG=./configs/saltstack/$(FLAVOR)/default.unit.cfg
+saltstack.integration : PYTEST_CFG=./configs/saltstack/$(FLAVOR)/default.integration.cfg
 saltstack.integration :: pull_image
 	$(EXEC)
 
