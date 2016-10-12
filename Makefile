@@ -83,15 +83,15 @@ endif
 PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS)
 EXEC=docker run $(EXPORTS) -e "CMD=py.test $(PYTEST_ARGS)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
 
-saltstack.unit : PYTEST_CFG=./configs/saltstack/$(FLAVOR)/default.unit.cfg
+saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/common.cfg
 saltstack.unit :: pull_image
 	$(EXEC)
 
-saltstack.integration : PYTEST_CFG=./configs/saltstack/$(FLAVOR)/default.integration.cfg
+saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/common.cfg
 saltstack.integration :: pull_image
 	$(EXEC)
 
-suse.tests : PYTEST_CFG=./configs/suse/$(FLAVOR)/$(VERSION).cfg
+suse.tests : PYTEST_CFG=./configs/suse.tests/$(FLAVOR)/$(VERSION).cfg
 suse.tests : SALT_TESTS=./tests
 suse.tests : EXEC=sandbox/bin/py.test $(PYTEST_ARGS)
 suse.tests : pull_image

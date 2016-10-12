@@ -12,10 +12,10 @@ before_install:
 
 env:
     global:
-        - VERSION=leap42sp1 FLAVOR=products NOPULL=true
+        - VERSION=leap42sp1 FLAVOR=default NOPULL=true
     matrix:
-        - TARGET=suse.tests PYTEST_CFG=./configs/suse/$FLAVOR/$VERSION.cfg
-        - TARGET=saltstack.unit PYTEST_CFG=./configs/saltstack/$FLAVOR/$VERSION.unit.cfg
-        - TARGET=saltstack.integration PYTEST_CFG=./configs/saltstack/$FLAVOR/$VERSION.integration.cfg
+        - TARGET=suse.tests PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+        - TARGET=saltstack.unit PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+        - TARGET=saltstack.integration PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
 
 script: make $TARGET PYTEST_CFG=$PYTEST_CFG
