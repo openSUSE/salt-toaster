@@ -1,21 +1,33 @@
 language: python
+
 python:
  - 2.7
+
 services:
  - docker
+
+env:
+    global:
+        - VERSION=leap42sp1
+        - NOPULL=true
+    matrix:
+        - FLAVOR=default TARGET=suse.tests PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+        - FLAVOR=default TARGET=saltstack.unit PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+        - FLAVOR=default TARGET=saltstack.integration PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+        - FLAVOR=products TARGET=suse.tests PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+        - FLAVOR=products TARGET=saltstack.unit PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+        - FLAVOR=products TARGET=saltstack.integration PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+        - FLAVOR=tests TARGET=suse.tests PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+        - FLAVOR=tests TARGET=saltstack.unit PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+        - FLAVOR=tests TARGET=saltstack.integration PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+        - FLAVOR=next TARGET=suse.tests PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+        - FLAVOR=next TARGET=saltstack.unit PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+        - FLAVOR=next TARGET=saltstack.integration PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
 
 before_install:
 - tar xvfz sandbox.tar.gz > /dev/null
 - source sandbox/bin/activate
 - sandbox/bin/pip install -r requirements.txt --exists-action w --upgrade
 - BUILD_OPTS=--nopull make build_image
-
-env:
-    global:
-        - VERSION=leap42sp1 FLAVOR=default NOPULL=true
-    matrix:
-        - TARGET=suse.tests PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
-        - TARGET=saltstack.unit PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
-        - TARGET=saltstack.integration PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
 
 script: make $TARGET PYTEST_CFG=$PYTEST_CFG
