@@ -5,13 +5,13 @@ import pytest
 pytestmark = pytest.mark.usefixtures("master", "minion", "minion_key_accepted")
 
 
-@pytest.mark.xfailtags('rhel')
+@pytest.mark.xfailtags('rhel', 'leap')
 def test_pkg_list_updates(minion):
     res = minion.salt_call('pkg.list_updates', 'test-package')
     assert res['test-package'].startswith('42:0.1-')
 
 
-@pytest.mark.xfailtags('rhel')
+@pytest.mark.xfailtags('rhel', 'leap')
 def test_pkg_info_available(minion):
     res = minion.salt_call('pkg.info_available', 'test-package')
     assert res['test-package']['summary'] == "Test package for Salt's pkg.info_installed"

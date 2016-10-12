@@ -15,7 +15,6 @@ EXPORTS += \
 	-e "ROOT_MOUNTPOINT=$(ROOT_MOUNTPOINT)" \
 	-e "TOASTER_MOUNTPOINT=$(TOASTER_MOUNTPOINT)"
 
-
 ifndef DOCKER_IMAGE
 	ifndef DOCKER_REGISTRY
 		DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
@@ -70,20 +69,30 @@ endif
 	rm -f docker/salt.archive
 
 pull_image:
+ifndef NOPULL
 	docker pull $(DOCKER_IMAGE)
+endif
 
 docker_shell :: pull_image
 ifndef RPDB_PORT
-	docker run -it $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
+	docker run -it $(EXPORTS) -e "CMD=/bin/bash" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
 else
-	docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
+	docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) -e "CMD=/bin/bash" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
 endif
 
-docker_run_salt_unit_tests :: pull_image
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) run_salt_unit_tests
+PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS)
+EXEC=docker run $(EXPORTS) -e "CMD=py.test $(PYTEST_ARGS)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
 
-docker_run_salt_integration_tests :: pull_image
-	docker run $(EXPORTS) --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) run_salt_integration_tests
+saltstack.unit : PYTEST_CFG=./configs/saltstack/$(FLAVOR)/default.unit.cfg
+saltstack.unit :: pull_image
+	$(EXEC)
 
-custom_integration: pull_image
-	sandbox/bin/py.test -c ./configs/$(VERSION).$(FLAVOR).cfg tests/ # --junitxml=reports/`date +%d%m%Y.%H%M%S`.xml
+saltstack.integration : PYTEST_CFG=./configs/saltstack/$(FLAVOR)/default.unit.cfg
+saltstack.integration :: pull_image
+	$(EXEC)
+
+suse.tests : PYTEST_CFG=./configs/suse/$(FLAVOR)/$(VERSION).cfg
+suse.tests : SALT_TESTS=./tests
+suse.tests : EXEC=sandbox/bin/py.test $(PYTEST_ARGS)
+suse.tests : pull_image
+	$(EXEC)

@@ -26,4 +26,4 @@ RUN yum -y --nogpgcheck install salt-master salt-minion salt-proxy
 RUN yum -y --nogpgcheck install python-salt-testing
 
 ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
-CMD ["shell"]
+CMD ["default"]

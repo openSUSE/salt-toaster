@@ -36,13 +36,19 @@ def get_expectations(tags, oem=False):
             'version': '',
             'productline': '',
             'release': ''
+        },
+        'leap': {
+            'name': 'openSUSE',
+            'version': '42.1',
+            'productline': 'Leap',
+            'release': '0'
         }
     }
 
     tag = set(tags).intersection(set(PARAMS)).pop()
 
     message = 'The config with this tags: {0} is not tested'.format(tags)
-    assert not tags.isdisjoint({'sles', 'rhel'}), message
+    assert not tags.isdisjoint({'sles', 'rhel', 'leap'}), message
     assert not set(PARAMS[tag]).symmetric_difference(
         {'name', 'release', 'version', 'productline'}
     )
