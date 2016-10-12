@@ -1,6 +1,6 @@
 # Container used to run salt tests focusing on SUSE Manager use cases
 #
-# NAME                  toaster-leap42sp1-products
+# NAME                  toaster-leap42sp1-default
 # VERSION               0
 FROM opensuse:42.1
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
