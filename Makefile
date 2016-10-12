@@ -15,10 +15,6 @@ EXPORTS += \
 	-e "ROOT_MOUNTPOINT=$(ROOT_MOUNTPOINT)" \
 	-e "TOASTER_MOUNTPOINT=$(TOASTER_MOUNTPOINT)"
 
-ifndef CMD
-	CMD = /bin/bash
-endif
-
 ifndef DOCKER_IMAGE
 	ifndef DOCKER_REGISTRY
 		DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
@@ -84,8 +80,19 @@ else
 	docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) -e "CMD=/bin/bash" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
 endif
 
-docker_run :: pull_image
-	docker run $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
+PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS)
+EXEC=docker run $(EXPORTS) -e "CMD=py.test $(PYTEST_ARGS)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
 
-run: pull_image
-	$(CMD)
+saltstack.unit : PYTEST_CFG=./configs/saltstack/$(FLAVOR)/default.unit.cfg
+saltstack.unit :: pull_image
+	$(EXEC)
+
+saltstack.integration : PYTEST_CFG=./configs/saltstack/$(FLAVOR)/default.unit.cfg
+saltstack.integration :: pull_image
+	$(EXEC)
+
+suse.tests : PYTEST_CFG=./configs/suse/$(FLAVOR)/$(VERSION).cfg
+suse.tests : SALT_TESTS=./tests
+suse.tests : EXEC=sandbox/bin/py.test $(PYTEST_ARGS)
+suse.tests : pull_image
+	$(EXEC)
