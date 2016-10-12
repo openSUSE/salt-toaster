@@ -1,14 +1,10 @@
 language: python
+
 python:
  - 2.7
+
 services:
  - docker
-
-before_install:
-- tar xvfz sandbox.tar.gz > /dev/null
-- source sandbox/bin/activate
-- sandbox/bin/pip install -r requirements.txt --exists-action w --upgrade
-- BUILD_OPTS=--nopull make build_image
 
 env:
     global:
@@ -17,5 +13,11 @@ env:
         - TARGET=suse.tests PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
         - TARGET=saltstack.unit PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
         - TARGET=saltstack.integration PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+
+before_install:
+- tar xvfz sandbox.tar.gz > /dev/null
+- source sandbox/bin/activate
+- sandbox/bin/pip install -r requirements.txt --exists-action w --upgrade
+- BUILD_OPTS=--nopull make build_image
 
 script: make $TARGET PYTEST_CFG=$PYTEST_CFG
