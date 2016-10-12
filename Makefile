@@ -91,7 +91,7 @@ saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/common.cfg
 saltstack.integration :: pull_image
 	$(EXEC)
 
-suse.tests : PYTEST_CFG=./configs/suse.tests/$(FLAVOR)/$(VERSION).cfg
+suse.tests : PYTEST_CFG=./configs/suse.tests/$(VERSION)/$(FLAVOR).cfg
 suse.tests : SALT_TESTS=./tests
 suse.tests : EXEC=sandbox/bin/py.test $(PYTEST_ARGS)
 suse.tests : pull_image
