@@ -5,13 +5,10 @@
 FROM registry.mgr.suse.de/toaster-sles12sp1-products
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
 
-COPY bin/patch.sh /root/bin
 COPY bin/prepare_devel.sh /root/bin
-ADD patches/ /salt/src/
 
 RUN zypper --non-interactive rm salt
 RUN /root/bin/prepare_devel.sh
 
 ADD salt.archive /salt/src/salt-devel
-RUN /root/bin/patch.sh
 RUN pip install -e /salt/src/salt-devel
