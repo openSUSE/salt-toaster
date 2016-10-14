@@ -48,7 +48,7 @@ set_env:
 archive-salt:
 ifeq ("$(FLAVOR)", "devel")
 ifdef SALT_REPO
-	tar --exclude=.git --exclude=.cache --exclude="*.pyc" -cvzf docker/salt.archive -C $(SALT_REPO) . > /dev/null
+	tar -X .tarexclude -czf docker/salt.archive -C $(SALT_REPO) .
 else
 	curl -s https://codeload.github.com/saltstack/salt/zip/develop > docker/develop.zip
 	rm -f docker/salt.archive
