@@ -63,7 +63,6 @@ build_image: archive-salt
 	@echo "Building images"
 ifeq ("$(FLAVOR)", "devel")
 	$(eval BUILD_OPTS:=--nopull)
-	VERSION=$(VERSION) FLAVOR=products sandbox/bin/python -m build > $(VERSION).products.build.log
 endif
 	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build $(BUILD_OPTS) > $(VERSION).$(FLAVOR).build.log
 	rm -f docker/salt.archive
