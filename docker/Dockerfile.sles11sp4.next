@@ -1,0 +1,24 @@
+# Container used to run salt tests focusing on SUSE Manager use cases
+#
+# NAME                  toaster-sles11sp4-next
+# VERSION               0
+
+FROM registry.mgr.suse.de/suma-3.0-salt-sle11sp4
+MAINTAINER Mihai Dinca: "mdinca@suse.com"
+
+
+COPY bin/add_packages.sh /root/bin/add_packages.sh
+COPY bin/unpack_salt.sh /root/bin/unpack_salt.sh
+COPY bin/install_salt.sh /root/bin/install_salt.sh
+COPY bin/lastchangelog /root/bin/lastchangelog
+COPY Makefile /root/Makefile
+
+# Use your credentials for the 'nu.novell' domain within the URL, in case required
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/next/SLE_11_SP4/ "salt"
+RUN zypper mr -p 1 salt
+
+RUN /root/bin/add_packages.sh
+RUN /root/bin/install_salt.sh
+
+ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
+CMD ["default"]
