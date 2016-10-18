@@ -77,3 +77,4 @@ zypper -n install quilt
 zypper --non-interactive source-install -D salt
 collect_sources
 prepare_sources
+exit 0
