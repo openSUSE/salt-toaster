@@ -15,28 +15,36 @@ EXPORTS += \
 	-e "ROOT_MOUNTPOINT=$(ROOT_MOUNTPOINT)" \
 	-e "TOASTER_MOUNTPOINT=$(TOASTER_MOUNTPOINT)"
 
+ifndef DOCKER_REGISTRY
+	DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
+endif
+
+ifndef VERSION
+	VERSION = $(DEFAULT_VERSION)
+endif
+
+ifndef FLAVOR
+	FLAVOR = $(DEFAULT_FLAVOR)
+endif
+
 ifndef DOCKER_IMAGE
-	ifndef DOCKER_REGISTRY
-		DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
-	endif
-	ifndef VERSION
-		VERSION = $(DEFAULT_VERSION)
-	endif
-	ifndef FLAVOR
-		FLAVOR = $(DEFAULT_FLAVOR)
-	endif
 	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)-$(FLAVOR)
+endif
+
+ifndef DOCKER_FILE
+	DOCKER_FILE = Dockerfile.$(VERSION).$(FLAVOR)
 endif
 
 help:
 	@echo "Salt Toaster: an ultimate test suite for Salt."
 	@echo
 	@echo "Commands:"
-	@echo "  set_env              Create environment"
-	@echo "  docker_shell         Start Docker shell"
-	@echo "  build_image          Build Docker image"
-	@echo "  salt_integration     Run Salt integration tests"
-	@echo "  custom_integration   Run custom integration tests"
+	@echo "  set_env                 Create environment"
+	@echo "  docker_shell            Start Docker shell"
+	@echo "  build_image             Build Docker image"
+	@echo "  saltstack.integration   Run Salt integration tests"
+	@echo "  saltstack.unit          Run Salt unit tests"
+	@echo "  suse.integration        Run SUSE custom integration tests"
 	@echo ""
 
 default: help
@@ -59,7 +67,7 @@ else
 endif
 endif
 
-build_image: archive-salt
+build:
 	@echo "Building images"
 ifeq ("$(FLAVOR)", "devel")
 	$(eval BUILD_OPTS:=--nopull)
@@ -75,15 +83,21 @@ ifndef NOPULL
 	docker pull $(DOCKER_IMAGE)
 endif
 
-docker_shell :: pull_image
-ifndef RPDB_PORT
-	docker run -it $(EXPORTS) -e "CMD=/bin/bash" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
-else
-	docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) -e "CMD=/bin/bash" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
-endif
-
 PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS)
-EXEC=docker run $(EXPORTS) -e "CMD=py.test $(PYTEST_ARGS)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
+CMD="py.test $(PYTEST_ARGS)"
+EXEC=docker run $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
+
+build_image : CMD=""
+build_image: archive-salt build
+	$(EXEC)
+
+ifndef RPDB_PORT
+docker_shell : EXEC=docker run -it $(EXPORTS) -e "CMD=/bin/bash" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
+else
+docker_shell : EXEC=docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) -e "CMD=/bin/bash" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
+endif
+docker_shell :: pull_image
+	$(EXEC)
 
 saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/common.cfg
 saltstack.unit :: pull_image
