@@ -33,8 +33,8 @@ def build_docker_image(nocache=False, pull=True):
     docker_client = Client(base_url='unix://var/run/docker.sock')
 
     return docker_client.build(
-        tag='registry.mgr.suse.de/toaster-{0}-{1}'.format(version, flavor),
-        dockerfile='Dockerfile.{0}.{1}'.format(version, flavor),
+        tag=os.environ['DOCKER_IMAGE'],
+        dockerfile=os.environ['DOCKER_FILE'],
         path=os.getcwd() + '/docker/',
         pull=pull,
         decode=True,
