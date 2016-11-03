@@ -28,8 +28,6 @@ def retry(func):
 
 
 def build_docker_image(nocache=False, pull=True):
-    version = os.environ.get('VERSION', 'sles12sp1')
-    flavor = os.environ.get('FLAVOR') or 'products'
     docker_client = Client(base_url='unix://var/run/docker.sock')
 
     return docker_client.build(
