@@ -74,7 +74,7 @@ build:
 ifeq ("$(FLAVOR)", "devel")
 	$(eval BUILD_OPTS:=--nopull)
 endif
-	VERSION=$(VERSION) FLAVOR=$(FLAVOR) sandbox/bin/python -m build $(BUILD_OPTS) > $(VERSION).$(FLAVOR).build.log || { \
+	VERSION=$(VERSION) FLAVOR=$(FLAVOR) DOCKER_IMAGE=$(DOCKER_IMAGE) DOCKER_FILE=$(DOCKER_FILE) sandbox/bin/python -m build $(BUILD_OPTS) > $(VERSION).$(FLAVOR).build.log || { \
 	  cat $(VERSION).$(FLAVOR).build.log; \
 	  exit 1; \
 	}
