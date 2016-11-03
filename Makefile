@@ -86,7 +86,7 @@ ifndef NOPULL
 endif
 
 PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS)
-CMD="py.test $(PYTEST_ARGS)"
+CMD=py.test $(PYTEST_ARGS)
 EXEC=docker run $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
 
 build_image : CMD=""
