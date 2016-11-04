@@ -1,5 +1,46 @@
 import pytest
+import logging
 from docker import Client
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+
+class Handler(logging.Handler):
+
+    def emit(self, report):
+        pytest.logentries.append(self.format(report))
+
+
+class ExtraSaltPlugin(object): 
+
+    @pytest.hookimpl()
+    def pytest_namespace(self):
+        return dict(logentries=[])
+
+    @pytest.hookimpl(hookwrapper=True)
+    def pytest_sessionstart(self, session):
+        handler = Handler()
+        logging.root.addHandler(handler)
+        yield
+
+    @pytest.hookimpl(hookwrapper=True)
+    def pytest_terminal_summary(self, terminalreporter):
+        for item in pytest.logentries:
+            terminalreporter.write_line(item)
+        yield
+
+    @pytest.hookimpl(hookwrapper=True)
+    def pytest_runtest_setup(self, item):
+        if not item.module.__name__ in pytest.logentries:
+            logger.info(item.module.__name__)
+        yield
+
+
+def pytest_configure(config):
+    plugin = ExtraSaltPlugin()
+    config.pluginmanager.register(plugin, 'ExtraSaltPlugin')
 
 
 @pytest.fixture(scope="session")
