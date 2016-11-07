@@ -13,6 +13,12 @@ def pytest_addoption(parser):
         default=[]
     )
     parser.addini(
+        "ignore_list_testing",
+        type="args",
+        help="glob-style file patterns for Python test collect ignore for salt-testing",
+        default=[]
+    )
+    parser.addini(
         "xfail_list",
         type="args",
         help="glob-style pytest node ids marked as expected failures",
