@@ -18,6 +18,12 @@ def pytest_addoption(parser):
         help="glob-style pytest node ids marked as expected failures",
         default=[]
     )
+    parser.addini(
+        "xfail_list_testing",
+        type="args",
+        help="glob-style pytest node ids marked as expected failures for salt-testing",
+        default=[]
+    )
 
 
 def pytest_ignore_collect(path, config):
@@ -25,10 +31,19 @@ def pytest_ignore_collect(path, config):
 
 
 def pytest_itemcollected(item):
+    flavor = os.environ.get('FLAVOR')
+
+    xfail_list = item.config.getini('xfail_list')
+    ignore_list = item.config.getini('ignore_list')
+
+    if flavor == 'testing':
+        xfail_list += item.config.getini('xfail_list_{0}'.format(flavor)) or []
+        ignore_list += item.config.getini('ignore_list_{0}'.format(flavor)) or []
+
     matcher = partial(fnmatch, item.nodeid)
-    if any(map(matcher, item.config.getini('xfail_list'))):
+    if any(map(matcher, xfail_list)):
         item.addExpectedFailure(item.parent, None)
-    elif any(map(matcher, item.config.getini('ignore_list'))):
+    elif any(map(matcher, ignore_list)):
         item.addSkip(item.parent, None)
 
 
