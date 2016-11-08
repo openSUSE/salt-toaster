@@ -25,6 +25,9 @@ def minion_container_extras(minion_id):
     return dict(config__salt_config__id=minion_id)
 
 
-def test_pkg_latest_version(master, minion, minion_key_accepted):
+def test_pkg_latest_version(setup):
+    masters, minions = setup
+    master = masters['master']
+    minion = minions['minion']
     resp = master.salt(minion['id'], 'state.apply latest')
     assert resp[minion['id']]['pkg_|-latest-state_|-postfix_|-latest']['result']

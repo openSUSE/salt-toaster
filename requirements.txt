@@ -1,2 +1,2 @@
 -r requirements-common.txt
-pytest-salt-containers==0.2.5
+pytest-salt-containers==0.2.6
