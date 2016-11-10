@@ -12,34 +12,8 @@ def module_config(request):
             {
                 'config': {
                     'container__config__salt_config__sls': {
-                        'oldest': {
-                            'oldest-version': {
-                                'pkg.installed': [
-                                    {
-                                        'name': 'test-package',
-                                        'version': '42:0.0-3.1'
-                                    }
-                                ]
-                            }
-                        },
-                        'latest': {
-                            'include': ['oldest'],
-                            'latest-version': {
-                                'pkg.latest': [
-                                    {'name': 'test-package'},
-                                    {'require': [{'pkg': 'oldest-version'}]}
-                                ]
-                            },
-                        },
-                        'latest-again': {
-                            'include': ['latest'],
-                            'latest-version-again': {
-                                'pkg.latest': [
-                                    {'name': 'test-package'},
-                                    {'require': [{'pkg': 'latest-version'}]}
-                                ]
-                            }
-                        }
+                        'latest': 'tests/sls/latest.sls',
+                        'latest-again': 'tests/sls/latest-again.sls'
                     }
                 },
                 'minions': [{'config': {}}, {'config': {}}]
