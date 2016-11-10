@@ -69,7 +69,7 @@ else
 endif
 endif
 
-build:
+build::
 	@echo "Building images"
 ifeq ("$(FLAVOR)", "devel")
 	$(eval BUILD_OPTS:=--nopull)
@@ -90,7 +90,7 @@ CMD=py.test $(PYTEST_ARGS)
 EXEC=docker run $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
 
 build_image : CMD=""
-build_image: archive-salt build
+build_image :: archive-salt build
 	$(EXEC)
 
 ifndef RPDB_PORT
