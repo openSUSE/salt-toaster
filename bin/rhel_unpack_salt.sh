@@ -18,4 +18,4 @@ rm -f salt-*.src.rpm
 rpmbuild -bp /usr/src/packages/SPECS/salt.spec
 mkdir -p $SALT_SOURCES/src/
 ln -s /usr/src/packages/BUILD/salt-* $SALT_SOURCES/src/
-pip install pytest
+exit 0
