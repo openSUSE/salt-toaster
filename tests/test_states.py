@@ -1,8 +1,4 @@
-import yaml
-import time
 import pytest
-from faker import Faker
-from saltcontainers.factories import MinionFactory, MasterFactory
 
 
 @pytest.fixture(scope='module')
