@@ -239,6 +239,7 @@ def events(request, fetch_events_from_api, fetch_events_from_terminal):
         'from-api': fetch_events_from_api}[request.param]
 
 
+@pytest.mark.tags('sles')
 def test_manual_events(events):
     schema = {
         "definitions": SCHEMA_DEFINITIONS,
@@ -250,6 +251,7 @@ def test_manual_events(events):
     validate(events['manual'], schema)
 
 
+@pytest.mark.tags('sles')
 def test_beacon_events(events):
     schema = {
         "definitions": SCHEMA_DEFINITIONS,
