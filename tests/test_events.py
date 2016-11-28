@@ -1,4 +1,5 @@
 import re
+import py
 import json
 import pytest
 import requests
@@ -98,52 +99,7 @@ SCHEMA_DEFINITIONS = {
 
 @pytest.fixture(scope='module')
 def module_config(request):
-    return {'masters': [
-        {
-            'config': {
-                'container__config__salt_config__extra_configs': {
-                    'external_auth': {
-                        'external_auth': {
-                            "auto": {
-                                "saltuser": [
-                                    {"*": [
-                                        ".*",
-                                        "@wheel",
-                                        "@runner",
-                                        "@jobs"
-                                    ]}
-                                ]
-                            }
-                        }
-                    },
-                    'cherrypy': {
-                        'rest_cherrypy': {'port': 8000, 'disable_ssl': True}
-                    }
-                },
-                'container__config__salt_config__apply_states': {
-                    'top': 'tests/sls/master/top.sls',
-                    'salt-api': 'tests/sls/master/salt-api.sls',
-                }
-            },
-            'minions': [
-                {
-                    'config': {
-                        'container__config__salt_config__extra_configs': {
-                            'beacons': {
-                                'beacons': {
-                                    'load': {
-                                        'emitatstartup': True,
-                                        '1m': [0.0, 2.0],
-                                        '5m': [0.0, 1.5],
-                                        '15m': [0.1, 1.0]
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            ]}
-    ]}
+    return json.load(py.path.local('tests/test_events.json'))
 
 
 @pytest.fixture(scope="module")

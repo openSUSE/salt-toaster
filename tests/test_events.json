@@ -1,0 +1,49 @@
+{
+    "masters": [
+        {
+            "config": {
+                "container__config__salt_config__extra_configs": {
+                    "external_auth": {
+                        "external_auth": {
+                            "auto": {
+                                "saltuser": [
+                                    {"*": [
+                                        ".*",
+                                        "@wheel",
+                                        "@runner",
+                                        "@jobs"
+                                    ]}
+                                ]
+                            }
+                        }
+                    },
+                    "cherrypy": {
+                        "rest_cherrypy": {"port": 8000, "disable_ssl": true}
+                    }
+                },
+                "container__config__salt_config__apply_states": {
+                    "top": "tests/sls/master/top.sls",
+                    "salt-api": "tests/sls/master/salt-api.sls"
+                }
+            },
+            "minions": [
+                {
+                    "config": {
+                        "container__config__salt_config__extra_configs": {
+                            "beacons": {
+                                "beacons": {
+                                    "load": {
+                                        "emitatstartup": true,
+                                        "1m": [0.0, 2.0],
+                                        "5m": [0.0, 1.5],
+                                        "15m": [0.1, 1.0]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
