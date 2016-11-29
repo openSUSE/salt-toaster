@@ -138,7 +138,7 @@ def test_pkg_search(minion):
 def test_pkg_download(minion):
     res = minion.salt_call('pkg.download', 'test-package')
     assert 'repository-alias' in res['test-package']
-    assert res['test-package']['repository-alias'] == 'salt'
+    assert res['test-package']['repository-alias'] in ['salt', 'testpackages']
 
 
 def test_pkg_remove(request, minion):
