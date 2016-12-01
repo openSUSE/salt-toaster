@@ -46,6 +46,7 @@ def container(request, salt_root, docker_client):
     obj.run('ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -q -N ""')
     obj.run('./tests/scripts/chpasswd.sh {}:{}'.format(USER, PASSWORD))
     obj.run('/usr/sbin/sshd')
+    obj.run('zypper --non-interactive rm salt')  # Remove salt from the image!!
 
     request.addfinalizer(obj.remove)
     return obj
@@ -63,7 +64,7 @@ def _cmd(setup, cmd):
     return json.loads(master['container'].run(SSH.format(cmd)))
 
 
-def test_ssh_ping(setup, container):
+def test_ssh_ping(setup):
     '''
     Test test.ping working.
     '''
@@ -75,3 +76,29 @@ def test_ssh_cmdrun(setup):
     Test grains over Salt SSH
     '''
     assert _cmd(setup, "cmd.run 'uname'")['target'] == 'Linux'
+
+
+def test_ssh_pkg_info(setup):
+    '''
+    Test pkg.info
+    '''
+    assert _cmd(setup, "pkg.info python")['target'].get('python', {}).get('installed')
+
+def test_ssh_pkg_install(setup):
+    '''
+    Test pkg.install
+    '''
+    _cmd(setup, "cmd.run 'zypper --non-interactive rm test-package'")
+    out = _cmd(setup, "pkg.install test-package")
+    assert bool(out['target'].get('test-package', {}).get('new'))
+    assert not bool(out['target'].get('test-package', {}).get('old'))
+
+
+def test_ssh_pkg_remove(setup):
+    '''
+    Test pkg.remove
+    '''
+    _cmd(setup, "cmd.run 'zypper --non-interactive in test-package'")
+    out = _cmd(setup, "pkg.remove test-package")
+    assert bool(out['target'].get('test-package', {}).get('old'))
+    assert not bool(out['target'].get('test-package', {}).get('new'))
