@@ -2,7 +2,7 @@ import json
 import pytest
 
 
-pytestmark = pytest.mark.usefixtures("master", "minion", "minion_key_accepted")
+pytestmark = pytest.mark.usefixtures("master", "minion")
 
 
 def pytest_generate_tests(metafunc):

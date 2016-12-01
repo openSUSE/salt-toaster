@@ -4,7 +4,7 @@ from functools import partial
 from utils import retry
 
 
-pytestmark = pytest.mark.usefixtures("master", "minion", "minion_key_accepted")
+pytestmark = pytest.mark.usefixtures("master", "minion")
 
 
 @pytest.fixture()

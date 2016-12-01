@@ -20,6 +20,26 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('container', images, indirect=['container'])
 
 
+@pytest.fixture(scope='module')
+def module_config(request):
+    return {"masters": [
+        {
+            "config": {
+                "container__config__environment": {
+                    "PYTHONPATH": "/salt-toaster"},
+                "container__config__salt_config__extra_configs": {
+                    "external_auth": {
+                        "external_auth": {
+                            "pam": {WHEEL_CONFIG["user"]: ["@wheel"]}
+                        }
+                    },
+                    "hashtype": {"hash_type": "sha384"}
+                }
+            }
+        }
+    ]}
+
+
 @pytest.fixture(scope="module")
 def container(request, docker_client):
     obj = ContainerFactory(
@@ -31,31 +51,6 @@ def container(request, docker_client):
     )
     request.addfinalizer(obj.remove)
     return obj
-
-
-@pytest.fixture(scope="module")
-def salt_master_config(file_root, pillar_root):
-    return {
-        'base_config': {
-            'hash_type': 'sha384',
-            'pillar_roots': {
-                'base': [pillar_root]
-            },
-            'file_roots': {
-                'base': [file_root]
-            },
-            'external_auth': {
-                'pam': {
-                    WHEEL_CONFIG['user']: ['@wheel']
-                }
-            }
-        }
-    }
-
-
-@pytest.fixture(scope="module")
-def master_container_extras():
-    return dict(config__environment=dict(PYTHONPATH='/salt-toaster'))
 
 
 @pytest.mark.skiptags('devel', 'leap')
@@ -78,7 +73,7 @@ def test_minion_shipped_with_sha256(container):
     assert content['hash_type'] == 'sha256'
 
 
-def test_hash_type_is_used(request, master, salt_master_config):
+def test_hash_type_is_used(request, master):
     user = WHEEL_CONFIG['user']
     password_salt = '00'
     password = crypt.crypt(WHEEL_CONFIG['password'], password_salt)
@@ -86,8 +81,6 @@ def test_hash_type_is_used(request, master, salt_master_config):
         partial(master['container'].run, "userdel {0}".format(user)))
     master['container'].run("useradd {0} -p '{1}'".format(user, password))
     raw_output = master['container'].run(
-        "python tests/scripts/wheel_config_values.py"
-    )
+        "python tests/scripts/wheel_config_values.py")
     output = json.loads(raw_output)
-    expected = salt_master_config['base_config']['hash_type']
-    assert output['data']['return']['hash_type'] == expected
+    assert output['data']['return']['hash_type'] == "sha384"

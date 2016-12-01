@@ -39,26 +39,25 @@ def proxy_server(request, salt_root, docker_client):
     return obj
 
 
-@pytest.fixture(scope="module")
-def master_container_extras(minion_id, proxy_server):
+@pytest.fixture(scope='module')
+def module_config(request, minion_id, proxy_server):
     proxy_url = 'http://{0}:{1}'.format(proxy_server['ip'], PROXY_PORT)
-    return dict(
-        config__salt_config__id=minion_id,
-        config__salt_config__pillar={
-            'top': {'base': {minion_id: [minion_id]}},
-            minion_id: {
-                'proxy': {'proxytype': 'rest_sample', 'url': proxy_url}
+    return {"masters": [{
+        "config": {
+            "container__config__salt_config__pillar": {
+                "top": {"base": {minion_id: ["proxy"]}},
+                "proxy": {
+                    "proxy": {"proxytype": "rest_sample", "url": proxy_url}
+                }
             }
-        }
-    )
+        },
+        "minions": [
+            {"config": {"container__config__salt_config__id": minion_id}}
+        ]
+    }]}
 
 
-@pytest.fixture(scope="module")
-def minion_container_extras(minion_id):
-    return dict(config__salt_config__id=minion_id)
-
-
-def test_ping_proxyminion(master, minion, minion_key_accepted):
+def test_ping_proxyminion(master, minion):
 
     def ping():
         return master.salt(minion['id'], "test.ping")[minion['id']] is True

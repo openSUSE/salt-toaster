@@ -1,7 +1,7 @@
 import pytest
 
 
-pytestmark = pytest.mark.usefixtures("master", "minion_key_accepted")
+pytestmark = pytest.mark.usefixtures("master")
 
 
 def pytest_generate_tests(metafunc):

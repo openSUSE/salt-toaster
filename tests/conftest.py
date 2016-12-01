@@ -13,7 +13,7 @@ class Handler(logging.Handler):
         pytest.logentries.append(self.format(report))
 
 
-class ExtraSaltPlugin(object): 
+class ExtraSaltPlugin(object):
 
     @pytest.hookimpl()
     def pytest_namespace(self):
@@ -64,3 +64,21 @@ def tagschecker(request):
         skiptags_marker and not tags.isdisjoint(set(skiptags_marker.args))
     ):
         pytest.skip('skipped for this tags: {}'.format(tags))
+
+
+@pytest.fixture(scope='module')
+def module_config(request):
+    return {"masters": [{"minions": [{}]}]}
+
+
+@pytest.fixture(scope="module")
+def master(setup):
+    config, initconfig = setup
+    return config['masters'][0]['fixture']
+
+
+@pytest.fixture(scope="module")
+def minion(setup):
+    config, initconfig = setup
+    minions = config['masters'][0]['minions']
+    return minions[0]['fixture'] if minions else None
