@@ -52,6 +52,37 @@ def container(request, salt_root, docker_client):
     return obj
 
 
+def pytest_generate_tests(metafunc):
+    '''
+    Call listed functions with the grain params.
+    '''
+
+    functions = [
+        'test_ssh_grain_os',
+        'test_ssh_grain_oscodename',
+        'test_ssh_grain_os_family',
+        'test_ssh_grain_osfullname',
+        'test_ssh_grain_osrelease',
+        'test_ssh_grain_osrelease_info',
+    ]
+
+    expectations = {
+        'sles12sp1': {
+            'os': 'SUSE',
+            'oscodename': 'SUSE Linux Enterprise Server 12 SP1',
+            'os_family': 'Suse',
+            'osfullname': 'SLES',
+            'osrelease': '12.1',
+            'osrelease_info': [12, 1],
+        },
+    }
+
+    # TODO: Replace this construction with just reading a current version
+    version = set(set(metafunc.config.getini('TAGS'))).intersection(set(expectations)).pop()
+    if metafunc.function.func_name in functions and version:
+        metafunc.parametrize('expected', [expectations[version]], ids=lambda it: version)
+
+
 def _cmd(setup, cmd):
     '''
     Get container from the setup and run given command on it.
@@ -62,6 +93,36 @@ def _cmd(setup, cmd):
     config, initconfig = setup
     master = config['masters'][0]['fixture']
     return json.loads(master['container'].run(SSH.format(cmd)))
+
+
+def test_ssh_grain_os(setup, expected):
+    grain = 'os'
+    assert _cmd(setup, "grains.get {}".format(grain)).get('target') == expected[grain]
+
+
+def test_ssh_grain_oscodename(setup, expected):
+    grain = 'oscodename'
+    assert _cmd(setup, "grains.get {}".format(grain)).get('target') == expected[grain]
+
+
+def test_ssh_grain_os_family(setup, expected):
+    grain = 'os_family'
+    assert _cmd(setup, "grains.get {}".format(grain)).get('target') == expected[grain]
+
+
+def test_ssh_grain_osfullname(setup, expected):
+    grain = 'osfullname'
+    assert _cmd(setup, "grains.get {}".format(grain)).get('target') == expected[grain]
+
+
+def test_ssh_grain_osrelease(setup, expected):
+    grain = 'osrelease'
+    assert _cmd(setup, "grains.get {}".format(grain)).get('target') == expected[grain]
+
+
+def test_ssh_grain_osrelease_info(setup, expected):
+    grain = 'osrelease_info'
+    assert _cmd(setup, "grains.get {}".format(grain)).get('target') == expected[grain]
 
 
 def test_ssh_ping(setup):
