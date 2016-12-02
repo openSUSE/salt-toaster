@@ -68,7 +68,22 @@ def tagschecker(request):
 
 @pytest.fixture(scope='module')
 def module_config(request):
-    return {"masters": [{"minions": [{}]}]}
+    return {
+        "masters": [
+            {
+                "minions": [
+                    {
+                        "config": {
+                            "container__config__image": (
+                                request.config.getini('MINION_IMAGE') or
+                                request.config.getini('IMAGE')
+                            )
+                        }
+                    }
+                ]
+            }
+        ]
+    }
 
 
 @pytest.fixture(scope="module")
