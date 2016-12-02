@@ -62,6 +62,14 @@ def pytest_generate_tests(metafunc):
             'osrelease': '12.1',
             'osrelease_info': [12, 1],
         },
+        'sles12sp2': {
+            'os': 'SUSE',
+            'oscodename': 'SUSE Linux Enterprise Server 12 SP2',
+            'os_family': 'Suse',
+            'osfullname': 'SLES',
+            'osrelease': '12.2',
+            'osrelease_info': [12, 2],
+        },
         'leap42sp1': {
             'os': 'openSUSE Leap',
             'oscodename': 'openSUSE Leap 42.1 (x86_64)',
