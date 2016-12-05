@@ -1,0 +1,23 @@
+# Container used to run salt tests focusing on SUSE Manager use cases
+#
+# NAME                  toaster-sles12sp1-controller
+# VERSION               0
+FROM registry.mgr.suse.de/sles12sp1
+MAINTAINER Mihai Dinca: "mdinca@suse.com"
+
+
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SERVER/12-SP1/x86_64/product/ "SLES 12 SP1 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SERVER/12-SP1/x86_64/update/ "SLES 12 SP1 Updates"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SDK/12-SP1/x86_64/product/ "SLE-SDK 12 SP1 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SDK/12-SP1/x86_64/update/ "SLE-SDK 12 SP1 Updates"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Module-Public-Cloud/12/x86_64/product/ "SLE-Module-Public-Cloud 12 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Module-Public-Cloud/12/x86_64/update/ "SLE-Module-Public-Cloud 12 Updates"
+
+RUN zypper -n --gpg-auto-import-keys ref
+
+RUN zypper -n in --no-recommends python-pip openssh python-devel swig gcc-c++ libopenssl-devel python-m2crypto
+RUN pip install salt==2016.11.0 cherrypy
+RUN mkdir -p /etc/salt
+
+COPY ssh/id_rsa /root/.ssh/id_rsa
+COPY ssh/id_rsa.pub /root/.ssh/id_rsa.pub

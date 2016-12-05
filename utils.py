@@ -1,5 +1,7 @@
 import os
 import time
+import tarfile
+import py.path
 from docker import Client
 
 from config import TIME_LIMIT
@@ -39,3 +41,20 @@ def build_docker_image(nocache=False, pull=True):
         forcerm=True,
         nocache=nocache
     )
+
+
+def upload(container, source, destination, tmpdir_factory):
+    arch = tmpdir_factory.mktemp("archive") / 'arch.tar'
+    source = py.path.local(source)
+    with tarfile.open(arch.strpath, mode='w') as archive:
+        if source.isdir():
+            for item in source.listdir():
+                archive.add(
+                    item.strpath,
+                    arcname=item.strpath.replace(source.strpath, '.'))
+        elif source.isfile():
+            archive.add(source.strpath, arcname=source.basename)
+
+    container.run('mkdir -p {0}'.format(destination))
+    container['config']['docker_client'].put_archive(
+        container['config']['name'], destination, arch.read())

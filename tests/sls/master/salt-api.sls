@@ -1,15 +1,8 @@
-pippack:
-  pip.installed:
-    - pkgs:
-      - rpdb
-
 packages:
   pkg.installed:
     - pkgs:
-      - salt-ssh
       - salt-api
-      - netcat-openbsd
-      - vim
+
 
 salt-api:
   cmd.run:

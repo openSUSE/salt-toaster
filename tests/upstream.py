@@ -2,24 +2,11 @@ import pytest
 import tarfile
 import py.path
 from saltcontainers.factories import ContainerFactory
+from utils import upload
 
 
 def pytest_addoption(parser):
     parser.addoption('--salt-repo')
-
-
-def upload(container, source, destination, tmpdir_factory):
-    arch = tmpdir_factory.mktemp("archive") / 'arch.tar'
-    with tarfile.open(arch.strpath, mode='w') as archive:
-        for item in py.path.local(source).listdir():
-            archive.add(
-                item.strpath,
-                arcname=item.strpath.replace(source, '.'))
-
-    container.run('mkdir -p {0}'.format(destination))
-    with arch.open('rb') as f:
-        container['config']['docker_client'].put_archive(
-            container['config']['name'], destination, f.read())
 
 
 @pytest.fixture(scope="module")
