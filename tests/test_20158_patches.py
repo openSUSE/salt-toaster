@@ -12,6 +12,7 @@ def module_config(request):
                 'config': {
                     'container__config__salt_config__sls': {
                         'rsync': 'tests/sls/rsync.sls',
+                        'archextract': 'tests/sls/archextract.sls',
                     }
                 },
                 'minions': [{'config': {}}, {'config': {}}]
@@ -46,3 +47,10 @@ def test_rsync_port(setup):
     assert resp['pkg_|-rsyncpackage_|-rsync_|-installed']['result']
     assert resp['rsync_|-/tmp_|-/tmp_|-synchronized']['result']
 
+
+def test_archive_extracted(setup):
+    '''
+    Test if the archive.extracted overwrites the destination.
+    '''
+    assert _minion(setup, "state.apply archextract")\
+        ['archive_|-extract-zip-archive_|-/tmp/_|-extracted']['result']
