@@ -1,5 +1,6 @@
 import pytest
 import json
+from common import GRAINS_EXPECTATIONS
 from saltcontainers.factories import ContainerFactory
 
 USER = "root"
@@ -66,16 +67,7 @@ def pytest_generate_tests(metafunc):
         'test_ssh_grain_osrelease_info',
     ]
 
-    expectations = {
-        'sles12sp1': {
-            'os': 'SUSE',
-            'oscodename': 'SUSE Linux Enterprise Server 12 SP1',
-            'os_family': 'Suse',
-            'osfullname': 'SLES',
-            'osrelease': '12.1',
-            'osrelease_info': [12, 1],
-        },
-    }
+    expectations = GRAINS_EXPECTATIONS
 
     # TODO: Replace this construction with just reading a current version
     version = set(set(metafunc.config.getini('TAGS'))).intersection(set(expectations)).pop()

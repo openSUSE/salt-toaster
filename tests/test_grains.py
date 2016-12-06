@@ -1,7 +1,9 @@
 import pytest
+from common import GRAINS_EXPECTATIONS
 
 
 pytestmark = pytest.mark.usefixtures("master")
+
 
 
 def pytest_generate_tests(metafunc):
@@ -13,72 +15,7 @@ def pytest_generate_tests(metafunc):
         'test_get_osrelease',
         'test_get_osrelease_info'
     ]
-    expectations = {
-        'rhel6': {
-            'os': 'RedHat',
-            'oscodename': 'Santiago',
-            'os_family': 'RedHat',
-            'osfullname': 'Red Hat Enterprise Linux Server',
-            'osrelease': '6.8',
-            'osrelease_info': [6, 8],
-        },
-        'rhel7': {
-            'os': 'RedHat',
-            'oscodename': 'Red Hat Enterprise Linux Server 7.2 (Maipo)',
-            'os_family': 'RedHat',
-            'osfullname': 'Red Hat Enterprise Linux Server',
-            'osrelease': '7.2',
-            'osrelease_info': [7, 2],
-        },
-        'sles11sp3': {
-            'os': 'SUSE',
-            'oscodename': 'SUSE Linux Enterprise Server 11 SP3',
-            'os_family': 'Suse',
-            'osfullname': 'SLES',
-            'osrelease': '11.3',
-            'osrelease_info': [11, 3],
-        },
-        'sles11sp4': {
-            'os': 'SUSE',
-            'oscodename': 'SUSE Linux Enterprise Server 11 SP4',
-            'os_family': 'Suse',
-            'osfullname': 'SLES',
-            'osrelease': '11.4',
-            'osrelease_info': [11, 4],
-        },
-        'sles12': {
-            'os': 'SUSE',
-            'oscodename': 'SUSE Linux Enterprise Server 12',
-            'os_family': 'Suse',
-            'osfullname': 'SLES',
-            'osrelease': '12',
-            'osrelease_info': [12],
-        },
-        'sles12sp1': {
-            'os': 'SUSE',
-            'oscodename': 'SUSE Linux Enterprise Server 12 SP1',
-            'os_family': 'Suse',
-            'osfullname': 'SLES',
-            'osrelease': '12.1',
-            'osrelease_info': [12, 1],
-        },
-        'sles12sp2': {
-            'os': 'SUSE',
-            'oscodename': 'SUSE Linux Enterprise Server 12 SP2',
-            'os_family': 'Suse',
-            'osfullname': 'SLES',
-            'osrelease': '12.2',
-            'osrelease_info': [12, 2],
-        },
-        'leap42sp1': {
-            'os': 'openSUSE Leap',
-            'oscodename': 'openSUSE Leap 42.1 (x86_64)',
-            'os_family': 'Suse',
-            'osfullname': 'openSUSE Leap',
-            'osrelease': '42.1',
-            'osrelease_info': [42, 1],
-        }
-    }
+    expectations = GRAINS_EXPECTATIONS
     tags = set(metafunc.config.getini('TAGS'))
     tag = set(tags).intersection(set(expectations)).pop()
     if metafunc.function.func_name in functions and tag:
