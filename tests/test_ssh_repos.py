@@ -1,10 +1,11 @@
 import pytest
 import json
+from functools import partial
 from saltcontainers.factories import ContainerFactory
 
 USER = "root"
 PASSWORD = "admin123"
-SSH = "salt-ssh -i --out json --key-deploy --passwd {0} target {1}".format(PASSWORD, '{0}')
+TARGET_ID = "target"
 
 @pytest.fixture(scope='module')
 def module_config(request, container):
@@ -22,7 +23,7 @@ def module_config(request, container):
                         "ssh": "tests/sls/ssh/ssh.sls"
                     },
                     "container__config__salt_config__roster": {
-                        "target": {
+                        TARGET_ID: {
                             "host": container["ip"],
                             "user": USER,
                             "password": PASSWORD
@@ -52,16 +53,17 @@ def container(request, salt_root, docker_client):
     return obj
 
 
-def _cmd(setup, cmd):
-    '''
-    Get container from the setup and run given command on it.
-
-    :param setup: Setup
-    :param cmd: An SSH command
-    '''
+@pytest.fixture()
+def master(setup):
     config, initconfig = setup
     master = config['masters'][0]['fixture']
-    return json.loads(master['container'].run(SSH.format(cmd)))
+    def _cmd(master, cmd):
+        SSH = "salt-ssh -i --out json --key-deploy --passwd {0} {1} {{0}}".format(
+            PASSWORD, TARGET_ID)
+        return json.loads(
+            master['container'].run(SSH.format(cmd))).get(TARGET_ID)
+    master.salt_ssh = partial(_cmd, master)
+    return master
 
 
 @pytest.mark.tags('sles')
@@ -69,15 +71,15 @@ def test_pkg_owner(setup):
     '''
     Test pkg.owner
     '''
-    #assert _cmd(setup, "pkg.owner /etc/zypp")['target'] == 'libzypp'
+    #assert master.salt_ssh("pkg.owner /etc/zypp") == 'libzypp'
 
 
 @pytest.mark.tags('sles')
-def test_pkg_list_products(setup):
+def test_pkg_list_products(master):
     '''
     List test products
     '''
-    products = _cmd(setup, "pkg.list_products")['target']
+    products = master.salt_ssh("pkg.list_products")
     for prod in products:
         if prod['productline'] == 'sles':
             assert prod['productline'] == 'sles'
@@ -88,22 +90,22 @@ def test_pkg_list_products(setup):
             break
         else:
             raise Exception("Product not found")
-    
-def test_pkg_search(setup):
-    assert 'test-package-zypper' in _cmd(setup, "pkg.search test-package")['target']
+
+def test_pkg_search(master):
+    assert 'test-package-zypper' in master.salt_ssh("pkg.search test-package")
 
 
-def test_pkg_repo(setup):
-    assert _cmd(setup, 'pkg.list_repos')['target']['testpackages']['enabled']
+def test_pkg_repo(master):
+    assert master.salt_ssh('pkg.list_repos')['testpackages']['enabled']
 
-def test_pkg_mod_repo(setup):
-    assert not _cmd(setup, 'pkg.mod_repo testpackages enabled=false')['target']['enabled']
-    assert _cmd(setup, 'pkg.mod_repo testpackages enabled=true')['target']['enabled']
+def test_pkg_mod_repo(master):
+    assert not master.salt_ssh('pkg.mod_repo testpackages enabled=false')['enabled']
+    assert master.salt_ssh('pkg.mod_repo testpackages enabled=true')['enabled']
 
 
-def test_pkg_del_repo(setup):
+def test_pkg_del_repo(master):
     msg = "Repository 'testpackages' has been removed."
-    out = _cmd(setup, 'pkg.del_repo testpackages')['target']
+    out = master.salt_ssh('pkg.del_repo testpackages')
     assert out['message'] == msg
     assert out['testpackages']
 
