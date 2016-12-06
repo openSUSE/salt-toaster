@@ -32,10 +32,16 @@ def _minion(setup, cmd):
 
 @pytest.mark.tags('sles')
 def test_zypp_gpg_pkg(setup):
+    '''
+    Fake packages gpg-pubkey* should be filtered out by zypper.
+    '''
     assert not bool([pk for pk in _minion(setup, "pkg.info_installed").keys() if 'gpg-pubkey' in pk])
 
 
 def test_rsync_port(setup):
+    '''
+    Test rsync port from 2016.3.
+    '''
     resp = _minion(setup, "state.apply rsync")
     assert resp['pkg_|-rsyncpackage_|-rsync_|-installed']['result']
     assert resp['rsync_|-/tmp_|-/tmp_|-synchronized']['result']
