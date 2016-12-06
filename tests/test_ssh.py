@@ -1,11 +1,12 @@
 import pytest
 import json
+from functools import partial
 from common import GRAINS_EXPECTATIONS
 from saltcontainers.factories import ContainerFactory
 
 USER = "root"
 PASSWORD = "admin123"
-SSH = "salt-ssh -i --out json --key-deploy --passwd {0} target {1}".format(PASSWORD, '{0}')
+TARGET_ID = "target"
 
 @pytest.fixture(scope='module')
 def module_config(request, container):
@@ -23,7 +24,7 @@ def module_config(request, container):
                         "ssh": "tests/sls/ssh/ssh.sls"
                     },
                     "container__config__salt_config__roster": {
-                        "target": {
+                        TARGET_ID: {
                             "host": container["ip"],
                             "user": USER,
                             "password": PASSWORD
@@ -39,7 +40,7 @@ def module_config(request, container):
 def container(request, salt_root, docker_client):
     obj = ContainerFactory(
         config__docker_client=docker_client,
-        config__image=request.config.getini('IMAGE'),
+        config__image=request.config.getini('MINION_IMAGE') or request.config.getini('IMAGE'),
         config__salt_config=None)
 
     obj.run('ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -q -N ""')
@@ -75,83 +76,84 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('expected', [expectations[version]], ids=lambda it: version)
 
 
-def _cmd(setup, cmd):
-    '''
-    Get container from the setup and run given command on it.
-
-    :param setup: Setup
-    :param cmd: An SSH command
-    '''
+@pytest.fixture()
+def master(setup):
     config, initconfig = setup
     master = config['masters'][0]['fixture']
-    return json.loads(master['container'].run(SSH.format(cmd)))
+    def _cmd(master, cmd):
+        SSH = "salt-ssh -i --out json --key-deploy --passwd {0} {1} {{0}}".format(
+            PASSWORD, TARGET_ID)
+        return json.loads(
+            master['container'].run(SSH.format(cmd))).get(TARGET_ID)
+    master.salt_ssh = partial(_cmd, master)
+    return master
 
 
-def test_ssh_grain_os(setup, expected):
+def test_ssh_grain_os(master, expected):
     grain = 'os'
-    assert _cmd(setup, "grains.get {}".format(grain)).get('target') == expected[grain]
+    assert master.salt_ssh("grains.get {}".format(grain)) == expected[grain]
 
 
-def test_ssh_grain_oscodename(setup, expected):
+def test_ssh_grain_oscodename(master, expected):
     grain = 'oscodename'
-    assert _cmd(setup, "grains.get {}".format(grain)).get('target') == expected[grain]
+    assert master.salt_ssh("grains.get {}".format(grain)) == expected[grain]
 
 
-def test_ssh_grain_os_family(setup, expected):
+def test_ssh_grain_os_family(master, expected):
     grain = 'os_family'
-    assert _cmd(setup, "grains.get {}".format(grain)).get('target') == expected[grain]
+    assert master.salt_ssh("grains.get {}".format(grain)) == expected[grain]
 
 
-def test_ssh_grain_osfullname(setup, expected):
+def test_ssh_grain_osfullname(master, expected):
     grain = 'osfullname'
-    assert _cmd(setup, "grains.get {}".format(grain)).get('target') == expected[grain]
+    assert master.salt_ssh("grains.get {}".format(grain)) == expected[grain]
 
 
-def test_ssh_grain_osrelease(setup, expected):
+def test_ssh_grain_osrelease(master, expected):
     grain = 'osrelease'
-    assert _cmd(setup, "grains.get {}".format(grain)).get('target') == expected[grain]
+    assert master.salt_ssh("grains.get {}".format(grain)) == expected[grain]
 
 
-def test_ssh_grain_osrelease_info(setup, expected):
+def test_ssh_grain_osrelease_info(master, expected):
     grain = 'osrelease_info'
-    assert _cmd(setup, "grains.get {}".format(grain)).get('target') == expected[grain]
+    assert master.salt_ssh("grains.get {}".format(grain)) == expected[grain]
 
 
-def test_ssh_ping(setup):
+def test_ssh_ping(master):
     '''
     Test test.ping working.
     '''
-    assert _cmd(setup, "test.ping")['target']  # Returns True
+    assert master.salt_ssh("test.ping")  # Returns True
 
 
-def test_ssh_cmdrun(setup):
+def test_ssh_cmdrun(master):
     '''
     Test grains over Salt SSH
     '''
-    assert _cmd(setup, "cmd.run 'uname'")['target'] == 'Linux'
+    assert master.salt_ssh("cmd.run 'uname'") == 'Linux'
 
 
-def test_ssh_pkg_info(setup):
+def test_ssh_pkg_info(master):
     '''
     Test pkg.info
     '''
-    assert _cmd(setup, "pkg.info python")['target'].get('python', {}).get('installed')
+    assert master.salt_ssh("pkg.info python").get('python', {}).get('installed')
 
-def test_ssh_pkg_install(setup):
+def test_ssh_pkg_install(master):
     '''
     Test pkg.install
     '''
-    _cmd(setup, "cmd.run 'zypper --non-interactive rm test-package'")
-    out = _cmd(setup, "pkg.install test-package")
-    assert bool(out['target'].get('test-package', {}).get('new'))
-    assert not bool(out['target'].get('test-package', {}).get('old'))
+    master.salt_ssh("cmd.run 'zypper --non-interactive rm test-package'")
+    out = master.salt_ssh("pkg.install test-package")
+    assert bool(out.get('test-package', {}).get('new'))
+    assert not bool(out.get('test-package', {}).get('old'))
 
 
-def test_ssh_pkg_remove(setup):
+def test_ssh_pkg_remove(master):
     '''
     Test pkg.remove
     '''
-    _cmd(setup, "cmd.run 'zypper --non-interactive in test-package'")
-    out = _cmd(setup, "pkg.remove test-package")
-    assert bool(out['target'].get('test-package', {}).get('old'))
-    assert not bool(out['target'].get('test-package', {}).get('new'))
+    master.salt_ssh("cmd.run 'zypper --non-interactive in test-package'")
+    out = master.salt_ssh("pkg.remove test-package")
+    assert bool(out.get('test-package', {}).get('old'))
+    assert not bool(out.get('test-package', {}).get('new'))
