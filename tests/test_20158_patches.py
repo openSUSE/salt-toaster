@@ -21,36 +21,40 @@ def module_config(request):
     }
 
 
-def _minion(setup, cmd):
-    '''
-    Call salt on current minion
-    '''
+@pytest.fixture()
+def master(setup):
+    config, initconfig = setup
+    return config['masters'][0]['fixture']
+
+
+@pytest.fixture()
+def minion(setup):
     config, initconfig = setup
     master = config['masters'][0]
-    minion = master['minions'][0]
-    return master['fixture'].salt(minion['id'], cmd)[minion['id']]
+    return master['minions'][0]['fixture']
 
 
 @pytest.mark.tags('sles')
-def test_zypp_gpg_pkg(setup):
+def test_zypp_gpg_pkg(master, minion):
     '''
     Fake packages gpg-pubkey* should be filtered out by zypper.
     '''
-    assert not bool([pk for pk in _minion(setup, "pkg.info_installed").keys() if 'gpg-pubkey' in pk])
+    resp = master.salt(minion['id'], "pkg.info_installed")[minion['id']]
+    assert not bool([pk for pk in resp.keys() if 'gpg-pubkey' in pk])
 
 
-def test_rsync_port(setup):
+def test_rsync_port(master, minion):
     '''
     Test rsync port from 2016.3.
     '''
-    resp = _minion(setup, "state.apply rsync")
+    resp = master.salt(minion['id'], "state.apply rsync")[minion['id']]
     assert resp['pkg_|-rsyncpackage_|-rsync_|-installed']['result']
     assert resp['rsync_|-/tmp_|-/tmp_|-synchronized']['result']
 
 
-def test_archive_extracted(setup):
+def test_archive_extracted(master, minion):
     '''
     Test if the archive.extracted overwrites the destination.
     '''
-    assert _minion(setup, "state.apply archextract")\
-        ['archive_|-extract-zip-archive_|-/tmp/_|-extracted']['result']
+    resp = master.salt(minion['id'], "state.apply archextract")[minion['id']]
+    assert resp['archive_|-extract-zip-archive_|-/tmp/_|-extracted']['result']
