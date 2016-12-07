@@ -18,7 +18,7 @@ def test_pkg_list_products(master):
     for prod in products:
         if prod['productline'] == 'sles':
             assert prod['productline'] == 'sles'
-            assert prod['name'] == 'SLES'
+            assert prod['name'] in ['SLES', 'SUSE_SLES']  # SLE12 says "SLES" and SLE11 says "SUSE_SLES"
             assert prod['vendor'] == 'SUSE'
             assert prod['isbase']
             assert prod['installed']
