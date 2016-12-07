@@ -90,8 +90,8 @@ def test_ssh_pkg_install(master):
     '''
     master.salt_ssh("cmd.run 'rpm -e test-package'")
     out = master.salt_ssh("pkg.install test-package")
-    assert bool(out.get('test-package', {}).get('new'))
-    assert not bool(out.get('test-package', {}).get('old'))
+    assert out.get('test-package', {}).get('new')
+    assert not out.get('test-package', {}).get('old')
 
 
 @pytest.mark.tags('rhel', 'fedora')
@@ -101,8 +101,8 @@ def test_ssh_pkg_remove_rhel(master):
     '''
     master.salt_ssh("cmd.run 'yum install test-package -y'")
     out = master.salt_ssh("pkg.remove test-package")
-    assert bool(out.get('test-package', {}).get('old'))
-    assert not bool(out.get('test-package', {}).get('new'))
+    assert out.get('test-package', {}).get('old')
+    assert not out.get('test-package', {}).get('new')
 
 
 @pytest.mark.tags('sles', 'leap')
@@ -112,5 +112,5 @@ def test_ssh_pkg_remove_sles(master):
     '''
     master.salt_ssh("cmd.run 'zypper --non-interactive in test-package'")
     out = master.salt_ssh("pkg.remove test-package")
-    assert bool(out.get('test-package', {}).get('old'))
-    assert not bool(out.get('test-package', {}).get('new'))
+    assert out.get('test-package', {}).get('old')
+    assert not out.get('test-package', {}).get('new')
