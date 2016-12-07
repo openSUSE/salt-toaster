@@ -68,7 +68,7 @@ def test_ssh_cmdrun(master):
     assert master.salt_ssh("cmd.run 'uname'") == 'Linux'
 
 
-@pytest.mark.tags('rhel', 'fedora')
+@pytest.mark.tags('rhel')
 def test_ssh_pkg_info_rhel(master):
     '''
     Test pkg.info_instaled on RHEL series
@@ -94,7 +94,7 @@ def test_ssh_pkg_install(master):
     assert not out.get('test-package', {}).get('old')
 
 
-@pytest.mark.tags('rhel', 'fedora')
+@pytest.mark.tags('rhel')
 def test_ssh_pkg_remove_rhel(master):
     '''
     Test pkg.remove on RHEL
