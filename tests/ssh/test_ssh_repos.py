@@ -37,6 +37,14 @@ def test_pkg_repo_sles(master):
     assert master.salt_ssh('pkg.list_repos')['testpackages']['enabled']
 
 
+@pytest.mark.tags('rhel')
+def test_pkg_repo_rhel(master):
+    '''
+    Iterate over all available repos and at least one should be enabled.
+    '''
+    repos = master.salt_ssh('pkg.list_repos')
+    assert [enabled for enabled in [repos[repo].get('enabled', 0) for repo in repos.keys()] if enabled]
+
 
 @pytest.mark.tags('sles', 'leap')
 def test_pkg_mod_repo_sles(master):
