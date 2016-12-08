@@ -14,7 +14,7 @@ COPY bin/lastchangelog /root/bin/lastchangelog
 COPY Makefile /root/Makefile
 
 # Use your credentials for the 'nu.novell' domain within the URL, in case required
-RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/next/SLE_11_SP3/ "salt"
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/next/SLE_11_SP4/ "salt"
 RUN zypper mr -p 1 salt
 
 RUN /root/bin/add_packages.sh
