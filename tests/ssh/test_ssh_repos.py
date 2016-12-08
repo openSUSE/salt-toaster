@@ -26,6 +26,7 @@ def test_pkg_list_products(master):
         else:
             raise Exception("Product not found")
 
+@pytest.mark.tags('sles', 'leap')
 def test_pkg_search(master):
     assert 'test-package-zypper' in master.salt_ssh("pkg.search test-package")
 
