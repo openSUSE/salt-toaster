@@ -32,7 +32,8 @@ def test_pkg_search(master):
     assert 'test-package-zypper' in master.salt_ssh("pkg.search test-package")
 
 
-def test_pkg_repo(master):
+@pytest.mark.tags('sles', 'leap')
+def test_pkg_repo_sles(master):
     assert master.salt_ssh('pkg.list_repos')['testpackages']['enabled']
 
 
