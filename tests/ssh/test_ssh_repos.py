@@ -46,6 +46,17 @@ def test_pkg_repo_rhel(master):
     assert [enabled for enabled in [repos[repo].get('enabled', 0) for repo in repos.keys()] if enabled]
 
 
+@pytest.mark.tags('rhel')
+def test_pkg_mod_repo_rhel(master):
+    repo = master.salt_ssh('pkg.list_repos').keys()[0]
+
+    res = master.salt_ssh('pkg.mod_repo {} enabled=0'.format(repo))
+    assert not res[res.keys()[0]][repo]['enabled']
+
+    res = master.salt_ssh('pkg.mod_repo {} enabled=1'.format(repo))
+    assert res[res.keys()[0]][repo]['enabled']
+
+
 @pytest.mark.tags('sles', 'leap')
 def test_pkg_mod_repo_sles(master):
     assert not master.salt_ssh('pkg.mod_repo testpackages enabled=false')['enabled']
