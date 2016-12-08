@@ -37,7 +37,9 @@ def test_pkg_repo_sles(master):
     assert master.salt_ssh('pkg.list_repos')['testpackages']['enabled']
 
 
-def test_pkg_mod_repo(master):
+
+@pytest.mark.tags('sles', 'leap')
+def test_pkg_mod_repo_sles(master):
     assert not master.salt_ssh('pkg.mod_repo testpackages enabled=false')['enabled']
     assert master.salt_ssh('pkg.mod_repo testpackages enabled=true')['enabled']
 
