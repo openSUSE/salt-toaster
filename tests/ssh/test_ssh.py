@@ -68,27 +68,49 @@ def test_ssh_cmdrun(master):
     assert master.salt_ssh("cmd.run 'uname'") == 'Linux'
 
 
-def test_ssh_pkg_info(master):
+@pytest.mark.tags('rhel')
+def test_ssh_pkg_info_rhel(master):
     '''
-    Test pkg.info
+    Test pkg.info_instaled on RHEL series
     '''
-    assert master.salt_ssh("pkg.info python").get('python', {}).get('installed')
+    assert master.salt_ssh("pkg.info_installed python").get('python', {}).get('install_date')
+
+
+@pytest.mark.tags('sles', 'leap')
+def test_ssh_pkg_info_sles(master):
+    '''
+    Test pkg.info_installed on SLES series
+    '''
+    assert master.salt_ssh("pkg.info_installed python").get('python', {}).get('installed')
+
 
 def test_ssh_pkg_install(master):
     '''
     Test pkg.install
     '''
-    master.salt_ssh("cmd.run 'zypper --non-interactive rm test-package'")
+    master.salt_ssh("cmd.run 'rpm -e test-package'")
     out = master.salt_ssh("pkg.install test-package")
-    assert bool(out.get('test-package', {}).get('new'))
-    assert not bool(out.get('test-package', {}).get('old'))
+    assert out.get('test-package', {}).get('new')
+    assert not out.get('test-package', {}).get('old')
 
 
-def test_ssh_pkg_remove(master):
+@pytest.mark.tags('rhel')
+def test_ssh_pkg_remove_rhel(master):
     '''
-    Test pkg.remove
+    Test pkg.remove on RHEL
+    '''
+    master.salt_ssh("cmd.run 'yum install test-package -y'")
+    out = master.salt_ssh("pkg.remove test-package")
+    assert out.get('test-package', {}).get('old')
+    assert not out.get('test-package', {}).get('new')
+
+
+@pytest.mark.tags('sles', 'leap')
+def test_ssh_pkg_remove_sles(master):
+    '''
+    Test pkg.remove on SLES
     '''
     master.salt_ssh("cmd.run 'zypper --non-interactive in test-package'")
     out = master.salt_ssh("pkg.remove test-package")
-    assert bool(out.get('test-package', {}).get('old'))
-    assert not bool(out.get('test-package', {}).get('new'))
+    assert out.get('test-package', {}).get('old')
+    assert not out.get('test-package', {}).get('new')
