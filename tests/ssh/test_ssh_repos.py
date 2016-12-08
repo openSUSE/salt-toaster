@@ -42,7 +42,8 @@ def test_pkg_mod_repo(master):
     assert master.salt_ssh('pkg.mod_repo testpackages enabled=true')['enabled']
 
 
-def test_pkg_del_repo(master):
+@pytest.mark.tags('sles', 'leap')
+def test_pkg_del_repo_sles(master):
     msg = "Repository 'testpackages' has been removed."
     out = master.salt_ssh('pkg.del_repo testpackages')
     assert out['message'] == msg
