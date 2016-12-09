@@ -6,7 +6,6 @@
 FROM registry.mgr.suse.de/sles12sp1
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
 
-
 COPY bin/add_packages.sh /root/bin/add_packages.sh
 COPY bin/unpack_salt.sh /root/bin/unpack_salt.sh
 COPY bin/install_salt.sh /root/bin/install_salt.sh

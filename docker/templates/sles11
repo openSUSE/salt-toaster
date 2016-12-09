@@ -1,4 +1,4 @@
-{% extends "common" %}
+{% extends "sles" %}
 
 {% block description %}
 FROM registry.mgr.suse.de/suma-3.0-salt-sle11sp{{ minor }}

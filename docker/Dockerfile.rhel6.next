@@ -1,6 +1,6 @@
 # Container used to run salt tests focusing on SUSE Manager use cases
 #
-# NAME                  toaster-rhel6-products-next
+# NAME                  toaster-rhel6-next
 # VERSION               0
 
 # list rhel6 tags

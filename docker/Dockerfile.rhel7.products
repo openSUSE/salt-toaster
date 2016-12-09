@@ -1,6 +1,6 @@
 # Container used to run salt tests focusing on SUSE Manager use cases
 #
-# NAME                  toaster-rhel7-testing
+# NAME                  toaster-rhel7-products
 # VERSION               0
 
 # list rhel7 tags
@@ -25,7 +25,7 @@ RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/sa
 RUN yum-config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products/RHEL_7
 RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products/RHEL_7//repodata/repomd.xml.key
 
-RUN yum -y --nogpgcheck install which make rpm-build quilt python-pip bind-utils net-tools
+RUN yum -y --nogpgcheck install which make rpm-build quilt python-pip tar iproute bind-utils net-tools
 RUN yum -y --nogpgcheck install python-devel python-sphinx test-package
 RUN yum -y --nogpgcheck install salt-master salt-minion salt-proxy
 RUN yum -y --nogpgcheck install python-salt-testing python-pytest openssh-clients openssh-server python-apache-libcloud

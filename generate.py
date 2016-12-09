@@ -4,6 +4,8 @@ from utils import generate_dockerfile, generate_pytest_config
 
 
 VERSIONS = [
+    'rhel6',
+    'rhel7',
     'sles11sp3',
     'sles11sp4',
     'sles12',
