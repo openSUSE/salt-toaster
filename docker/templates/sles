@@ -5,8 +5,16 @@ FROM {{ parent_image }}
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
 {% endblock description -%}
 
-# Use your credentials for the 'nu.novell' domain within the URL, in case required
+{% block copy %}
+COPY bin/add_packages.sh /root/bin/add_packages.sh
+COPY bin/unpack_salt.sh /root/bin/unpack_salt.sh
+COPY bin/install_salt.sh /root/bin/install_salt.sh
+COPY bin/lastchangelog /root/bin/lastchangelog
+COPY Makefile /root/Makefile
+{% endblock copy %}
+
 {%- block baserepos %}
+# Use your credentials for the 'nu.novell' domain within the URL, in case required
 RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SERVER/{{ novel_repo_name }}/x86_64/product/ "SLES {{ repo_label }} Pool"
 RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SERVER/{{ novel_repo_name }}/x86_64/update/ "SLES {{ repo_label }} Updates"
 RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SDK/{{ novel_repo_name }}/x86_64/product/ "SLE-SDK {{ repo_label }} Pool"

@@ -4,19 +4,16 @@
 # VERSION               0
 {% block description %}{% endblock description %}
 
-COPY bin/add_packages.sh /root/bin/add_packages.sh
-COPY bin/unpack_salt.sh /root/bin/unpack_salt.sh
-COPY bin/install_salt.sh /root/bin/install_salt.sh
-COPY bin/lastchangelog /root/bin/lastchangelog
-COPY Makefile /root/Makefile
+{%- block copy %}{% endblock copy -%}
 
-# Use your credentials for the 'nu.novell' domain within the URL, in case required
 {%- block baserepos %}{% endblock baserepos -%}
 
 {%- block testpackages %}{% endblock testpackages %}
 
 {%- block salt %}{% endblock salt %}
 
+{%- block preinstall %}{% endblock preinstall %}
 {%- block install %}{% endblock install %}
+{%- block postinstall %}{% endblock postinstall %}
 
 {%- block entrypoint %}{% endblock entrypoint %}
