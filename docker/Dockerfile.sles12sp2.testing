@@ -1,9 +1,9 @@
 # Container used to run salt tests focusing on SUSE Manager use cases
 #
-# NAME                  toaster-sles12-products-next
+# NAME                  toaster-sles12sp2-testing
 # VERSION               0
 
-FROM registry.mgr.suse.de/sles12
+FROM registry.mgr.suse.de/sles12sp2
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
 
 
@@ -14,22 +14,24 @@ COPY bin/lastchangelog /root/bin/lastchangelog
 COPY Makefile /root/Makefile
 
 # Use your credentials for the 'nu.novell' domain within the URL, in case required
-RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SERVER/12/x86_64/product/ "SLES 12 Pool"
-RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SERVER/12/x86_64/update/ "SLES 12 Updates"
-RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SDK/12/x86_64/product/ "SLE-SDK 12 Pool"
-RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SDK/12/x86_64/update/ "SLE-SDK 12 Updates"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SERVER/12-SP2/x86_64/product/ "SLES 12 SP2 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SERVER/12-SP2/x86_64/update/ "SLES 12 SP2 Updates"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SDK/12-SP2/x86_64/product/ "SLE-SDK 12 SP2 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SDK/12-SP2/x86_64/update/ "SLE-SDK 12 SP2 Updates"
 RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Module-Public-Cloud/12/x86_64/product/ "SLE-Module-Public-Cloud 12 Pool"
 RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Module-Public-Cloud/12/x86_64/update/ "SLE-Module-Public-Cloud 12 Updates"
 RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Manager-Tools/12/x86_64/product/ "SLE-Manager-Tools 12 Pool"
 RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Manager-Tools/12/x86_64/update/ "SLE-Manager-Tools 12 Updates"
 
-RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/SLE_12/ "testpackages"
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/SLE_12_SP2/ "testpackages"
 
-RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/next/SLE_12/ "salt"
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing/SLE_12_SP2/ "salt"
 RUN zypper mr -p 1 salt
 
 RUN zypper --non-interactive --gpg-auto-import-keys ref
 RUN zypper -n in rpm-build
+RUN zypper -n in --oldpackage libdbus-1-3-1.8.16-19.1.x86_64
+
 
 RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh

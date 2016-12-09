@@ -13,6 +13,7 @@ COPY bin/install_salt.sh /root/bin/install_salt.sh
 COPY bin/lastchangelog /root/bin/lastchangelog
 COPY Makefile /root/Makefile
 
+# Use your credentials for the 'nu.novell' domain within the URL, in case required
 RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SERVER/12/x86_64/product/ "SLES 12 Pool"
 RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SERVER/12/x86_64/update/ "SLES 12 Updates"
 RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SDK/12/x86_64/product/ "SLE-SDK 12 Pool"
@@ -28,7 +29,6 @@ RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/sa
 RUN zypper mr -p 1 salt
 
 RUN zypper --non-interactive --gpg-auto-import-keys ref
-
 RUN zypper -n in rpm-build
 
 RUN /root/bin/add_packages.sh
