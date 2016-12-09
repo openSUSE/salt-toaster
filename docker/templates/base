@@ -1,0 +1,22 @@
+# Container used to run salt tests focusing on SUSE Manager use cases
+#
+# NAME                  toaster-{{ version }}-{{ flavor }}
+# VERSION               0
+{% block description %}{% endblock description %}
+
+COPY bin/add_packages.sh /root/bin/add_packages.sh
+COPY bin/unpack_salt.sh /root/bin/unpack_salt.sh
+COPY bin/install_salt.sh /root/bin/install_salt.sh
+COPY bin/lastchangelog /root/bin/lastchangelog
+COPY Makefile /root/Makefile
+
+# Use your credentials for the 'nu.novell' domain within the URL, in case required
+{%- block baserepos %}{% endblock baserepos -%}
+
+{%- block testpackages %}{% endblock testpackages %}
+
+{%- block salt %}{% endblock salt %}
+
+{%- block install %}{% endblock install %}
+
+{%- block entrypoint %}{% endblock entrypoint %}

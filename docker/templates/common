@@ -1,0 +1,42 @@
+{% extends "base" %}
+
+{%- block description %}
+FROM {{ parent_image }}
+MAINTAINER Mihai Dinca: "mdinca@suse.com"
+{% endblock description -%}
+
+# Use your credentials for the 'nu.novell' domain within the URL, in case required
+{%- block baserepos %}
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SERVER/{{ novel_repo_name }}/x86_64/product/ "SLES {{ repo_label }} Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SERVER/{{ novel_repo_name }}/x86_64/update/ "SLES {{ repo_label }} Updates"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SDK/{{ novel_repo_name }}/x86_64/product/ "SLE-SDK {{ repo_label }} Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SDK/{{ novel_repo_name }}/x86_64/update/ "SLE-SDK {{ repo_label }} Updates"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Module-Public-Cloud/{{ major }}/x86_64/product/ "SLE-Module-Public-Cloud {{ major }} Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Module-Public-Cloud/{{ major }}/x86_64/update/ "SLE-Module-Public-Cloud {{ major }} Updates"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Manager-Tools/{{ major }}/x86_64/product/ "SLE-Manager-Tools {{ major }} Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Manager-Tools/{{ major }}/x86_64/update/ "SLE-Manager-Tools {{ major }} Updates"
+{% endblock baserepos -%}
+
+{%- block testpackages %}
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/{{ salt_repo_name }}/ "testpackages"
+{% endblock testpackages %}
+
+{%- block salt %}
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/{{ salt_repo_url_flavor }}/{{ salt_repo_name.upper() }}/ "salt"
+RUN zypper mr -p 1 salt
+{% endblock salt %}
+
+{%- block install %}
+RUN zypper --non-interactive --gpg-auto-import-keys ref
+RUN zypper -n in rpm-build
+
+{%- block extra_steps %}{% endblock extra_steps %}
+
+RUN /root/bin/add_packages.sh
+RUN /root/bin/install_salt.sh
+{% endblock install %}
+
+{%- block entrypoint %}
+ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
+CMD ["default"]
+{% endblock entrypoint %}

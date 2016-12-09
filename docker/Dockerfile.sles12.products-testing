@@ -1,6 +1,6 @@
 # Container used to run salt tests focusing on SUSE Manager use cases
 #
-# NAME                  toaster-sles12-products-next
+# NAME                  toaster-sles12-products-testing
 # VERSION               0
 
 FROM registry.mgr.suse.de/sles12
@@ -25,7 +25,7 @@ RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Manager-Tools/12/x86_64/u
 
 RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/SLE_12/ "testpackages"
 
-RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/next/SLE_12/ "salt"
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/testing/SLE_12/ "salt"
 RUN zypper mr -p 1 salt
 
 RUN zypper --non-interactive --gpg-auto-import-keys ref
