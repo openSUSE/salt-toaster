@@ -94,7 +94,7 @@ def generate_dockerfile(version, flavor):
         'sles11sp3': 'sles11',
         'sles11sp4': 'sles11'
     }
-    template = env.get_template(TEMPLATES.get(version, 'common'))
+    template = env.get_template(TEMPLATES.get(version, 'sles'))
     parameters = get_template_parameters(version, flavor)
     parameters = apply_overrides(parameters)
     content = template.render(**parameters)
