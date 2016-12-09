@@ -104,4 +104,8 @@ def generate_dockerfile(version, flavor):
 
 
 def generate_pytest_config(version, flavor):
-    pass
+    parameters = get_template_parameters(version, flavor)
+    env = Environment(loader=FileSystemLoader('./configs/templates', followlinks=True))
+    template = env.get_template(parameters['vendor'])
+    content = template.render(**parameters)
+    (path('configs') / 'suse.tests'/ version / "{}.cfg".format(flavor)).write(content)
