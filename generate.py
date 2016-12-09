@@ -25,9 +25,9 @@ FLAVORS = [
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--version')
-    parser.add_argument('--flavor')
-    parser.add_argument('--all', action="store_true", default=False)
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('--all', action="store_true", default=False)
+    group.add_argument('--version-and-flavor', nargs=2)
     args = parser.parse_args()
     if args.all:
         matrix = itertools.product(VERSIONS, FLAVORS)
@@ -35,8 +35,8 @@ def main():
             generate_dockerfile(*params)
             generate_pytest_config(*params)
     else:
-        generate_dockerfile(args.version, args.flavor)
-        generate_pytest_config(args.version, args.flavor)
+        generate_dockerfile(*args.version_and_flavor)
+        generate_pytest_config(*args.version_and_flavor)
 
 
 if __name__ == '__main__':
