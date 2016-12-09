@@ -68,20 +68,11 @@ def test_ssh_cmdrun(master):
     assert master.salt_ssh("cmd.run 'uname'") == 'Linux'
 
 
-@pytest.mark.tags('rhel')
-def test_ssh_pkg_info_rhel(master):
+def test_ssh_pkg_info(master):
     '''
     Test pkg.info_instaled on RHEL series
     '''
     assert master.salt_ssh("pkg.info_installed python").get('python', {}).get('install_date')
-
-
-@pytest.mark.tags('sles', 'leap')
-def test_ssh_pkg_info_sles(master):
-    '''
-    Test pkg.info_installed on SLES series
-    '''
-    assert master.salt_ssh("pkg.info_installed python").get('python', {}).get('installed')
 
 
 def test_ssh_pkg_install(master):
