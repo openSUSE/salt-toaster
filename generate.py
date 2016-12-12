@@ -1,6 +1,6 @@
 import argparse
 import itertools
-from utils import generate_dockerfile, generate_pytest_config
+from utils import generate_pytest_config
 
 
 VERSIONS = [

@@ -1,8 +1,0 @@
-{% extends "rhel" %}
-
-{%- block description %}
-# list rhel6 tags
-# curl -L https://registry.hub.docker.com/v1/repositories/rhel6/tags --http1.0 | python -m json.tool
-FROM rhel6:6.8-124
-MAINTAINER Mihai Dinca: "mdinca@suse.com"
-{% endblock description -%}

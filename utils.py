@@ -87,22 +87,6 @@ def apply_overrides(params):
     return params
 
 
-def generate_dockerfile(version, flavor):
-    env = Environment(loader=FileSystemLoader('./docker/templates', followlinks=True))
-    TEMPLATES = {
-        'sles12sp2': 'sles12sp2-products-next',
-        'sles11sp3': 'sles11',
-        'sles11sp4': 'sles11',
-        'rhel7': 'rhel7',
-        'rhel6': 'rhel6'
-    }
-    parameters = get_template_parameters(version, flavor)
-    template = env.get_template(TEMPLATES.get(version, parameters['vendor']))
-    parameters = apply_overrides(parameters)
-    content = template.render(**parameters)
-    (path('docker') / 'Dockerfile.{}.{}'.format(version, flavor)).write(content)
-
-
 def generate_pytest_config(version, flavor):
     parameters = get_template_parameters(version, flavor)
     env = Environment(loader=FileSystemLoader('./configs/templates', followlinks=True))
