@@ -9,7 +9,7 @@ GRAINS_EXPECTATIONS = {
     },
     'rhel7': {
         'os': 'RedHat',
-        'oscodename': 'Red Hat Enterprise Linux Server 7.2 (Maipo)',
+        'oscodename': 'Maipo',
         'os_family': 'RedHat',
         'osfullname': 'Red Hat Enterprise Linux Server',
         'osrelease': '7.2',
