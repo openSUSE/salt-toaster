@@ -28,7 +28,7 @@ RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/sa
 RUN yum -y --nogpgcheck install which make rpm-build quilt python-pip tar iproute bind-utils net-tools
 RUN yum -y --nogpgcheck install python-devel python-sphinx test-package
 RUN yum -y --nogpgcheck install salt-master salt-minion salt-proxy
-RUN yum -y --nogpgcheck install python-salt-testing python-pytest openssh-clients openssh-server python-apache-libcloud
+RUN yum -y --nogpgcheck install python-salt-testing pytest openssh-clients openssh-server python-apache-libcloud
 
 ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
 CMD ["default"]
