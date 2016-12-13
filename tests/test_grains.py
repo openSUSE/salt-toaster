@@ -41,12 +41,9 @@ def test_get_os_family(minion, expected):
     assert minion.salt_call('grains.get', key) == expected[key]
 
 
+@pytest.mark.xfailtags('salt8.7')
 def test_get_oscodename(minion, expected):
     key = 'oscodename'
-    # Do not test "2015.8.7 (Beryllium)"
-    if '2015.8.7' in minion.salt_call('cmd.run', '"salt --version"'):
-        return
-
     assert minion.salt_call('grains.get', key) == expected[key]
 
 
