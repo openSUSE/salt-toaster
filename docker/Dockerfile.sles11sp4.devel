@@ -2,13 +2,23 @@
 #
 # NAME                  toaster-sles11sp4-devel
 # VERSION               0
-FROM registry.mgr.suse.de/toaster-sles11sp4-products
+
+FROM registry.mgr.suse.de/suma-3.0-salt-sle11sp4
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
 
+COPY bin/add_packages.sh /root/bin/add_packages.sh
+COPY bin/unpack_salt.sh /root/bin/unpack_salt.sh
+COPY bin/install_salt.sh /root/bin/install_salt.sh
+COPY bin/lastchangelog /root/bin/lastchangelog
+COPY Makefile /root/Makefile
+
+
 COPY bin/prepare_devel.sh /root/bin
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/devel/SLE_11_SP4/ "salt"
+RUN zypper mr -p 1 salt
 
-RUN zypper --non-interactive rm salt
-RUN /root/bin/prepare_devel.sh
+RUN /root/bin/add_packages.sh
+RUN /root/bin/install_salt.sh
 
-ADD salt.archive /salt/src/salt-devel
-RUN pip install -e /salt/src/salt-devel
+ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
+CMD ["default"]

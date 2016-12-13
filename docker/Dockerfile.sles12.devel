@@ -2,13 +2,42 @@
 #
 # NAME                  toaster-sles12-devel
 # VERSION               0
-FROM registry.mgr.suse.de/toaster-sles12-products
+
+FROM registry.mgr.suse.de/sles12
 MAINTAINER Mihai Dinca: "mdinca@suse.com"
 
-COPY bin/prepare_devel.sh /root/bin
+COPY bin/add_packages.sh /root/bin/add_packages.sh
+COPY bin/unpack_salt.sh /root/bin/unpack_salt.sh
+COPY bin/install_salt.sh /root/bin/install_salt.sh
+COPY bin/lastchangelog /root/bin/lastchangelog
+COPY Makefile /root/Makefile
 
-RUN zypper --non-interactive rm salt
+
+COPY bin/prepare_devel.sh /root/bin
+# Use your credentials for the 'nu.novell' domain within the URL, in case required
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SERVER/12/x86_64/product/ "SLES 12 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SERVER/12/x86_64/update/ "SLES 12 Updates"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-SDK/12/x86_64/product/ "SLE-SDK 12 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-SDK/12/x86_64/update/ "SLE-SDK 12 Updates"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Module-Public-Cloud/12/x86_64/product/ "SLE-Module-Public-Cloud 12 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Module-Public-Cloud/12/x86_64/update/ "SLE-Module-Public-Cloud 12 Updates"
+RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Manager-Tools/12/x86_64/product/ "SLE-Manager-Tools 12 Pool"
+RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Manager-Tools/12/x86_64/update/ "SLE-Manager-Tools 12 Updates"
+
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/SLE_12/ "testpackages"
+
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/devel/SLE_12/ "salt"
+RUN zypper mr -p 1 salt
+
+RUN zypper --non-interactive --gpg-auto-import-keys ref
+RUN zypper -n in rpm-build
+
+RUN /root/bin/add_packages.sh
 RUN /root/bin/prepare_devel.sh
 
 ADD salt.archive /salt/src/salt-devel
 RUN pip install -e /salt/src/salt-devel
+
+
+ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
+CMD ["default"]
