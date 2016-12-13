@@ -67,3 +67,14 @@ def test_archive_extracted(master, minion):
     '''
     resp = master.salt(minion['id'], "state.apply archextract")[minion['id']]
     assert resp['archive_|-extract-zip-archive_|-/tmp/_|-extracted']['result']
+
+
+@pytest.mark.tags('rhel')
+def test_yum_plugin_installed(master, minion):
+    path = '/usr/etc/yum/pluginconf.d/yumnotify.conf'
+    out = master.salt(minion['id'], 'cmd.run "file {}"'.format(path))[minion['id']]
+    assert out == '{}: ASCII text'.format(path)
+
+    path = '/usr/share/yum-plugins/yumnotify.py'
+    out = master.salt(minion['id'], 'cmd.run "file {}"'.format(path))[minion['id']]
+    assert out == '{}: Python script, ASCII text executable'.format(path)
