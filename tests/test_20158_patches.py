@@ -15,7 +15,16 @@ def module_config(request):
                         'archextract': 'tests/sls/archextract.sls',
                     }
                 },
-                'minions': [{'config': {}}, {'config': {}}]
+                'minions': [
+                    {
+                        "config": {
+                            "container__config__image": (
+                                request.config.getini('MINION_IMAGE') or
+                                request.config.getini('IMAGE')
+                            )
+                        }
+                    }
+                ]
             }
         ]
     }
