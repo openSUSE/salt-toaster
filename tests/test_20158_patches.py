@@ -78,3 +78,10 @@ def test_yum_plugin_installed(master, minion):
     path = '/usr/share/yum-plugins/yumnotify.py'
     out = master.salt(minion['id'], 'cmd.run "file {}"'.format(path))[minion['id']]
     assert out == '{}: Python script, ASCII text executable'.format(path)
+
+
+@pytest.mark.xfailtags('rhel', 'sles', 'leap')
+@pytest.mark.tags('sles', 'leap')
+def test_change_tz(master, minion):
+    assert master.salt(minion['id'], "timezone.set_zone UTC")[minion['id']]
+    assert master.salt(minion['id'], "timezone.get_zone")[minion['id']] == 'UTC'
