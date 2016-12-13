@@ -26,12 +26,12 @@ RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/sa
 RUN yum-config-manager --add-repo http://download.opensuse.org/repositories/home:/mdinca:/branches:/systemsmanagement:/saltstack:/products:/next/RHEL_6
 RUN rpm --import http://download.opensuse.org/repositories/home:/mdinca:/branches:/systemsmanagement:/saltstack:/products:/next/RHEL_6//repodata/repomd.xml.key
 
-RUN yum -y --nogpgcheck install which make rpm-build quilt tar iproute bind-utils net-tools
+RUN yum -y --nogpgcheck install which make gcc-c++ rpm-build quilt tar iproute bind-utils net-tools
 RUN yum -y --nogpgcheck install python-devel test-package
 RUN yum -y --nogpgcheck install salt-master salt-minion salt-proxy
 RUN yum -y --nogpgcheck install python-salt-testing openssh-clients openssh-server python-apache-libcloud
 RUN python /root/get-pip.py
-RUN pip install pytest unittest2 salttesting
+RUN pip install pytest unittest2 salttesting mock==1.0.0 timelib boto
 
 ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
 CMD ["default"]
