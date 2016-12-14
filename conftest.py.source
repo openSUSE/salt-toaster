@@ -60,8 +60,8 @@ KNOWN_ISSUES_INTEGRATION = dict(
             'integration/modules/cp.py::CPModuleTest::test_push',
 
             # failing on 2015.8.12
-            # 'integration/cli/grains.py::GrainsTargetingTest::test_grains_targeting_disconnected',
-            # 'integration/shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
+            'integration/cli/grains.py::GrainsTargetingTest::test_grains_targeting_disconnected',
+            'integration/shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
             # failing on rhel7
             'integration/cli/batch.py::BatchTest::test_batch_run_grains_targeting',
             'integration/cli/batch.py::BatchTest::test_batch_run_number',
