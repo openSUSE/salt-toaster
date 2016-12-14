@@ -23,9 +23,6 @@ def module_config(request, container):
                             "master_tops": {
                                 "toptest": True
                             },
-                            "file_roots": {
-                                "base": ['/salt-toaster/tests/sls/ssh']
-                            }
                         },
                     },
                     "container__config__salt_config__apply_states": {
