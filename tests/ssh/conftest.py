@@ -17,7 +17,13 @@ def module_config(request, container):
                     "container__config__salt_config__extra_configs": {
                         "thin_extra_mods": {
                             "thin_extra_mods": "msgpack"
-                        }
+                        },
+                        "custom_tops": {
+                            "extension_modules": "/salt-toaster/tests/sls/ssh/xmod",
+                            "master_tops": {
+                                "toptest": True
+                            },
+                        },
                     },
                     "container__config__salt_config__apply_states": {
                         "top": "tests/sls/ssh/top.sls",
@@ -61,7 +67,10 @@ def master(setup):
     def _cmd(master, cmd):
         SSH = "salt-ssh -i --out json --key-deploy --passwd {0} {1} {{0}}".format(
             PASSWORD, TARGET_ID)
-        return json.loads(
-            master['container'].run(SSH.format(cmd))).get(TARGET_ID)
+        out = master['container'].run(SSH.format(cmd))
+        # Cut off possible STDOUT errors
+        if "{" in out:
+            out = '{' + out.split('{', 1)[-1]
+        return json.loads(out).get(TARGET_ID)
     master.salt_ssh = partial(_cmd, master)
     return master
