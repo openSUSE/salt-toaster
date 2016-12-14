@@ -105,3 +105,11 @@ def test_ssh_pkg_remove_sles(master):
     out = master.salt_ssh("pkg.remove test-package")
     assert out.get('test-package', {}).get('old')
     assert not out.get('test-package', {}).get('new')
+
+
+def test_master_tops_support(master):
+    '''
+    Test https://github.com/saltstack/salt/pull/38021
+    '''
+    assert 'custom_top' in master.salt_ssh("state.show_top").get('base')
+
