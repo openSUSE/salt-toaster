@@ -9,18 +9,18 @@ def pytest_addoption(parser):
     parser.addini("tests_type", help="Typo of the tests being run", default='unit')
 
 
-KNOWN_ISSUES_INTEGRATION = dict(
-    ignore_list=dict(
-        common=[
+KNOWN_ISSUES_INTEGRATION = {
+    'ignore_list': {
+        'common': [
             'integration/files/file/base/*',           # should no be included
             'integration/utils/test_reactor.py',       # not yet implemented
             '*::SaltnadoTestCase::*',                  # these are not actual tests
             'integration/cloud/providers/msazure.py',
             'integration/modules/git.py'
         ],
-    ),
-    xfail_list=dict(
-        common=[
+    },
+    'xfail_list': {
+        'common': [
             'integration/shell/key.py::KeyTest::test_keys_generation_no_configdir',
             'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
 
@@ -84,19 +84,29 @@ KNOWN_ISSUES_INTEGRATION = dict(
             'integration/states/file.py::FileTest::test_issue_2227_file_append',
             'integration/states/handle_error.py::HandleErrorTest::test_handle_error',
         ],
-        testing=[
+        'testing': [
             'integration/modules/cp.py::CPModuleTest::test_push',  # fixed upstream
             'integration/modules/pkg.py::PkgModuleTest::test_pkg_info',  # passes locally
             'integration/states/archive.py::ArchiveTest::test_archive_extracted_skip_verify',  # skipped locally
             'integration/states/archive.py::ArchiveTest::test_archive_extracted_with_source_hash',  # skipped locally
-        ]
-    )
-)
+        ],
+        'rhel6/products': [
+            'integration/modules/state.py::StateModuleTest::test_onchanges_in_requisite',
+            'integration/modules/state.py::StateModuleTest::test_onchanges_requisite',
+            'integration/modules/state.py::StateModuleTest::test_onchanges_requisite_multiple'
+        ],
+        'rhel7/products': [
+            'integration/modules/state.py::StateModuleTest::test_onchanges_in_requisite',
+            'integration/modules/state.py::StateModuleTest::test_onchanges_requisite',
+            'integration/modules/state.py::StateModuleTest::test_onchanges_requisite_multiple'
+        ],
+    }
+}
 
 
-KNOWN_ISSUES_UNIT = dict(
-    ignore_list=dict(
-        common=[
+KNOWN_ISSUES_UNIT = {
+    'ignore_list': {
+        'common': [
             'unit/zypp_plugins_test.py', # BogusIO missing in zypp_plugin
             'unit/netapi/rest_tornado/test_handlers.py',
             'unit/returners/smtp_return_test.py',
@@ -109,9 +119,9 @@ KNOWN_ISSUES_UNIT = dict(
             # failing on 2015.8.12
             'unit/modules/darwin_sysctl_test.py',
         ],
-    ),
-    xfail_list=dict(
-        common=[
+    },
+    'xfail_list': {
+        'common': [
             # not working in docker containers
             'unit/modules/cmdmod_test.py::CMDMODTestCase::test_run',
             'unit/transport/tcp_test.py::BaseTCPReqCase::*',
@@ -147,8 +157,14 @@ KNOWN_ISSUES_UNIT = dict(
             'unit/config_test.py::ConfigTestCase::test_get_id_etc_hosts',
             'unit/config_test.py::ConfigTestCase::test_get_id_etc_hostname',
         ],
-    )
-)
+        'rhel6/products': [
+            'unit/states/pip_test.py::PipStateTest::test_install_requirements_parsing',
+        ],
+        'rhel7/products': [
+            'unit/states/pip_test.py::PipStateTest::test_install_requirements_parsing',
+        ]
+    }
+}
 
 
 KNOWN_ISSUES = {
