@@ -77,7 +77,8 @@ def test_yum_plugin_installed(master, minion):
 
     path = '/usr/share/yum-plugins/yumnotify.py'
     out = master.salt(minion['id'], 'cmd.run "file {}"'.format(path))[minion['id']]
-    assert out == '{}: Python script, ASCII text executable'.format(path)
+    assert '{}: Python script'.format(path) in out
+    assert 'text executable' in out
 
 
 @pytest.mark.xfailtags('rhel', 'sles', 'leap')
