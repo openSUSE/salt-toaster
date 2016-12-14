@@ -17,7 +17,16 @@ def module_config(request, container):
                     "container__config__salt_config__extra_configs": {
                         "thin_extra_mods": {
                             "thin_extra_mods": "msgpack"
-                        }
+                        },
+                        "custom_tops": {
+                            "extension_modules": "/salt-toaster/tests/sls/ssh/xmod",
+                            "master_tops": {
+                                "toptest": True
+                            },
+                            "file_roots": {
+                                "base": ['/salt-toaster/tests/sls/ssh']
+                            }
+                        },
                     },
                     "container__config__salt_config__apply_states": {
                         "top": "tests/sls/ssh/top.sls",
