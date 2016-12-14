@@ -95,6 +95,9 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/modules/state.py::StateModuleTest::test_onchanges_requisite',
             'integration/modules/state.py::StateModuleTest::test_onchanges_requisite_multiple'
         ],
+        'rhel6/products-next': [
+            'integration/shell/call.py::CallTest::test_text_output',
+        ],
         'rhel7/products': [
             'integration/modules/state.py::StateModuleTest::test_onchanges_in_requisite',
             'integration/modules/state.py::StateModuleTest::test_onchanges_requisite',
