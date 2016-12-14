@@ -68,6 +68,9 @@ def master(setup):
         SSH = "salt-ssh -i --out json --key-deploy --passwd {0} {1} {{0}}".format(
             PASSWORD, TARGET_ID)
         out = master['container'].run(SSH.format(cmd))
+        # Cut off possible STDOUT errors
+        if "{" in out:
+            out = '{' + out.split('{', 1)[-1]
         return json.loads(out).get(TARGET_ID)
     master.salt_ssh = partial(_cmd, master)
     return master
