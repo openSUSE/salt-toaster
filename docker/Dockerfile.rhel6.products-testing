@@ -22,7 +22,6 @@ RUN rpm --import http://centos.s.uw.edu/centos/6/os/x86_64/RPM-GPG-KEY-CentOS-6
 
 RUN yum-config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/RHEL_6/
 RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/RHEL_6/repodata/repomd.xml.key
-
 RUN yum-config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/testing/RHEL_6
 RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/testing/RHEL_6//repodata/repomd.xml.key
 RUN yum -y --nogpgcheck install which make gcc-c++ rpm-build quilt tar iproute bind-utils net-tools
