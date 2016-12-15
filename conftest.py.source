@@ -25,6 +25,13 @@ KNOWN_ISSUES_INTEGRATION = {
         'rhel6/products': [],
         'rhel7/products': [],
         'rhel6/products-next': [],
+        'sles11sp4/products-next': [
+            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
+            'integration/modules/cp.py::CPModuleTest::test_push',
+            'integration/modules/pillar.py::PillarModuleTest::test_pillar_items',
+            'integration/shell/call.py::CallTest::test_issue_2731_masterless',
+            'integration/shell/key.py::KeyTest::test_keys_generation_no_configdir',
+        ],
         'sles12sp1/products-next': [
             'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
             'integration/modules/cp.py::CPModuleTest::test_push',
