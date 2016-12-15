@@ -20,89 +20,11 @@ KNOWN_ISSUES_INTEGRATION = {
         ],
     },
     'xfail_list': {
-        'common': [
-            'integration/shell/key.py::KeyTest::test_keys_generation_no_configdir',
-            'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
-
-            # failing only with in jenkins
-            'integration/shell/call.py::CallTest::test_issue_2731_masterless',
-            'integration/loader/ext_modules.py::LoaderOverridesTest::test_overridden_internal',
-            'integration/cli/batch.py::BatchTest::test_batch_run',
-            'integration/client/standard.py::StdTest::test_full_returns',
-            'integration/client/kwarg.py::StdTest::test_cli',
-            'integration/client/kwarg.py::StdTest::test_full_returns',
-            'integration/client/kwarg.py::StdTest::test_iter',
-            'integration/modules/state.py::StateModuleTest::test_exclude',
-            'integration/modules/state.py::StateModuleTest::test_include',
-            'integration/modules/state.py::StateModuleTest::test_issue_1876_syntax_error',
-            'integration/modules/state.py::StateModuleTest::test_issue_1879_too_simple_contains_check',
-            'integration/modules/state.py::StateModuleTest::test_issue_1896_file_append_source',
-            'integration/modules/state.py::StateModuleTest::test_pydsl',
-            'integration/modules/state.py::StateModuleTest::test_show_highstate',
-            'integration/modules/state.py::StateModuleTest::test_show_lowstate',
-
-            # failing only with jenkins + sles12
-            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
-
-            # failing only with jenkins + sles12sp1
-            'integration/output/output.py::OutputReturnTest::test_output_json',
-            'integration/output/output.py::OutputReturnTest::test_output_raw',
-            'integration/output/output.py::OutputReturnTest::test_output_txt',
-            'integration/output/output.py::OutputReturnTest::test_output_yaml',
-            'integration/output/output.py::OutputReturnTest::test_output_nested',
-            'integration/output/output.py::OutputReturnTest::test_output_pprint',
-            'integration/output/output.py::OutputReturnTest::test_output_quiet',
-
-            'integration/states/git.py::GitTest::*',
-            'integration/modules/pkg.py::PkgModuleTest::test_pkg_info',
-            'integration/modules/pillar.py::PillarModuleTest::test_pillar_items',
-            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
-            'integration/modules/cp.py::CPModuleTest::test_push',
-
-            # failing on 2015.8.12
-            'integration/cli/grains.py::GrainsTargetingTest::test_grains_targeting_disconnected',
-            'integration/shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
-            # failing on rhel7
-            'integration/cli/batch.py::BatchTest::test_batch_run_grains_targeting',
-            'integration/cli/batch.py::BatchTest::test_batch_run_number',
-            'integration/cli/grains.py::GrainsTargetingTest::test_grains_targeting_minion_id_running',
-            'integration/cli/grains.py::GrainsTargetingTest::test_grains_targeting_os_running',
-            'integration/client/kwarg.py::StdTest::test_iter_no_block',
-            'integration/client/kwarg.py::StdTest::test_kwarg_type',
-            'integration/client/standard.py::StdTest::test_cli',
-            'integration/runners/jobs.py::ManageTest::test_active',
-            'integration/runners/jobs.py::ManageTest::test_lookup_jid',
-            'integration/shell/call.py::CallTest::test_issue_14979_output_file_permissions',
-            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
-            'integration/shell/call.py::CallTest::test_json_out_indent',
-            'integration/shell/call.py::CallTest::test_user_delete_kw_output',
-            'integration/shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
-            'integration/shell/matcher.py::MatchTest::test_grain',
-            'integration/shell/matcher.py::MatchTest::test_ipcidr',
-            'integration/shell/matcher.py::MatchTest::test_list',
-            'integration/states/compiler.py::CompileTest::test_jinja_deep_error',
-            'integration/states/file.py::FileTest::test_issue_2227_file_append',
-            'integration/states/handle_error.py::HandleErrorTest::test_handle_error',
-        ],
-        'testing': [
-            'integration/modules/cp.py::CPModuleTest::test_push',  # fixed upstream
-            'integration/modules/pkg.py::PkgModuleTest::test_pkg_info',  # passes locally
-            'integration/states/archive.py::ArchiveTest::test_archive_extracted_skip_verify',  # skipped locally
-            'integration/states/archive.py::ArchiveTest::test_archive_extracted_with_source_hash',  # skipped locally
-        ],
-        'rhel6/products': [
-            'integration/modules/state.py::StateModuleTest::test_onchanges_in_requisite',
-            'integration/modules/state.py::StateModuleTest::test_onchanges_requisite',
-            'integration/modules/state.py::StateModuleTest::test_onchanges_requisite_multiple'
-        ],
-        'rhel6/products-next': [
-            'integration/shell/call.py::CallTest::test_text_output',
-        ],
-        'rhel7/products': [
-            'integration/modules/state.py::StateModuleTest::test_onchanges_in_requisite',
-            'integration/modules/state.py::StateModuleTest::test_onchanges_requisite',
-            'integration/modules/state.py::StateModuleTest::test_onchanges_requisite_multiple'
-        ],
+        'products-next': [],
+        'testing': [],
+        'rhel6/products': [],
+        'rhel6/products-next': [],
+        'rhel7/products': [],
     }
 }
 
