@@ -124,7 +124,10 @@ KNOWN_ISSUES_UNIT = {
         ],
     },
     'xfail_list': {
-        'common': [
+        'rhel6/products': [
+            'unit/states/pip_test.py::PipStateTest::test_install_requirements_parsing',
+        ],
+        'products-next': [
             # # failing in jenkins + sles12 sles12sp1
             # 'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_simple',
             # 'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_timeout',
@@ -147,11 +150,10 @@ KNOWN_ISSUES_UNIT = {
             'unit/transport/tcp_test.py::BaseTCPReqCase::runTest',
             'unit/utils/network.py::NetworkTestCase::test_interfaces_ifconfig_solaris',
         ],
-        'rhel6/products': [
-            'unit/states/pip_test.py::PipStateTest::test_install_requirements_parsing',
-        ],
         'rhel6/products-next': [],
-        'rhel7/products-next': [],
+        'rhel7/products-next': [
+            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_simple',
+        ],
         'sles11sp3/products-next': [],
         'sles11sp4/products-next': [],
         'rhel7/products': [
