@@ -155,7 +155,9 @@ KNOWN_ISSUES_UNIT = {
             'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_simple',
         ],
         'sles11sp3/products-next': [],
-        'sles11sp4/products-next': [],
+        'sles11sp4/products-next': [
+            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_set_event_handler',
+        ],
         'rhel7/products': [
             'unit/states/pip_test.py::PipStateTest::test_install_requirements_parsing',
         ]
