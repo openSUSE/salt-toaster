@@ -1,4 +1,6 @@
 import pytest
+import hashlib
+import time
 from tests.common import GRAINS_EXPECTATIONS
 
 
@@ -113,3 +115,22 @@ def test_master_tops_support(master):
     '''
     assert 'custom_top' in master.salt_ssh("state.show_top").get('base')
 
+
+def test_ssh_port_forwarding(master):
+    '''
+    Test SSH port forwarding feature.
+    PR: https://github.com/saltstack/salt/pull/38021
+    '''
+    msg = hashlib.sha256(str(time.time())).hexdigest()
+    nc = "/salt-toaster/tests/scripts/netsend.sh"
+    of = "/tmp/socket-8888.txt"
+    loc_port = 8888
+    rem_port = 9999
+
+    master.salt_ssh("cmd.run 'zypper --non-interactive in netcat-openbsd'")
+    master['container'].run("/salt-toaster/tests/scripts/socket_server.py {lp} {of}".format(lp=loc_port, of=of))
+    master.salt_ssh("--remote-port-forwards={rp}:127.0.0.1:{lp} cmd.run '{nc} {msg} {rp}'".format(
+        nc=nc, msg=msg, lp=loc_port, rp=rem_port)
+    )
+
+    assert master['container'].run("cat {}".format(of)).strip() == msg

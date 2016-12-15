@@ -65,12 +65,8 @@ def master(setup):
     config, initconfig = setup
     master = config['masters'][0]['fixture']
     def _cmd(master, cmd):
-        SSH = "salt-ssh -i --out json --key-deploy --passwd {0} {1} {{0}}".format(
+        SSH = "salt-ssh -l quiet -i --out json --key-deploy --passwd {0} {1} {{0}}".format(
             PASSWORD, TARGET_ID)
-        out = master['container'].run(SSH.format(cmd))
-        # Cut off possible STDOUT errors
-        if "{" in out:
-            out = '{' + out.split('{', 1)[-1]
-        return json.loads(out).get(TARGET_ID)
+        return json.loads(master['container'].run(SSH.format(cmd))).get(TARGET_ID)
     master.salt_ssh = partial(_cmd, master)
     return master
