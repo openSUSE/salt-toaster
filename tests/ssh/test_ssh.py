@@ -116,10 +116,29 @@ def test_master_tops_support(master):
     assert 'custom_top' in master.salt_ssh("state.show_top").get('base')
 
 
-def test_ssh_port_forwarding(master):
+@pytest.mark.tags('rhel')
+def test_ssh_port_forwarding_rhel(master):
     '''
+    Platform: RHEL
     Test SSH port forwarding feature.
     PR: https://github.com/saltstack/salt/pull/38021
+    '''
+    ssh_port_forwarding(master, 'rhel')
+
+
+@pytest.mark.tags('sles', 'leap')
+def test_ssh_port_forwarding_sles(master):
+    '''
+    Platform: SLES
+    Test SSH port forwarding feature.
+    PR: https://github.com/saltstack/salt/pull/38021
+    '''
+    ssh_port_forwarding(master, 'sles')
+    
+
+def ssh_port_forwarding(master, platform):
+    '''
+    Test SSH port forwarding feature.
     '''
     msg = hashlib.sha256(str(time.time())).hexdigest()
     nc = "/salt-toaster/tests/scripts/netsend.sh"
@@ -127,7 +146,12 @@ def test_ssh_port_forwarding(master):
     loc_port = 8888
     rem_port = 9999
 
-    master.salt_ssh("cmd.run 'zypper --non-interactive in netcat-openbsd'")
+    if platform == 'sles':
+        netcat_install = "zypper --non-interactive in netcat-openbsd"
+    else:
+        netcat_install = 'yum install nc -y'
+
+    master.salt_ssh("cmd.run '{}'".format(netcat_install))
     master['container'].run("/salt-toaster/tests/scripts/socket_server.py {lp} {of}".format(lp=loc_port, of=of))
     master.salt_ssh("--remote-port-forwards={rp}:127.0.0.1:{lp} cmd.run '{nc} {msg} {rp}'".format(
         nc=nc, msg=msg, lp=loc_port, rp=rem_port)
