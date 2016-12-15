@@ -59,6 +59,8 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/modules/pkg.py::PkgModuleTest::test_pkg_info',
             'integration/shell/matcher.py::MatchTest::test_grain',
             'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
+            'integration/shell/call.py::CallTest::test_issue_14979_output_file_permissions',
+            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
         ],
     }
 }
