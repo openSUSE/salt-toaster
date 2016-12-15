@@ -174,7 +174,7 @@ def get_list(tests_type, name):
     flavor = os.environ.get('FLAVOR')
     assert name in ['ignore_list', 'xfail_list']
     return (
-        KNOWN_ISSUES[tests_type][name]['common'] +
+        (KNOWN_ISSUES[tests_type][name].get('common') or []) +
         (KNOWN_ISSUES[tests_type][name].get(flavor) or []) +
         (KNOWN_ISSUES[tests_type][name].get(version) or []) +
         (KNOWN_ISSUES[tests_type][name].get('{0}/{1}'.format(version, flavor)) or [])
