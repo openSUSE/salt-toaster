@@ -35,6 +35,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cli/grains.py::GrainsTargetingTest::test_grains_targeting_disconnected',
             'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
             'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
+            'integration/shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
         ],
         'rhel7/products-next': [
             'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
