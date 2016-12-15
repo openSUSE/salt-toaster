@@ -34,6 +34,16 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/shell/key.py::KeyTest::test_keys_generation_no_configdir',
             'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
         ],
+        'sles12sp2/products-next': [
+            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
+            'integration/modules/cp.py::CPModuleTest::test_push',
+            'integration/modules/pillar.py::PillarModuleTest::test_pillar_items',
+            'integration/modules/pkg.py::PkgModuleTest::test_pkg_info',
+            'integration/shell/call.py::CallTest::test_issue_2731_masterless',
+            'integration/shell/key.py::KeyTest::test_keys_generation_no_configdir',
+            'integration/shell/matcher.py::MatchTest::test_grain',
+            'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
+        ],
     }
 }
 
