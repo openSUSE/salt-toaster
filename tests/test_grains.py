@@ -41,7 +41,6 @@ def test_get_os_family(minion, expected):
     assert minion.salt_call('grains.get', key) == expected[key]
 
 
-@pytest.mark.xfailtags('salt8.7')
 def test_get_oscodename(minion, expected):
     key = 'oscodename'
     assert minion.salt_call('grains.get', key) == expected[key]

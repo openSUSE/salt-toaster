@@ -34,7 +34,7 @@ RUN zypper -n in --oldpackage libdbus-1-3-1.8.16-19.1.x86_64
 
 RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh
-
+RUN zypper -n in salt-other
 
 ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
 CMD ["default"]
