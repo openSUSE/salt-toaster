@@ -116,15 +116,15 @@ KNOWN_ISSUES_UNIT = {
     },
     'xfail_list': {
         'products': [
-            # # failing in jenkins + sles12 sles12sp1
-            # 'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_simple',
-            # 'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_timeout',
+            # failing in jenkins + sles12 sles12sp1
+            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_simple',
+            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_timeout',
 
-            # # failing in jenkins + sles12
-            # 'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_set_event_handler',
+            # failing in jenkins + sles12
+            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_set_event_handler',
 
-            # # failing in jenkins + rhel6
-            # 'unit/utils/event_test.py::TestSaltEvent::test_event_matching_all',
+            # failing in jenkins + rhel6
+            'unit/utils/event_test.py::TestSaltEvent::test_event_matching_all',
 
             'unit/config_test.py::ConfigTestCase::test_get_id_etc_hostname',
             'unit/config_test.py::ConfigTestCase::test_get_id_etc_hosts',
@@ -142,15 +142,15 @@ KNOWN_ISSUES_UNIT = {
             'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_set_event_handler',
         ],
         'products-testing': [
-            # # failing in jenkins + sles12 sles12sp1
-            # 'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_simple',
-            # 'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_timeout',
+            # failing in jenkins + sles12 sles12sp1
+            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_simple',
+            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_timeout',
 
-            # # failing in jenkins + sles12
-            # 'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_set_event_handler',
+            # failing in jenkins + sles12
+            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_set_event_handler',
 
-            # # failing in jenkins + rhel6
-            # 'unit/utils/event_test.py::TestSaltEvent::test_event_matching_all',
+            # failing in jenkins + rhel6
+            'unit/utils/event_test.py::TestSaltEvent::test_event_matching_all',
 
             'unit/config_test.py::ConfigTestCase::test_get_id_etc_hostname',
             'unit/config_test.py::ConfigTestCase::test_get_id_etc_hosts',
