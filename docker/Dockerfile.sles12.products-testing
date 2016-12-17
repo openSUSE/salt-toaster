@@ -32,7 +32,7 @@ RUN zypper -n in rpm-build
 
 RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh
-
+RUN zypper -n in salt-other
 
 ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
 CMD ["default"]
