@@ -110,9 +110,11 @@ KNOWN_ISSUES_UNIT = {
             'unit/conf_test.py::ConfTest::test_conf_minion_sample_is_commented', # we have uncommented custom config
             'unit/conf_test.py::ConfTest::test_conf_proxy_sample_is_commented', # we have uncommented custom config
             '*rsync_test.py::*',
-
-            # failing on 2015.8.12
             'unit/modules/darwin_sysctl_test.py',
+            'unit/modules/boto_vpc_test.py',
+            'unit/states/boto_cloudwatch_event_test.py',
+            'unit/states/boto_vpc_test.py',
+            'unit/utils/boto_test.py',
         ],
     },
     'xfail_list': {
