@@ -16,7 +16,8 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/utils/test_reactor.py',       # not yet implemented
             '*::SaltnadoTestCase::*',                  # these are not actual tests
             'integration/cloud/providers/msazure.py',
-            'integration/modules/git.py'
+            'integration/modules/git.py',
+            'integration/cloud/helpers/virtualbox.py',
         ],
     },
     'xfail_list': {
