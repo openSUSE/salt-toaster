@@ -1,8 +1,12 @@
 import pytest
 import hashlib
 import time
-from tests.common import GRAINS_EXPECTATIONS
 
+from saltcontainers.factories import ContainerFactory
+
+from tests.common import GRAINS_EXPECTATIONS
+from conftest import USER, PASSWORD
+import json
 
 def pytest_generate_tests(metafunc):
     '''
@@ -134,3 +138,34 @@ def test_ssh_port_forwarding(master):
     )
 
     assert master['container'].run("cat {}".format(of)).strip() == msg
+
+
+@pytest.fixture(scope="module")
+def sshdcontainer(request, salt_root, docker_client):
+    obj = ContainerFactory(
+        config__docker_client=docker_client,
+        config__image=request.config.getini('MINION_IMAGE') or request.config.getini('IMAGE'),
+        config__salt_config=None)
+
+    obj.run('ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -q -N ""')
+    obj.run('ssh-keygen -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key -q -N ""')
+    obj.run('ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -q -N ""')
+    obj.run('./tests/scripts/chpasswd.sh {}:{}'.format(USER, PASSWORD))
+    obj.run('/usr/sbin/sshd -p 2222')
+    obj.run('zypper --non-interactive rm salt')  # Remove salt from the image!!
+
+    request.addfinalizer(obj.remove)
+    return obj
+
+
+def test_ssh_option(master, sshdcontainer):
+    '''
+    Test test.ping working.
+    '''
+
+    master['container'].run("zypper --non-interactive in netcat-openbsd")
+    SSH = (
+        "salt-ssh -l quiet -i --out json --key-deploy --passwd admin123 "
+        "--ssh-option='ProxyCommand=\"nc {0} 2222\"' target network.ip_addrs"
+    ).format(sshdcontainer['ip'])
+    return json.loads(master['container'].run(SSH)).get('target') == sshdcontainer['ip']
