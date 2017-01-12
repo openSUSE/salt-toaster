@@ -19,6 +19,16 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/modules/git.py',
             'integration/cloud/helpers/virtualbox.py',
         ],
+        'products-next': [
+            'integration/__init__.py::SaltDaemonScriptBase::runTest',
+            'integration/__init__.py::SaltDaemonScriptBase::runTest',
+            'integration/__init__.py::SaltMinion::runTest',
+            'integration/__init__.py::SaltMinion::runTest',
+            'integration/__init__.py::SaltMaster::runTest',
+            'integration/__init__.py::SaltMaster::runTest',
+            'integration/__init__.py::SaltSyndic::runTest',
+            'integration/__init__.py::SaltSyndic::runTest',
+        ]
     },
     'xfail_list': {
         'products':[
@@ -94,6 +104,88 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
             'integration/shell/call.py::CallTest::test_issue_14979_output_file_permissions',
             'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
+        ],
+        'products-next': [
+            'integration/cloud/providers/virtualbox.py::BaseVirtualboxTests::test_get_manager',
+            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
+
+            'integration/loader/ext_grains.py::LoaderGrainsTest::test_grains_overwrite',
+            'integration/loader/ext_modules.py::LoaderOverridesTest::test_overridden_internal',
+            'integration/modules/decorators.py::DecoratorTest::test_depends',
+            'integration/modules/decorators.py::DecoratorTest::test_depends_will_not_fallback',
+            'integration/modules/decorators.py::DecoratorTest::test_missing_depends_will_fallback',
+
+            'integration/runners/fileserver.py::FileserverTest::test_symlink_list',
+
+            'integration/shell/call.py::CallTest::test_issue_14979_output_file_permissions',
+            'integration/shell/call.py::CallTest::test_issue_2731_masterless',
+
+            'integration/shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
+
+            'integration/shell/matcher.py::MatchTest::test_grain',
+            'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
+        ],
+        'rhel6/products-next': [
+            'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
+            'integration/cloud/providers/virtualbox.py::CloneVirtualboxTests::test_create_machine',
+            'integration/cloud/providers/virtualbox.py::BootVirtualboxTests::test_start_stop',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_attributes',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistant_attribute_with_default',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistant_attributes',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
+            'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
+            'integration/runners/state.py::StateRunnerTest::test_state_event',
+            'integration/shell/call.py::CallTest::test_default_output',
+            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
+            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
+            'integration/shell/matcher.py::MatchTest::test_compound',
+            'integration/shell/matcher.py::MatchTest::test_glob',
+            'integration/shell/matcher.py::MatchTest::test_ipcidr',
+            'integration/shell/matcher.py::MatchTest::test_list',
+            'integration/shell/matcher.py::MatchTest::test_nodegroup',
+            'integration/shell/matcher.py::MatchTest::test_pillar',
+            'integration/shell/matcher.py::MatchTest::test_regex',
+
+            'integration/states/handle_error.py::HandleErrorTest::test_handle_error',
+            'integration/states/handle_iorder.py::HandleOrderTest::test_handle_iorder',
+            'integration/states/host.py::HostTest::test_present',
+            'integration/states/match.py::StateMatchTest::test_issue_2167_ipcidr_no_AttributeError',
+
+            'integration/states/ssh.py::SSHKnownHostsStateTest::test_absent',
+            'integration/states/ssh.py::SSHKnownHostsStateTest::test_present',
+            'integration/states/ssh.py::SSHKnownHostsStateTest::test_present_fail',
+
+            'integration/wheel/key.py::KeyWheelModuleTest::test_list_all',
+        ],
+        'rhel7/products-next': [
+            'integration/shell/matcher.py::MatchTest::test_compound',
+            'integration/shell/matcher.py::MatchTest::test_list',
+            'integration/shell/matcher.py::MatchTest::test_nodegroup',
+            'integration/shell/matcher.py::MatchTest::test_pillar',
+            'integration/shell/matcher.py::MatchTest::test_regex',
+            'integration/states/host.py::HostTest::test_present',
+
+            'integration/states/ssh.py::SSHKnownHostsStateTest::test_absent',
+            'integration/states/ssh.py::SSHKnownHostsStateTest::test_present',
+            'integration/states/ssh.py::SSHKnownHostsStateTest::test_present_fail',
+        ],
+        'sles12sp1/products-next': [
+            'integration/shell/call.py::CallTest::test_default_output',
+            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
+            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
+            'integration/shell/matcher.py::MatchTest::test_ipcidr',
+            'integration/shell/matcher.py::MatchTest::test_list',
+
+            'integration/states/ssh.py::SSHKnownHostsStateTest::test_absent',
+            'integration/states/ssh.py::SSHKnownHostsStateTest::test_present',
+        ],
+        'sles12sp2/products-next': [
+            'integration/shell/matcher.py::MatchTest::test_compound',
+            'integration/shell/matcher.py::MatchTest::test_ipcidr',
+            'integration/states/ssh.py::SSHKnownHostsStateTest::test_present',
+            'integration/states/ssh.py::SSHKnownHostsStateTest::test_present_fail',
         ],
     }
 }
