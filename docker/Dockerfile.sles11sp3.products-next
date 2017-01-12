@@ -17,6 +17,10 @@ RUN zypper mr -p 1 salt
 
 RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh
+RUN zypper -n in python-backports.ssl_match_hostname
+RUN rpm -e --quiet python-salt-testing
+RUN zypper -n install git
+RUN pip install -U --no-deps git+https://github.com/saltstack/salt-testing.git
 
 ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
 CMD ["default"]
