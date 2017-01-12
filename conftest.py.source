@@ -20,14 +20,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/helpers/virtualbox.py',
         ],
         'products-next': [
-            'integration/__init__.py::SaltDaemonScriptBase::runTest',
-            'integration/__init__.py::SaltDaemonScriptBase::runTest',
-            'integration/__init__.py::SaltMinion::runTest',
-            'integration/__init__.py::SaltMinion::runTest',
-            'integration/__init__.py::SaltMaster::runTest',
-            'integration/__init__.py::SaltMaster::runTest',
-            'integration/__init__.py::SaltSyndic::runTest',
-            'integration/__init__.py::SaltSyndic::runTest',
+            'integration/__init__.py',
         ]
     },
     'xfail_list': {
