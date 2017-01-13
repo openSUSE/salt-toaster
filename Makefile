@@ -102,7 +102,7 @@ docker_shell : EXEC=docker run -it $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLU
 else
 docker_shell : EXEC=docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
 endif
-CMD=/bin/bash
+docker_shell : CMD=/bin/bash
 docker_shell :: pull_image
 	$(EXEC)
 
