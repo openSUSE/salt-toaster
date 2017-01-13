@@ -39,5 +39,6 @@ ADD salt.archive /salt/src/salt-devel
 RUN pip install -e /salt/src/salt-devel
 
 
+
 ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
 CMD ["default"]

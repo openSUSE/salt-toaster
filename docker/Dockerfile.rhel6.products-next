@@ -30,6 +30,9 @@ RUN yum -y --nogpgcheck install salt-master salt-minion salt-proxy
 RUN yum -y --nogpgcheck install python-salt-testing openssh-clients openssh-server python-apache-libcloud
 RUN python /root/get-pip.py
 RUN pip install pytest unittest2 salttesting mock==1.0.0 timelib boto
+RUN pip uninstall -y salttesting
+RUN yum -y --nogpgcheck install git
+RUN pip install -U --no-deps git+https://github.com/saltstack/salt-testing.git
 
 
 ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
