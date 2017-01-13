@@ -23,12 +23,12 @@ RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Module-Public-Cloud/12/x
 RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Module-Public-Cloud/12/x86_64/update/ "SLE-Module-Public-Cloud 12 Updates"
 RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Manager-Tools/12/x86_64/product/ "SLE-Manager-Tools 12 Pool"
 RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Manager-Tools/12/x86_64/update/ "SLE-Manager-Tools 12 Updates"
- 
+
 RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/SLE_12_SP1/ "testpackages"
- 
-RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products/SLE_12_SP1/ "salt"
+
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/devel/SLE_12_SP1/ "salt"
 RUN zypper mr -p 1 salt
- 
+
 RUN zypper --non-interactive --gpg-auto-import-keys ref
 RUN zypper -n in rpm-build
 
