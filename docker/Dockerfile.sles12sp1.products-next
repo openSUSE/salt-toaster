@@ -34,7 +34,7 @@ RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh
 
 
-RUN rpm -e --quiet python-salt-testing
+RUN pip uninstall -y salttesting
 RUN zypper -n install git
 RUN pip install -U --no-deps git+https://github.com/saltstack/salt-testing.git
 
