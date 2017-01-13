@@ -6,6 +6,13 @@ ROOT_MOUNTPOINT       = /salt/src
 SALT_REPO_MOUNTPOINT  = $(ROOT_MOUNTPOINT)/salt-devel
 SALT_TESTS            = $(ROOT_MOUNTPOINT)/salt-*/tests
 DOCKER_VOLUMES        = -v "$(CURDIR)/:$(TOASTER_MOUNTPOINT)"
+
+ifeq ("$(FLAVOR)", "devel")
+ifdef SALT_REPO
+$(eval DOCKER_VOLUMES:=$(DOCKER_VOLUMES) -v $(SALT_REPO):$(SALT_REPO_MOUNTPOINT))
+endif
+endif
+
 EXPORTS += \
 	-e "SALT_TESTS=$(SALT_TESTS)" \
 	-e "VERSION=$(VERSION)" \
@@ -91,10 +98,11 @@ build_image :: archive-salt build
 	$(EXEC)
 
 ifndef RPDB_PORT
-docker_shell : EXEC=docker run -it $(EXPORTS) -e "CMD=/bin/bash" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
+docker_shell : EXEC=docker run -it $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
 else
-docker_shell : EXEC=docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) -e "CMD=/bin/bash" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
+docker_shell : EXEC=docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
 endif
+CMD=/bin/bash
 docker_shell :: pull_image
 	$(EXEC)
 
