@@ -117,6 +117,10 @@ KNOWN_ISSUES_INTEGRATION = {
 
             'integration/shell/matcher.py::MatchTest::test_grain',
             'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
+
+            'integration/modules/timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
+            'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_develop',
+            'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_head',
         ],
         'rhel6/products-next': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
@@ -151,6 +155,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_present_fail',
 
             'integration/wheel/key.py::KeyWheelModuleTest::test_list_all',
+            'integration/states/git.py::GitTest::test_latest_fast_forward',
         ],
         'rhel7/products-next': [
             'integration/shell/matcher.py::MatchTest::test_compound',
@@ -163,6 +168,17 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_absent',
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_present',
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_present_fail',
+            'integration/states/git.py::GitTest::test_latest_failure',
+            'integration/states/git.py::GitTest::test_latest_updated_remote_rev',
+            'integration/states/git.py::GitTest::test_latest_with_local_changes',
+            'integration/states/git.py::GitTest::test_present',
+            'integration/states/git.py::GitTest::test_present_empty_dir',
+            'integration/states/git.py::LocalRepoGitTest::test_renamed_default_branch',
+        ],
+        'sles12/products-next': [
+            'integration/states/git.py::GitTest::test_latest_empty_dir',
+            'integration/states/git.py::GitTest::test_latest_updated_remote_rev',
+            'integration/states/git.py::LocalRepoGitTest::test_renamed_default_branch',
         ],
         'sles12sp1/products-next': [
             'integration/shell/call.py::CallTest::test_default_output',
@@ -179,6 +195,8 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/shell/matcher.py::MatchTest::test_ipcidr',
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_present',
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_present_fail',
+            'integration/shell/key.py::KeyTest::test_list_acc_eauth_bad_creds,
+            'integration/states/git.py::LocalRepoGitTest::test_renamed_default_branch',
         ],
     }
 }
