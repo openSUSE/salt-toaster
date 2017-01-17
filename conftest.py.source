@@ -195,7 +195,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/shell/matcher.py::MatchTest::test_ipcidr',
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_present',
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_present_fail',
-            'integration/shell/key.py::KeyTest::test_list_acc_eauth_bad_creds,
+            'integration/shell/key.py::KeyTest::test_list_acc_eauth_bad_creds',
             'integration/states/git.py::LocalRepoGitTest::test_renamed_default_branch',
         ],
     }
