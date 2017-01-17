@@ -121,6 +121,8 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/modules/timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
             'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_develop',
             'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_head',
+            'integration/states/git.py::LocalRepoGitTest::test_renamed_default_branch',
+            'integration/states/git.py::GitTest::test_latest_fast_forward',
         ],
         'rhel6/products-next': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
@@ -155,7 +157,6 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_present_fail',
 
             'integration/wheel/key.py::KeyWheelModuleTest::test_list_all',
-            'integration/states/git.py::GitTest::test_latest_fast_forward',
         ],
         'rhel7/products-next': [
             'integration/shell/matcher.py::MatchTest::test_compound',
@@ -173,12 +174,48 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/git.py::GitTest::test_latest_with_local_changes',
             'integration/states/git.py::GitTest::test_present',
             'integration/states/git.py::GitTest::test_present_empty_dir',
-            'integration/states/git.py::LocalRepoGitTest::test_renamed_default_branch',
+            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
+
+            'integration/states/archive.py::ArchiveTest::test_archive_extracted_skip_verify',
+            'integration/states/archive.py::ArchiveTest::test_archive_extracted_with_root_user_and_group',
+            'integration/states/archive.py::ArchiveTest::test_archive_extracted_with_source_hash',
+        ],
+        'sles11sp3/products-next': [
+            'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
+            'integration/cloud/providers/virtualbox.py::CloneVirtualboxTests::test_create_machine',
+            'integration/cloud/providers/virtualbox.py::BootVirtualboxTests::test_start_stop',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_attributes',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistant_attribute_with_default',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistant_attributes',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
+            'integration/shell/master.py::MasterTest::test_exit_status_correct_usage',
+            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
+            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
+            'integration/shell/call.py::CallTest::test_json_out_indent',
+        ],
+        'sles11sp4/products-next': [
+            'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
+            'integration/cloud/providers/virtualbox.py::CloneVirtualboxTests::test_create_machine',
+            'integration/cloud/providers/virtualbox.py::BootVirtualboxTests::test_start_stop',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_attributes',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistant_attribute_with_default',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistant_attributes',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
+            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
+            'integration/shell/master.py::MasterTest::test_exit_status_correct_usage',
         ],
         'sles12/products-next': [
             'integration/states/git.py::GitTest::test_latest_empty_dir',
             'integration/states/git.py::GitTest::test_latest_updated_remote_rev',
-            'integration/states/git.py::LocalRepoGitTest::test_renamed_default_branch',
+            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
+            'integration/states/file.py::FileTest::test_replace_issue_18612_prepend',
+            'integration/states/file.py::FileTest::test_test_comment',
+            'integration/states/file.py::FileTest::test_test_recurse',
+            'integration/states/git.py::GitTest::test_present_empty_dir',
+            'integration/states/git.py::GitTest::test_latest_updated_remote_rev',
         ],
         'sles12sp1/products-next': [
             'integration/shell/call.py::CallTest::test_default_output',
@@ -189,6 +226,8 @@ KNOWN_ISSUES_INTEGRATION = {
 
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_absent',
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_present',
+            'integration/states/svn.py::SvnTest::test_latest',
+            'integration/states/svn.py::SvnTest::test_latest_empty_dir',
         ],
         'sles12sp2/products-next': [
             'integration/shell/matcher.py::MatchTest::test_compound',
@@ -196,7 +235,8 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_present',
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_present_fail',
             'integration/shell/key.py::KeyTest::test_list_acc_eauth_bad_creds',
-            'integration/states/git.py::LocalRepoGitTest::test_renamed_default_branch',
+
+            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
         ],
     }
 }
