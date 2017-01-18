@@ -123,6 +123,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_head',
             'integration/states/git.py::LocalRepoGitTest::test_renamed_default_branch',
             'integration/states/git.py::GitTest::test_latest_fast_forward',
+            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
         ],
         'rhel6/products-next': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
@@ -137,7 +138,6 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
             'integration/runners/state.py::StateRunnerTest::test_state_event',
             'integration/shell/call.py::CallTest::test_default_output',
-            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
             'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
             'integration/shell/matcher.py::MatchTest::test_compound',
             'integration/shell/matcher.py::MatchTest::test_glob',
@@ -174,11 +174,16 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/git.py::GitTest::test_latest_with_local_changes',
             'integration/states/git.py::GitTest::test_present',
             'integration/states/git.py::GitTest::test_present_empty_dir',
-            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
 
             'integration/states/archive.py::ArchiveTest::test_archive_extracted_skip_verify',
             'integration/states/archive.py::ArchiveTest::test_archive_extracted_with_root_user_and_group',
             'integration/states/archive.py::ArchiveTest::test_archive_extracted_with_source_hash',
+
+            'integration/shell/runner.py::RunTest::test_salt_run_with_eauth_bad_passwd',
+            'integration/shell/call.py::CallTest::test_default_output',
+            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
+            'integration/shell/call.py::CallTest::test_json_out_indent',
+            'integration/output/output.py::OutputReturnTest::test_output_json',
         ],
         'sles11sp3/products-next': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
@@ -191,9 +196,10 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
             'integration/shell/master.py::MasterTest::test_exit_status_correct_usage',
-            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
             'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
             'integration/shell/call.py::CallTest::test_json_out_indent',
+            'integration/shell/key.py::KeyTest::test_list_acc_eauth',
+            'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
         ],
         'sles11sp4/products-next': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
@@ -210,16 +216,16 @@ KNOWN_ISSUES_INTEGRATION = {
         'sles12/products-next': [
             'integration/states/git.py::GitTest::test_latest_empty_dir',
             'integration/states/git.py::GitTest::test_latest_updated_remote_rev',
-            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
             'integration/states/file.py::FileTest::test_replace_issue_18612_prepend',
             'integration/states/file.py::FileTest::test_test_comment',
             'integration/states/file.py::FileTest::test_test_recurse',
             'integration/states/git.py::GitTest::test_present_empty_dir',
             'integration/states/git.py::GitTest::test_latest_updated_remote_rev',
+            'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
+            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
         ],
         'sles12sp1/products-next': [
             'integration/shell/call.py::CallTest::test_default_output',
-            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
             'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
             'integration/shell/matcher.py::MatchTest::test_ipcidr',
             'integration/shell/matcher.py::MatchTest::test_list',
@@ -236,7 +242,15 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_present_fail',
             'integration/shell/key.py::KeyTest::test_list_acc_eauth_bad_creds',
 
-            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
+
+            'integration/output/output.py::OutputReturnTest::test_output_nested',
+            'integration/output/output.py::OutputReturnTest::test_output_pprint',
+            'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
+
+            'integration/shell/call.py::CallTest::test_default_output',
+            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
+            'integration/shell/call.py::CallTest::test_json_out_indent',
+            'integration/shell/runner.py::RunTest::test_salt_run_with_eauth_bad_passwd',
         ],
     }
 }
@@ -312,6 +326,33 @@ KNOWN_ISSUES_UNIT = {
         ],
         'sles11sp4/products-testing': [
             'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_set_event_handler',
+        ],
+        'products-next': [
+            # not working in docker containers
+            'unit/modules/cmdmod_test.py::CMDMODTestCase::test_run',
+            'unit/conf_test.py::ConfTest::test_conf_cloud_maps_d_files_are_commented',
+            'unit/conf_test.py::ConfTest::test_conf_cloud_profiles_d_files_are_commented',
+            'unit/conf_test.py::ConfTest::test_conf_cloud_providers_d_files_are_commented',
+            'unit/utils/extend_test.py::ExtendTestCase::test_run',
+            'unit/beacons/glxinfo.py::GLXInfoBeaconTestCase::test_no_user',
+            'unit/beacons/glxinfo.py::GLXInfoBeaconTestCase::test_non_dict_config',
+
+            # Boto failing tests
+            'unit/modules/boto_apigateway_test.py::BotoApiGatewayTestCaseBase::runTest',
+            'unit/modules/boto_cloudwatch_event_test.py::BotoCloudWatchEventTestCaseBase::runTest',
+            'unit/modules/boto_cognitoidentity_test.py::BotoCognitoIdentityTestCaseBase::runTest',
+            'unit/modules/boto_elasticsearch_domain_test.py::BotoElasticsearchDomainTestCaseBase::runTest',
+            'unit/states/boto_apigateway_test.py::BotoApiGatewayStateTestCaseBase::runTest',
+            'unit/states/boto_cognitoidentity_test.py::BotoCognitoIdentityStateTestCaseBase::runTest',
+            'unit/states/boto_elasticsearch_domain_test.py::BotoElasticsearchDomainStateTestCaseBase::runTest',
+
+            'unit/modules/inspect_collector_test.py::InspectorCollectorTestCase::test_file_tree',
+        ],
+        'sles12sp1/products-next': [
+            'unit/cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
+        ],
+        'sles12sp2/products-next': [
+            'unit/cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
         ],
     }
 }
