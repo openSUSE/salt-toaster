@@ -124,6 +124,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/git.py::LocalRepoGitTest::test_renamed_default_branch',
             'integration/states/git.py::GitTest::test_latest_fast_forward',
             'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
+            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
         ],
         'rhel6/products-next': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
@@ -138,7 +139,6 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
             'integration/runners/state.py::StateRunnerTest::test_state_event',
             'integration/shell/call.py::CallTest::test_default_output',
-            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
             'integration/shell/matcher.py::MatchTest::test_compound',
             'integration/shell/matcher.py::MatchTest::test_glob',
             'integration/shell/matcher.py::MatchTest::test_ipcidr',
@@ -157,6 +157,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_present_fail',
 
             'integration/wheel/key.py::KeyWheelModuleTest::test_list_all',
+            'integration/shell/call.py::CallTest::test_user_delete_kw_output',  # sometimes fail
         ],
         'rhel7/products-next': [
             'integration/shell/matcher.py::MatchTest::test_compound',
@@ -181,7 +182,6 @@ KNOWN_ISSUES_INTEGRATION = {
 
             'integration/shell/runner.py::RunTest::test_salt_run_with_eauth_bad_passwd',
             'integration/shell/call.py::CallTest::test_default_output',
-            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
             'integration/shell/call.py::CallTest::test_json_out_indent',
             'integration/output/output.py::OutputReturnTest::test_output_json',
         ],
@@ -196,7 +196,6 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
             'integration/shell/master.py::MasterTest::test_exit_status_correct_usage',
-            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
             'integration/shell/call.py::CallTest::test_json_out_indent',
             'integration/shell/key.py::KeyTest::test_list_acc_eauth',
             'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
@@ -214,6 +213,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/shell/master.py::MasterTest::test_exit_status_correct_usage',
         ],
         'sles12/products-next': [
+            'integration/shell/call.py::CallTest::test_default_output',
             'integration/states/git.py::GitTest::test_latest_empty_dir',
             'integration/states/git.py::GitTest::test_latest_updated_remote_rev',
             'integration/states/file.py::FileTest::test_replace_issue_18612_prepend',
@@ -222,11 +222,9 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/git.py::GitTest::test_present_empty_dir',
             'integration/states/git.py::GitTest::test_latest_updated_remote_rev',
             'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
-            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
         ],
         'sles12sp1/products-next': [
             'integration/shell/call.py::CallTest::test_default_output',
-            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
             'integration/shell/matcher.py::MatchTest::test_ipcidr',
             'integration/shell/matcher.py::MatchTest::test_list',
 
@@ -234,6 +232,11 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/ssh.py::SSHKnownHostsStateTest::test_present',
             'integration/states/svn.py::SvnTest::test_latest',
             'integration/states/svn.py::SvnTest::test_latest_empty_dir',
+            'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
+
+            # sometimes fail
+            'integration/output/output.py::OutputReturnTest::test_output_quiet',
+            'integration/output/output.py::OutputReturnTest::test_output_raw',
         ],
         'sles12sp2/products-next': [
             'integration/shell/matcher.py::MatchTest::test_compound',
@@ -248,7 +251,6 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
 
             'integration/shell/call.py::CallTest::test_default_output',
-            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
             'integration/shell/call.py::CallTest::test_json_out_indent',
             'integration/shell/runner.py::RunTest::test_salt_run_with_eauth_bad_passwd',
         ],
