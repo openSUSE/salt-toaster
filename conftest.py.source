@@ -21,6 +21,12 @@ KNOWN_ISSUES_INTEGRATION = {
         ],
         'products-next': [
             'integration/__init__.py',
+
+            # Running following tests causes unsuccessfully close
+            # of forked processes. This will cause "hanging" jenkins jobs.
+            '*::MasterTest::test_exit_status_correct_usage',
+            '*::ProxyTest::test_exit_status_correct_usage',
+            '*::FileTest::test_issue_2227_file_append',
         ]
     },
     'xfail_list': {
