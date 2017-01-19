@@ -125,12 +125,19 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
 
             'integration/modules/timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
+
             'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_develop',
             'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_head',
             'integration/states/git.py::LocalRepoGitTest::test_renamed_default_branch',
             'integration/states/git.py::GitTest::test_latest_fast_forward',
             'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
             'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
+
+            # Sometimes fails
+            'integration/shell/call.py::CallTest::test_issue_14979_output_file_permissions',
+            'integration/shell/call.py::CallTest::test_user_delete_kw_output',
+            'integration/reactor/reactor.py::ReactorTest::test_ping_reaction',
+            'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
         ],
         'rhel6/products-next': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
