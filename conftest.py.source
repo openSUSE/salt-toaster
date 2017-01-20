@@ -27,7 +27,8 @@ KNOWN_ISSUES_INTEGRATION = {
             '*::MasterTest::test_exit_status_correct_usage',
             '*::ProxyTest::test_exit_status_correct_usage',
             '*::FileTest::test_issue_2227_file_append',
-            'integration/reactor/reactor.py',
+
+            'integration/reactor/reactor.py', # This tests causes "py.test" never finishes
         ]
     },
     'xfail_list': {
