@@ -47,12 +47,12 @@ def test_grains_items_rhel(minion):
 
 def test_pkg_info_install_date(minion):
     res = minion.salt_call('pkg.info_installed', 'test-package')
-    dt = datetime.datetime.strptime(res['install_date'], "%Y-%m-%dT%H:%M:%SZ")
+    dt = datetime.datetime.strptime(res['test-package']['install_date'], "%Y-%m-%dT%H:%M:%SZ")
     timestamp = (dt - datetime.datetime(1970, 1, 1)).total_seconds()
-    assert int(timestamp) == int(res['install_date_time_t'])
+    assert int(timestamp) == int(res['test-package']['install_date_time_t'])
 
 def test_pkg_info_build_date(minion):
     res = minion.salt_call('pkg.info_installed', 'test-package')
-    dt = datetime.datetime.strptime(res['build_date'], "%Y-%m-%dT%H:%M:%SZ")
+    dt = datetime.datetime.strptime(res['test-package']['build_date'], "%Y-%m-%dT%H:%M:%SZ")
     timestamp = (dt - datetime.datetime(1970, 1, 1)).total_seconds()
-    assert int(timestamp) == int(res['build_date_time_t'])
+    assert int(timestamp) == int(res['test-package']['build_date_time_t'])
