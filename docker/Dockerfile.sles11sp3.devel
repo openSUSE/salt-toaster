@@ -14,7 +14,7 @@ COPY Makefile /root/Makefile
 
 
 COPY bin/prepare_devel.sh /root/bin
-RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/devel/SLE_11_SP4/ "salt"
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products/SLE_11_SP4/ "salt"
 RUN zypper mr -p 1 salt
 
 RUN /root/bin/add_packages.sh
