@@ -71,7 +71,7 @@ def test_archive_extracted(master, minion):
 
 @pytest.mark.tags('rhel')
 def test_yum_plugin_installed(master, minion):
-    path = '/usr/etc/yum/pluginconf.d/yumnotify.conf'
+    path = '/etc/yum/pluginconf.d/yumnotify.conf'
     out = master.salt(minion['id'], 'cmd.run "file {}"'.format(path))[minion['id']]
     assert out == '{}: ASCII text'.format(path)
 
