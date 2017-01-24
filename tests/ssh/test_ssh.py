@@ -131,7 +131,6 @@ def test_ssh_port_forwarding(master):
     loc_port = 8888
     rem_port = 9999
 
-    master.salt_ssh("cmd.run 'zypper --non-interactive in netcat-openbsd'")
     master['container'].run("/salt-toaster/tests/scripts/socket_server.py {lp} {of}".format(lp=loc_port, of=of))
     master.salt_ssh("--remote-port-forwards={rp}:127.0.0.1:{lp} cmd.run '{nc} {msg} {rp}'".format(
         nc=nc, msg=msg, lp=loc_port, rp=rem_port)
