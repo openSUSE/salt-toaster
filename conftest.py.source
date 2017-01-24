@@ -28,7 +28,8 @@ KNOWN_ISSUES_INTEGRATION = {
             '*::ProxyTest::test_exit_status_correct_usage',
             '*::FileTest::test_issue_2227_file_append',
 
-            'integration/reactor/reactor.py', # This tests causes "py.test" never finishes
+            # Evil test
+            'integration/reactor/reactor.py', # This test causes "py.test" never finishes
         ]
     },
     'xfail_list': {
@@ -107,39 +108,24 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
         ],
         'products-next': [
+            # Always failing
             'integration/cloud/providers/virtualbox.py::BaseVirtualboxTests::test_get_manager',
             'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
 
-            'integration/loader/ext_grains.py::LoaderGrainsTest::test_grains_overwrite',
-            'integration/loader/ext_modules.py::LoaderOverridesTest::test_overridden_internal',
-            'integration/modules/decorators.py::DecoratorTest::test_depends',
-            'integration/modules/decorators.py::DecoratorTest::test_depends_will_not_fallback',
-            'integration/modules/decorators.py::DecoratorTest::test_missing_depends_will_fallback',
-
             'integration/runners/fileserver.py::FileserverTest::test_symlink_list',
-
-            'integration/shell/call.py::CallTest::test_issue_14979_output_file_permissions',
-            'integration/shell/call.py::CallTest::test_issue_2731_masterless',
-
-            'integration/shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
-
-            'integration/shell/matcher.py::MatchTest::test_grain',
-            'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
-
             'integration/modules/timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
 
             'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_develop',
             'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_head',
-            'integration/states/git.py::LocalRepoGitTest::test_renamed_default_branch',
             'integration/states/git.py::GitTest::test_latest_fast_forward',
-            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
-            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
+            'integration/states/git.py::LocalRepoGitTest::test_renamed_default_branch',
 
-            # Sometimes fails
-            'integration/shell/call.py::CallTest::test_issue_14979_output_file_permissions',
-            'integration/shell/call.py::CallTest::test_user_delete_kw_output',
-            'integration/shell/call.py::CallTest::test_default_output',
-            'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
+            'integration/loader/ext_grains.py::LoaderGrainsTest::test_grains_overwrite',
+            'integration/loader/ext_modules.py::LoaderOverridesTest::test_overridden_internal',
+
+            'integration/modules/decorators.py::DecoratorTest::test_depends',
+            'integration/modules/decorators.py::DecoratorTest::test_depends_will_not_fallback',
+            'integration/modules/decorators.py::DecoratorTest::test_missing_depends_will_fallback',
         ],
         'rhel6/products-next': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
@@ -151,54 +137,11 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
-            'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
-            'integration/runners/state.py::StateRunnerTest::test_state_event',
-            'integration/shell/call.py::CallTest::test_default_output',
-            'integration/shell/matcher.py::MatchTest::test_compound',
-            'integration/shell/matcher.py::MatchTest::test_glob',
-            'integration/shell/matcher.py::MatchTest::test_ipcidr',
-            'integration/shell/matcher.py::MatchTest::test_list',
-            'integration/shell/matcher.py::MatchTest::test_nodegroup',
-            'integration/shell/matcher.py::MatchTest::test_pillar',
-            'integration/shell/matcher.py::MatchTest::test_regex',
-
-            'integration/states/handle_error.py::HandleErrorTest::test_handle_error',
-            'integration/states/handle_iorder.py::HandleOrderTest::test_handle_iorder',
-            'integration/states/host.py::HostTest::test_present',
-            'integration/states/match.py::StateMatchTest::test_issue_2167_ipcidr_no_AttributeError',
-
-            'integration/states/ssh.py::SSHKnownHostsStateTest::test_absent',
-            'integration/states/ssh.py::SSHKnownHostsStateTest::test_present',
-            'integration/states/ssh.py::SSHKnownHostsStateTest::test_present_fail',
-
-            'integration/wheel/key.py::KeyWheelModuleTest::test_list_all',
-            'integration/shell/call.py::CallTest::test_user_delete_kw_output',  # sometimes fail
         ],
         'rhel7/products-next': [
-            'integration/shell/matcher.py::MatchTest::test_compound',
-            'integration/shell/matcher.py::MatchTest::test_list',
-            'integration/shell/matcher.py::MatchTest::test_nodegroup',
-            'integration/shell/matcher.py::MatchTest::test_pillar',
-            'integration/shell/matcher.py::MatchTest::test_regex',
-            'integration/states/host.py::HostTest::test_present',
-
-            'integration/states/ssh.py::SSHKnownHostsStateTest::test_absent',
-            'integration/states/ssh.py::SSHKnownHostsStateTest::test_present',
-            'integration/states/ssh.py::SSHKnownHostsStateTest::test_present_fail',
-            'integration/states/git.py::GitTest::test_latest_failure',
-            'integration/states/git.py::GitTest::test_latest_updated_remote_rev',
-            'integration/states/git.py::GitTest::test_latest_with_local_changes',
-            'integration/states/git.py::GitTest::test_present',
-            'integration/states/git.py::GitTest::test_present_empty_dir',
-
             'integration/states/archive.py::ArchiveTest::test_archive_extracted_skip_verify',
             'integration/states/archive.py::ArchiveTest::test_archive_extracted_with_root_user_and_group',
             'integration/states/archive.py::ArchiveTest::test_archive_extracted_with_source_hash',
-
-            'integration/shell/runner.py::RunTest::test_salt_run_with_eauth_bad_passwd',
-            'integration/shell/call.py::CallTest::test_default_output',
-            'integration/shell/call.py::CallTest::test_json_out_indent',
-            'integration/output/output.py::OutputReturnTest::test_output_json',
         ],
         'sles11sp3/products-next': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
@@ -210,10 +153,6 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
-            'integration/shell/master.py::MasterTest::test_exit_status_correct_usage',
-            'integration/shell/call.py::CallTest::test_json_out_indent',
-            'integration/shell/key.py::KeyTest::test_list_acc_eauth',
-            'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
         ],
         'sles11sp4/products-next': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
@@ -225,49 +164,12 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
-            'integration/shell/master.py::MasterTest::test_exit_status_correct_usage',
         ],
         'sles12/products-next': [
-            'integration/shell/call.py::CallTest::test_default_output',
-            'integration/states/git.py::GitTest::test_latest_empty_dir',
-            'integration/states/git.py::GitTest::test_latest_updated_remote_rev',
-            'integration/states/file.py::FileTest::test_replace_issue_18612_prepend',
-            'integration/states/file.py::FileTest::test_test_comment',
-            'integration/states/file.py::FileTest::test_test_recurse',
-            'integration/states/git.py::GitTest::test_present_empty_dir',
-            'integration/states/git.py::GitTest::test_latest_updated_remote_rev',
-            'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
         ],
         'sles12sp1/products-next': [
-            'integration/shell/call.py::CallTest::test_default_output',
-            'integration/shell/matcher.py::MatchTest::test_ipcidr',
-            'integration/shell/matcher.py::MatchTest::test_list',
-
-            'integration/states/ssh.py::SSHKnownHostsStateTest::test_absent',
-            'integration/states/ssh.py::SSHKnownHostsStateTest::test_present',
-            'integration/states/svn.py::SvnTest::test_latest',
-            'integration/states/svn.py::SvnTest::test_latest_empty_dir',
-            'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
-
-            # sometimes fail
-            'integration/output/output.py::OutputReturnTest::test_output_quiet',
-            'integration/output/output.py::OutputReturnTest::test_output_raw',
         ],
         'sles12sp2/products-next': [
-            'integration/shell/matcher.py::MatchTest::test_compound',
-            'integration/shell/matcher.py::MatchTest::test_ipcidr',
-            'integration/states/ssh.py::SSHKnownHostsStateTest::test_present',
-            'integration/states/ssh.py::SSHKnownHostsStateTest::test_present_fail',
-            'integration/shell/key.py::KeyTest::test_list_acc_eauth_bad_creds',
-
-
-            'integration/output/output.py::OutputReturnTest::test_output_nested',
-            'integration/output/output.py::OutputReturnTest::test_output_pprint',
-            'integration/runners/state.py::StateRunnerTest::test_orchestrate_output',
-
-            'integration/shell/call.py::CallTest::test_default_output',
-            'integration/shell/call.py::CallTest::test_json_out_indent',
-            'integration/shell/runner.py::RunTest::test_salt_run_with_eauth_bad_passwd',
         ],
     }
 }
