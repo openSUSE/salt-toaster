@@ -137,6 +137,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
             'integration/states/svn.py::SvnTest::test_latest', # sles12sp1
             'integration/states/svn.py::SvnTest::test_latest_empty_dir', # sles12sp1
+            'integration/runners/state.py::StateRunnerTest::test_orchestrate_output', # sles12sp1 rhel7
         ],
         'rhel6/products-next': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
