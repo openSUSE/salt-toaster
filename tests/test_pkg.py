@@ -46,13 +46,21 @@ def test_grains_items_rhel(minion):
     assert res['cpuarch'] == "x86_64"
 
 def test_pkg_info_install_date(minion):
+    minion["container"].run("rm -f /etc/localtime")
+    minion["container"].run("ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime")
     res = minion.salt_call('pkg.info_installed', 'test-package')
     dt = datetime.datetime.strptime(res['test-package']['install_date'], "%Y-%m-%dT%H:%M:%SZ")
     timestamp = (dt - datetime.datetime(1970, 1, 1)).total_seconds()
     assert int(timestamp) == int(res['test-package']['install_date_time_t'])
+    minion["container"].run("rm -f /etc/localtime")
+    minion["container"].run("ln -sf /usr/share/zoneinfo/UTC /etc/localtime")
 
 def test_pkg_info_build_date(minion):
+    minion["container"].run("rm -f /etc/localtime")
+    minion["container"].run("ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime")
     res = minion.salt_call('pkg.info_installed', 'test-package')
     dt = datetime.datetime.strptime(res['test-package']['build_date'], "%Y-%m-%dT%H:%M:%SZ")
     timestamp = (dt - datetime.datetime(1970, 1, 1)).total_seconds()
     assert int(timestamp) == int(res['test-package']['build_date_time_t'])
+    minion["container"].run("rm -f /etc/localtime")
+    minion["container"].run("ln -sf /usr/share/zoneinfo/UTC /etc/localtime")
