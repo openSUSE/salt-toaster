@@ -127,10 +127,16 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/modules/decorators.py::DecoratorTest::test_depends_will_not_fallback',
             'integration/modules/decorators.py::DecoratorTest::test_missing_depends_will_fallback',
 
+            # Sometimes failing in jenkins.
             'integration/shell/call.py::CallTest::test_issue_14979_output_file_permissions',
             'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
             'integration/shell/call.py::CallTest::test_issue_2731_masterless',
             'integration/shell/matcher.py::MatchTest::test_grain',
+
+            'integration/netapi/rest_tornado/test_app.py::TestSaltAPIHandler::test_simple_local_post_only_dictionary_request',
+            'integration/shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
+            'integration/states/svn.py::SvnTest::test_latest', # sles12sp1
+            'integration/states/svn.py::SvnTest::test_latest_empty_dir', # sles12sp1
         ],
         'rhel6/products-next': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
