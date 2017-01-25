@@ -9,38 +9,41 @@
 ```bash
 git clone https://github.com/dincamihai/salt-toaster.git
 cd salt-toaster
-make docker_run_custom_integration_tests
-make docker_run_salt_integration_tests
-make docker_run_salt_unit_tests
+VERSION=sles12sp1 FLAVOR=devel SALT_REPO=/home/store/repositories/salt make -s suse.tests SALT_TESTS="tests/test_pkg.py"
+VERSION=sles12sp1 FLAVOR=devel SALT_REPO=/home/store/repositories/salt make saltstack.unit SALT_TESTS=/salt/src/salt-devel/tests/unit/modules/zypper_test.py
 ```
 
 ### Examples
 
 #### Run docker shell in specific local image
 ```bash
-make docker_shell DOCKER_IMAGE=toaster-sles12sp1
-```
-
-#### Run docker shell in specific repository image
-```bash
-make docker_shell DOCKER_IMAGE=registry.mgr.suse.de/toaster-sles12sp1
-```
-
-#### Run docker shell in repository image based on version
-```bash
-make docker_shell VERSION=sles12sp1
-```
-
-#### Run docker shell in repository image based on version and flavor
-```bash
-make docker_shell VERSION=sles12sp1 FLAVOR="testing"
+VERSION=sles12sp1 FLAVOR=products make docker_shell
 ```
 
 #### Run docker shell in repository image based on version and bind rpdb port
 ```bash
-make docker_shell VERSION=sles12sp1 RPDB_PORT="4444"
+RPDB_PORT="4444" VERSION=sles12sp1 FLAVOR=products make docker_shell
 ```
 
+#### Run suse tests
+- run a specific suse test
+```bash
+VERSION=sles12sp1 FLAVOR=products make -s suse.tests SALT_TESTS="tests/test_pkg.py::test_pkg_info_available"
+```
+- run all suse tests using salt installed from a localy repository
+```bash
+VERSION=sles12sp1 FLAVOR=devel SALT_REPO=/home/store/repositories/salt make -s suse.tests
+```
+
+#### Run upstream tests
+- run a subset of upstream unit tests
+```bash
+VERSION=sles12sp1 FLAVOR=products make saltstack.unit SALT_TESTS=/salt/src/salt-devel/tests/unit/modules/zypper_test.py
+```
+- run all upstream integration tests
+```bash
+VERSION=sles12sp1 FLAVOR=products make saltstack.integration
+```
 
 ## For development
 
@@ -48,7 +51,7 @@ make docker_shell VERSION=sles12sp1 RPDB_PORT="4444"
 ### Run a docker container on a specific image and install salt from a salt repository on host
 
 ```bash
-DOCKER_IMAGE=toaster-sles12sp1 DEVEL=true SALT_REPO=/home/mdinca/repositories/salt/ make docker_shell
+VERSION=sles12sp1 FLAVOR=devel SALT_REPO=/home/store/repositories/salt make docker_shell
 ```
 
 
