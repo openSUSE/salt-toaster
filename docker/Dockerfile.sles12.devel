@@ -25,6 +25,7 @@ RUN zypper ar -f http://nu.novell.com/SUSE/Products/SLE-Manager-Tools/12/x86_64/
 RUN zypper ar -f http://nu.novell.com/SUSE/Updates/SLE-Manager-Tools/12/x86_64/update/ "SLE-Manager-Tools 12 Updates"
 
 RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/SLE_12/ "testpackages"
+ARG CACHE_DATE=nocache
 
 RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products/SLE_12/ "salt"
 RUN zypper mr -p 1 salt
