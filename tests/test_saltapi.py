@@ -33,6 +33,7 @@ def module_config(request):
     }
 
 
+@pytest.mark.xfail
 def test_roster_sshapi_disabled(master):
     '''
     Test if Salt API is not accepting custom roster.
