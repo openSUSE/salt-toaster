@@ -22,6 +22,7 @@ RUN rpm --import http://centos.s.uw.edu/centos/7/os/x86_64/RPM-GPG-KEY-CentOS-7
 
 RUN yum-config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/RHEL_7/
 RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/RHEL_7/repodata/repomd.xml.key
+ARG CACHE_DATE=nocache
 RUN yum-config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing/RHEL_7
 RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing/RHEL_7//repodata/repomd.xml.key
 RUN yum -y --nogpgcheck install which make gcc-c++ rpm-build quilt tar iproute bind-utils net-tools

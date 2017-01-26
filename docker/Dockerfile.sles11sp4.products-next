@@ -12,6 +12,8 @@ COPY bin/install_salt.sh /root/bin/install_salt.sh
 COPY bin/lastchangelog /root/bin/lastchangelog
 COPY Makefile /root/Makefile
 
+ARG CACHE_DATE=nocache
+
 RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/next/SLE_11_SP4/ "salt"
 RUN zypper mr -p 1 salt
 
