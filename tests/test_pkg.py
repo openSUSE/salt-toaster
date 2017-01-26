@@ -1,6 +1,7 @@
 import re
 import pytest
 import datetime
+from functools import partial
 
 pytestmark = pytest.mark.usefixtures("master", "minion")
 
@@ -45,22 +46,29 @@ def test_grains_items_rhel(minion):
     assert res['kernel'] == "Linux"
     assert res['cpuarch'] == "x86_64"
 
-def test_pkg_info_install_date(minion):
-    minion["container"].run("rm -f /etc/localtime")
-    minion["container"].run("ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime")
+
+@pytest.fixture
+def timezone(request, minion):
+    tz = "Europe/Berlin"
+    minion['container'].run(
+        'ln -s /usr/share/zoneinfo/{} /etc/localtime'.format(tz))
+    def finalizer(minion):
+        minion["container"].run("rm -f /etc/localtime")
+        minion["container"].run("ln -sf /usr/share/zoneinfo/UTC /etc/localtime")
+    request.addfinalizer(partial(finalizer, minion))
+
+
+def test_pkg_info_install_date(minion, timezone):
     res = minion.salt_call('pkg.info_installed', 'test-package')
-    dt = datetime.datetime.strptime(res['test-package']['install_date'], "%Y-%m-%dT%H:%M:%SZ")
+    dt = datetime.datetime.strptime(
+        res['test-package']['install_date'], "%Y-%m-%dT%H:%M:%SZ")
     timestamp = (dt - datetime.datetime(1970, 1, 1)).total_seconds()
     assert int(timestamp) == int(res['test-package']['install_date_time_t'])
-    minion["container"].run("rm -f /etc/localtime")
-    minion["container"].run("ln -sf /usr/share/zoneinfo/UTC /etc/localtime")
 
-def test_pkg_info_build_date(minion):
-    minion["container"].run("rm -f /etc/localtime")
-    minion["container"].run("ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime")
+
+def test_pkg_info_build_date(minion, timezone):
     res = minion.salt_call('pkg.info_installed', 'test-package')
-    dt = datetime.datetime.strptime(res['test-package']['build_date'], "%Y-%m-%dT%H:%M:%SZ")
+    dt = datetime.datetime.strptime(
+        res['test-package']['build_date'], "%Y-%m-%dT%H:%M:%SZ")
     timestamp = (dt - datetime.datetime(1970, 1, 1)).total_seconds()
     assert int(timestamp) == int(res['test-package']['build_date_time_t'])
-    minion["container"].run("rm -f /etc/localtime")
-    minion["container"].run("ln -sf /usr/share/zoneinfo/UTC /etc/localtime")
