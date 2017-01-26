@@ -50,8 +50,8 @@ def test_grains_items_rhel(minion):
 @pytest.fixture
 def timezone(request, minion):
     tz = "Europe/Berlin"
-    minion['container'].run(
-        'ln -s /usr/share/zoneinfo/{} /etc/localtime'.format(tz))
+    out = minion['container'].run(
+        'ln -sf /usr/share/zoneinfo/{} /etc/localtime'.format(tz))
     def finalizer(minion):
         minion["container"].run("rm -f /etc/localtime")
         minion["container"].run("ln -sf /usr/share/zoneinfo/UTC /etc/localtime")
