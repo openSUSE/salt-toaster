@@ -58,6 +58,7 @@ def timezone(request, minion):
     request.addfinalizer(partial(finalizer, minion))
 
 
+@pytest.mark.xfail
 def test_pkg_info_install_date(minion, timezone):
     res = minion.salt_call('pkg.info_installed', 'test-package')
     dt = datetime.datetime.strptime(
@@ -66,6 +67,7 @@ def test_pkg_info_install_date(minion, timezone):
     assert int(timestamp) == int(res['test-package']['install_date_time_t'])
 
 
+@pytest.mark.xfail
 def test_pkg_info_build_date(minion, timezone):
     res = minion.salt_call('pkg.info_installed', 'test-package')
     dt = datetime.datetime.strptime(
