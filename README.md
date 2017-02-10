@@ -2,6 +2,12 @@
 
 # salt-toaster
 
+## Setup
+```bash
+virtualenv sandbox
+. sandbox/bin/activate
+pip install -r requirements.txt
+```
 
 ## Running tests
 
