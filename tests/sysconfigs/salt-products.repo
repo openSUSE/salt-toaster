@@ -1,0 +1,6 @@
+[salt]
+enabled=1
+autorefresh=1
+baseurl=http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products/SLE_12_SP2/
+type=rpm-md
+priority=1
