@@ -58,6 +58,7 @@ def timezone(request, minion):
     request.addfinalizer(partial(finalizer, minion))
 
 
+@pytest.mark.tags('sles12sp2')
 def test_salt_upgrade(minion):
     ex = minion["container"].run
     ex("rm /etc/zypp/repos.d/salt.repo")
