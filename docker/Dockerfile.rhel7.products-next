@@ -36,6 +36,7 @@ RUN pip uninstall -y salttesting || true
 RUN yum -y --nogpgcheck install git
 RUN pip install -U --no-deps git+https://github.com/saltstack/salt-testing.git
 
+RUN pip install --upgrade psutil
 
 ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
 CMD ["default"]
