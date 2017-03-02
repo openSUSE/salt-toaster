@@ -1,3 +1,4 @@
+import datetime
 import os
 import re
 import time
@@ -40,6 +41,9 @@ def build_docker_image(nocache=False, pull=True):
         pull=pull,
         decode=True,
         forcerm=True,
+        # Allows to invalidate cache for certains steps in Dockerfile
+        # https://github.com/docker/docker/issues/22832
+        buildargs={'CACHE_DATE': datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")},
         nocache=nocache
     )
 
