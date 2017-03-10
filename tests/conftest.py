@@ -1,6 +1,5 @@
 import pytest
 import logging
-from docker import Client
 
 
 logger = logging.getLogger(__name__)
@@ -41,12 +40,6 @@ class ExtraSaltPlugin(object):
 def pytest_configure(config):
     plugin = ExtraSaltPlugin()
     config.pluginmanager.register(plugin, 'ExtraSaltPlugin')
-
-
-@pytest.fixture(scope="session")
-def docker_client():
-    client = Client(base_url='unix://var/run/docker.sock', timeout=180)
-    return client
 
 
 @pytest.fixture(autouse=True)
