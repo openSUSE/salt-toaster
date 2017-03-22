@@ -81,6 +81,13 @@ def test_ssh_pkg_info(master):
     assert master.salt_ssh("pkg.info_installed python").get('python', {}).get('install_date')
 
 
+def test_ssh_sysdoc(master):
+    '''
+    Test sys.doc remote execution.
+    '''
+    assert 'cmd.run' in master.salt_ssh("sys.doc")
+
+
 def test_ssh_pkg_install(master):
     '''
     Test pkg.install
