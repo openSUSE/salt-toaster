@@ -94,3 +94,11 @@ def test_pkg_info_build_date(minion, timezone):
         res['test-package']['build_date'], "%Y-%m-%dT%H:%M:%SZ")
     timestamp = (dt - datetime.datetime(1970, 1, 1)).total_seconds()
     assert int(timestamp) == int(res['test-package']['build_date_time_t'])
+
+
+def test_pkg_install_downloadonly(minion):
+    list_pkgs_pre = minion.salt_call('pkg.list_pkgs')
+    res = minion.salt_call('pkg.install', 'test-package downloadonly=True')
+    list_pkgs_post = minion.salt_call('pkg.list_pkgs')
+    assert res == {}
+    assert list_pkgs_pre == list_pkgs_post
