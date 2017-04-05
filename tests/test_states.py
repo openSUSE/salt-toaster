@@ -51,6 +51,7 @@ def test_pkg_installed_downloadonly(setup):
     assert list_pkgs_pre == list_pkgs_post
 
 
+@pytest.mark.xfail
 @pytest.mark.tags('sles')
 def test_patches_installed_downloadonly_sles(setup):
     config, initconfig = setup
@@ -67,6 +68,7 @@ def test_patches_installed_downloadonly_sles(setup):
     assert list_pkgs_pre == list_pkgs_post
 
 
+@pytest.mark.xfail
 @pytest.mark.tags('rhel')
 def test_patches_installed_downloadonly_rhel(setup):
     config, initconfig = setup
