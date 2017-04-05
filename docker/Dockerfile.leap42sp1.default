@@ -12,6 +12,7 @@ COPY bin/lastchangelog /root/bin/lastchangelog
 COPY Makefile /root/Makefile
 
 RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/openSUSE_Leap_42.1/ "testpackages"
+ARG CACHE_DATE=nocache
 
 RUN zypper --non-interactive --gpg-auto-import-keys ref
 RUN zypper -n in rpm-build
