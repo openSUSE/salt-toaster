@@ -80,4 +80,4 @@ def test_timeout_and_gather_job_timeout(master, minion):
     # Starting salt-minion process again
     minion['container'].run("rcsalt-minion start")
     assert api_ret == '{"return": [{}]}'
-    assert (post_ping_time - pre_ping_time) <= 6
+    assert (post_ping_time - pre_ping_time) < 10
