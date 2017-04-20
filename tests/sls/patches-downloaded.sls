@@ -1,6 +1,7 @@
 test-patches-downloaded:
-  pkg.patch_downloaded:
-    - advisory_ids:
+  pkg.installed:
+    - downloadonly: True
+    - patches:
 {% for patch in pillar.get('patches', []) %}
       - {{ patch }}
 {% endfor %}

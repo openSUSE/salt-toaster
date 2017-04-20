@@ -1,3 +1,4 @@
 test-pkg-downloaded:
-  pkg.downloaded:
+  pkg.installed:
     - name: test-package
+    - downloadonly: True
