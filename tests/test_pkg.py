@@ -97,8 +97,10 @@ def test_pkg_info_build_date(minion, timezone):
 
 
 def test_pkg_install_downloadonly(minion):
-    list_pkgs_pre = minion.salt_call('pkg.list_pkgs')
+    list_pkgs_pre = minion.salt_call('pkg.list_downloaded')
     res = minion.salt_call('pkg.install', 'test-package downloadonly=True')
-    list_pkgs_post = minion.salt_call('pkg.list_pkgs')
-    assert res == {}
-    assert list_pkgs_pre == list_pkgs_post
+    list_pkgs_post = minion.salt_call('pkg.list_downloaded')
+    assert list_pkgs_pre != list_pkgs_post
+    assert 'test-package' in res
+    assert 'test-package' not in list_pkgs_pre
+    assert 'test-package' in list_pkgs_post
