@@ -750,19 +750,33 @@ The tests are separated in 3 groups:
  - upstream unit tests
  - suse integration tests</p></div>
 <div class="paragraph"><p>There are 3 predefined flavors of salt packages plus a <code>devel</code> flavor.
-The predefined flavors are packages served from OBS:
- - <a href="https://build.opensuse.org/package/show/systemsmanagement:saltstack:products/salt">products</a>
- - <a href="https://build.opensuse.org/package/show/systemsmanagement:saltstack:products:testing/salt">products:testing</a>
- - <a href="https://build.opensuse.org/package/show/systemsmanagement:saltstack:products:next/salt">products:next</a>
-The <code>devel</code> flavor means running the tests against a local salt git repository.</p></div>
+The predefined flavors are packages served from OBS:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="https://build.opensuse.org/package/show/systemsmanagement:saltstack:products/salt">products</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://build.opensuse.org/package/show/systemsmanagement:saltstack:products:testing/salt">products:testing</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://build.opensuse.org/package/show/systemsmanagement:saltstack:products:next/salt">products:next</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The <code>devel</code> flavor means running the tests against a local salt git repository.</p></div>
 <div class="admonitionblock">
 <table><tr>
 <td class="icon">
 <img src="./images/icons/note.png" alt="Note" />
 </td>
 <td class="content">
-<div class="paragraph"><p>When running the upstream tests, a docker container is created first and then <code>py.test</code> is being run inside the container.
-For the suse tests, the approach is different. <code>py.test</code> is being run on the host and the containers are created and used as objects in the tests.</p></div>
+<div class="paragraph"><p>When running the upstream tests, a docker container is created first and then <code>py.test</code> is being run inside the container.</p></div>
+<div class="paragraph"><p>For the suse tests, the approach is different. <code>py.test</code> is being run on the host and the containers are created and used as objects in the tests.</p></div>
 </td>
 </tr></table>
 </div>
@@ -850,36 +864,43 @@ http://www.gnu.org/software/src-highlite -->
 <pre><tt>make saltstack<span style="color: #990000">.</span>integration
 make saltstack<span style="color: #990000">.</span>unit
 make suse<span style="color: #990000">.</span>tests</tt></pre></div></div>
-<div class="paragraph"><p>When running these commands, salt-toaster uses the default values for OS and salt-package version.
-At the moment, the defaults are <code>sles12sp1</code> and <a href="https://build.opensuse.org/package/show/systemsmanagement:saltstack:products/salt"><code>saltstack:products:salt</code></a>
-The first thing that this command does is to pull the right container image from the registry(hardcoded).
-With the default values the image would be: <code>registry.mgr.suse.de/toaster-sles12sp1-products</code></p></div>
-<div class="paragraph"><p>Most of the time we want to run the tests against a specific OS.
+<div class="paragraph"><p>When running any of these commands, salt-toaster uses the default values for OS and salt-package version.</p></div>
+<div class="paragraph"><p>At the moment, the defaults are <code>sles12sp1</code> and <a href="https://build.opensuse.org/package/show/systemsmanagement:saltstack:products/salt"><code>saltstack:products:salt</code></a></p></div>
+<div class="paragraph"><p>The first thing that this command does is to pull the right container image from the registry(hardcoded).</p></div>
+<div class="paragraph"><p>With the default values the image would be: <code>registry.mgr.suse.de/toaster-sles12sp1-products</code></p></div>
+<div class="sect3">
+<h4 id="parameters">Parameters</h4>
+<div class="paragraph"><div class="title">VERSION</div><p>Most of the time we want to run the tests against a specific OS.
 We can do so by using the <code>VERSION</code> environmental variable.</p></div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
 <pre><code>make suse.tests VERSION=sles12</code></pre>
 </div></div>
-<div class="paragraph"><p>The salt flavor can be specified using the <code>FLAVOR</code> environmental variable.</p></div>
-<div class="literalblock">
+<div class="paragraph"><div class="title">FLAVOR</div><p>The salt flavor can be specified using the <code>FLAVOR</code> environmental variable.</p></div>
+<div class="listingblock">
 <div class="content">
 <pre><code>make suse.tests FLAVOR=products-testing</code></pre>
 </div></div>
 <div class="paragraph"><p>Of course, <code>VERSION</code> and <code>FLAVOR</code> can be combined</p></div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
 <pre><code>make suse.tests VERSION=sles12 FLAVOR=products-testing</code></pre>
 </div></div>
-<div class="paragraph"><p>To run the tests against a local salt repository, you need to use <code>FLAVOR=devel</code> and you also need to specify the path to the salt repository with <code>SALT_REPO</code></p></div>
-<div class="literalblock">
+<div class="paragraph"><div class="title">SALT_REPO</div><p>To run the tests against a local salt repository, you need to use <code>FLAVOR=devel</code> and you also need to specify the path to the salt repository with <code>SALT_REPO</code></p></div>
+<div class="listingblock">
 <div class="content">
 <pre><code>make suse.tests FLAVOR=devel SALT_REPO=/home/store/repositories/salt</code></pre>
 </div></div>
-<div class="paragraph"><p>You can specify a subset of tests to run using <code>SALT_TESTS</code></p></div>
-<div class="literalblock">
+<div class="paragraph"><div class="title">SALT_TESTS</div><p>You can specify a subset of tests to run using <code>SALT_TESTS</code></p></div>
+<div class="listingblock">
 <div class="content">
 <pre><code>make suse.tests SALT_TESTS=tests/test_pkg.py
 make saltstack.unit SALT_TESTS=/salt/src/salt-*/tests/unit/modules/zypper_test.py</code></pre>
+</div></div>
+<div class="paragraph"><div class="title">PYTEST_FLAGS</div><p>You can pass extra py.test parameters using <code>PYTEST_FLAGS</code></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>make suse.tests SALT_TESTS=tests/test_pkg.py PYTEST_FLAGS=-x</code></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -887,18 +908,8 @@ make saltstack.unit SALT_TESTS=/salt/src/salt-*/tests/unit/modules/zypper_test.p
 <img src="./images/icons/note.png" alt="Note" />
 </td>
 <td class="content">
-<div class="ulist"><ul>
-<li>
-<p>
-When running the <code>suse.tests</code>, <code>SALT_TESTS</code> is a path relative to the current folder (salt-toaster)
-</p>
-</li>
-<li>
-<p>
-When running the <code>saltstack.unit</code> or <code>saltstack.integration</code>, <code>SALT_TESTS</code> is a path inside the docker container pointing to where the salt source code is extracted. Using a pattern like in the example above should always match independent of the salt-package version.
-</p>
-</li>
-</ul></div>
+<div class="paragraph"><p>When running the <code>suse.tests</code>, <code>SALT_TESTS</code> must be a path relative to the current folder (salt-toaster)</p></div>
+<div class="paragraph"><p>When running the <code>saltstack.unit</code> or <code>saltstack.integration</code>, <code>SALT_TESTS</code> must be a path inside the docker container pointing to where the salt source code is extracted. Using a pattern like in the example above should always match independent of the salt-package version.</p></div>
 </td>
 </tr></table>
 </div>
@@ -928,6 +939,7 @@ cellspacing="0" cellpadding="4">
 </tbody>
 </table>
 </div>
+</div>
 <div class="sect3">
 <h4 id="ignore_xfail_upstream_tests">Ignore/Xfail upstream tests</h4>
 <div class="listingblock">
@@ -939,19 +951,19 @@ http://www.gnu.org/software/src-highlite -->
 <pre><tt>KNOWN_ISSUES_INTEGRATION <span style="color: #990000">=</span> <span style="color: #990000">{</span>
     <span style="color: #FF0000">'ignore_list'</span><span style="color: #990000">:</span> <span style="color: #990000">{</span>
         <span style="color: #FF0000">'common'</span><span style="color: #990000">:</span> <span style="color: #990000">[</span>
-            <span style="color: #FF0000">'integration/files/file/base/*'</span> <span style="font-style: italic"><span style="color: #9A1900"># <b>&lt;1&gt;</b></span></span>
+            <span style="color: #FF0000">'integration/files/file/base/*'</span>  <span style="font-style: italic"><span style="color: #9A1900"># <b>&lt;1&gt;</b></span></span>
         <span style="color: #990000">],</span>
         <span style="color: #FF0000">'products-next'</span><span style="color: #990000">:</span> <span style="color: #990000">[</span>
-            <span style="color: #FF0000">'*::MasterTest::test_exit_status_correct_usage'</span> <span style="color: #990000">&lt;</span><span style="color: #993399">2</span><span style="color: #990000">&gt;</span>
+            <span style="color: #FF0000">'*::MasterTest::test_exit_status_correct_usage'</span>  <span style="font-style: italic"><span style="color: #9A1900"># <b>&lt;2&gt;</b></span></span>
         <span style="color: #990000">]</span>
 
     <span style="color: #990000">},</span>
     <span style="color: #FF0000">'xfail_list'</span><span style="color: #990000">:</span> <span style="color: #990000">{</span>
         <span style="color: #FF0000">'products'</span><span style="color: #990000">:[</span>
-            <span style="color: #FF0000">'integration/fileserver/roots_test.py::RootsTest::test_symlink_list'</span> <span style="font-style: italic"><span style="color: #9A1900"># <b>&lt;3&gt;</b></span></span>
+            <span style="color: #FF0000">'integration/fileserver/roots_test.py::RootsTest::test_symlink_list'</span>  <span style="font-style: italic"><span style="color: #9A1900"># <b>&lt;3&gt;</b></span></span>
         <span style="color: #990000">]</span>
         <span style="color: #FF0000">'rhel6/products'</span><span style="color: #990000">:</span> <span style="color: #990000">[</span>
-            <span style="color: #FF0000">'integration/cli/grains.py::GrainsTargetingTest::test_grains_targeting_disconnected'</span> <span style="font-style: italic"><span style="color: #9A1900"># <b>&lt;4&gt;</b></span></span>
+            <span style="color: #FF0000">'integration/cli/grains.py::GrainsTargetingTest::test_grains_targeting_disconnected'</span>  <span style="font-style: italic"><span style="color: #9A1900"># <b>&lt;4&gt;</b></span></span>
         <span style="color: #990000">]</span>
     <span style="color: #990000">}</span>
 <span style="color: #990000">}</span></tt></pre></div></div>
@@ -1038,12 +1050,12 @@ http://www.gnu.org/software/src-highlite -->
 <div class="literalblock">
 <div class="title">Run docker shell in specific local image</div>
 <div class="content">
-<pre><code>VERSION=sles12sp1 FLAVOR=products make docker_shell</code></pre>
+<pre><code>make docker_shell VERSION=sles12sp1 FLAVOR=products</code></pre>
 </div></div>
 <div class="literalblock">
 <div class="title">Run docker shell in repository image based on version and bind rpdb port</div>
 <div class="content">
-<pre><code>RPDB_PORT="4444" VERSION=sles12sp1 FLAVOR=products make docker_shell</code></pre>
+<pre><code>make docker_shell RPDB_PORT="4444" VERSION=sles12sp1 FLAVOR=products</code></pre>
 </div></div>
 <div class="literalblock">
 <div class="title">Run a specific suse test using a local salt repository and sles12sp1</div>
@@ -1053,12 +1065,12 @@ http://www.gnu.org/software/src-highlite -->
 <div class="literalblock">
 <div class="title">Run a subset of upstream unit tests</div>
 <div class="content">
-<pre><code>VERSION=sles12sp1 FLAVOR=products make saltstack.unit SALT_TESTS=/salt/src/salt-devel/tests/unit/modules/zypper_test.py</code></pre>
+<pre><code>make saltstack.unit VERSION=sles12sp1 FLAVOR=products SALT_TESTS=/salt/src/salt-devel/tests/unit/modules/zypper_test.py</code></pre>
 </div></div>
 <div class="literalblock">
 <div class="title">Run all upstream integration tests</div>
 <div class="content">
-<pre><code>VERSION=sles12sp1 FLAVOR=products make saltstack.integration</code></pre>
+<pre><code>make saltstack.integration VERSION=sles12sp1 FLAVOR=products</code></pre>
 </div></div>
 <div class="sect3">
 <h4 id="how_to_write_a_suse_integration_test">How to write a suse integration test</h4>
@@ -1120,19 +1132,14 @@ http://www.gnu.org/software/src-highlite -->
         <span style="font-weight: bold"><span style="color: #0000FF">return</span></span> master<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">salt</span></span><span style="color: #990000">(</span>minion<span style="color: #990000">[</span><span style="color: #FF0000">'id'</span><span style="color: #990000">],</span> <span style="color: #FF0000">"test.ping"</span><span style="color: #990000">)[</span>minion<span style="color: #990000">[</span><span style="color: #FF0000">'id'</span><span style="color: #990000">]]</span>
 
     <span style="font-weight: bold"><span style="color: #0000FF">assert</span></span> <span style="font-weight: bold"><span style="color: #000000">retry</span></span><span style="color: #990000">(</span>ping<span style="color: #990000">)</span></tt></pre></div></div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="complex_test_requirements">Complex test requirements</h3>
-<div class="paragraph"><p>When the requirements of the test are more complex, there&#8217;s another way to define the containers in a single json.</p></div>
+<div class="paragraph"><div class="title">Complex test requirements</div><p>When the requirements of the test are more complex, there&#8217;s another way to define the containers in a single json.</p></div>
 <div class="listingblock">
+<div class="title"><a href="https://github.com/openSUSE/salt-toaster/blob/master/tests/test_saltapi.py#L4-L35"><code>./tests/test_saltapi.py</code></a></div>
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt>https<span style="color: #990000">://</span>github<span style="color: #990000">.</span>com<span style="color: #990000">/</span>openSUSE<span style="color: #990000">/</span>salt<span style="color: #990000">-</span>toaster<span style="color: #990000">/</span>blob<span style="color: #990000">/</span>master<span style="color: #990000">/</span>tests<span style="color: #990000">/</span>test_saltapi<span style="color: #990000">.</span>py<span style="font-style: italic"><span style="color: #9A1900">#L4-L35[`./tests/test_saltapi.py`]</span></span>
-<span style="color: #990000">---</span>
-@pytest<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">fixture</span></span><span style="color: #990000">(</span>scope<span style="color: #990000">=</span><span style="color: #FF0000">'module'</span><span style="color: #990000">)</span>
+<pre><tt>@pytest<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">fixture</span></span><span style="color: #990000">(</span>scope<span style="color: #990000">=</span><span style="color: #FF0000">'module'</span><span style="color: #990000">)</span>
 <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">module_config</span></span><span style="color: #990000">(</span>request<span style="color: #990000">):</span>
     <span style="font-weight: bold"><span style="color: #0000FF">return</span></span> <span style="color: #990000">{</span>
         <span style="color: #FF0000">"masters"</span><span style="color: #990000">:</span> <span style="color: #990000">[</span>  <span style="font-style: italic"><span style="color: #9A1900"># <b>&lt;1&gt;</b></span></span>
@@ -1152,7 +1159,7 @@ http://www.gnu.org/software/src-highlite -->
                                 <span style="color: #FF0000">"collect_stats"</span><span style="color: #990000">:</span> False<span style="color: #990000">,</span>
                                 <span style="color: #FF0000">"disable_ssl"</span><span style="color: #990000">:</span> True<span style="color: #990000">,</span>
                             <span style="color: #990000">},</span>
-                            <span style="color: #FF0000">"external_auth"</span><span style="color: #990000">:</span> <span style="color: #990000">{</span> <span style="color: #990000">&lt;</span><span style="color: #993399">7</span><span style="color: #990000">&gt;</span>
+                            <span style="color: #FF0000">"external_auth"</span><span style="color: #990000">:</span> <span style="color: #990000">{</span>  <span style="font-style: italic"><span style="color: #9A1900"># <b>&lt;7&gt;</b></span></span>
                                 <span style="color: #FF0000">"auto"</span><span style="color: #990000">:</span> <span style="color: #990000">{</span>
                                     <span style="color: #FF0000">"admin"</span><span style="color: #990000">:</span> <span style="color: #990000">[</span><span style="color: #FF0000">'.*'</span><span style="color: #990000">,</span> <span style="color: #FF0000">'@wheel'</span><span style="color: #990000">,</span> <span style="color: #FF0000">'@runner'</span><span style="color: #990000">,</span> <span style="color: #FF0000">'@jobs'</span><span style="color: #990000">]</span>
                                 <span style="color: #990000">},</span>
@@ -1163,16 +1170,82 @@ http://www.gnu.org/software/src-highlite -->
                 <span style="color: #FF0000">"minions"</span><span style="color: #990000">:</span> <span style="color: #990000">[{</span><span style="color: #FF0000">"config"</span><span style="color: #990000">:</span> <span style="color: #990000">{}}]</span>  <span style="font-style: italic"><span style="color: #9A1900"># <b>&lt;8&gt;</b></span></span>
             <span style="color: #990000">}</span>
         <span style="color: #990000">]</span>
-<span style="color: #990000">}</span>
-<span style="color: #990000">---</span>
-<span style="color: #990000">&lt;</span><span style="color: #993399">1</span><span style="color: #990000">&gt;</span> a list of dictionaries<span style="color: #990000">.</span> each item <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> the list will generate a container <span style="font-weight: bold"><span style="color: #0000FF">and</span></span> run salt<span style="color: #990000">-</span>master inside
-<span style="color: #990000">&lt;</span><span style="color: #993399">2</span><span style="color: #990000">&gt;</span> configuration dictionary <span style="font-weight: bold"><span style="color: #0000FF">for</span></span> the master
-<span style="color: #990000">&lt;</span><span style="color: #993399">3</span><span style="color: #990000">&gt;</span> use `container__config__salt_config__sls` to specify an sls file that will be executed during the master set<span style="color: #990000">-</span>up stage
-<span style="color: #990000">&lt;</span><span style="color: #993399">4</span><span style="color: #990000">&gt;</span> use `container__config__salt_config__extra_configs` to create config files <span style="font-weight: bold"><span style="color: #0000FF">for</span></span> salt <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> `<span style="color: #990000">/</span>etc<span style="color: #990000">/</span>salt<span style="color: #990000">/</span>master<span style="color: #990000">.</span>d` <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> the master container
-<span style="color: #990000">&lt;</span><span style="color: #993399">5</span><span style="color: #990000">&gt;</span> this creates the file `<span style="color: #990000">/</span>etc<span style="color: #990000">/</span>salt<span style="color: #990000">/</span>master<span style="color: #990000">.</span>d<span style="color: #990000">/</span>rosters_paths<span style="color: #990000">.</span>conf` <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> the master container
-<span style="color: #990000">&lt;</span><span style="color: #993399">6</span><span style="color: #990000">&gt;</span> this creates the file `<span style="color: #990000">/</span>etc<span style="color: #990000">/</span>salt<span style="color: #990000">/</span>master<span style="color: #990000">.</span>d<span style="color: #990000">/</span>salt_api_config<span style="color: #990000">.</span>conf` <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> the master container
-<span style="color: #990000">&lt;</span><span style="color: #993399">7</span><span style="color: #990000">&gt;</span> this creates the file `<span style="color: #990000">/</span>etc<span style="color: #990000">/</span>salt<span style="color: #990000">/</span>external_auth<span style="color: #990000">.</span>conf` <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> the master container
-<span style="color: #990000">&lt;</span><span style="color: #993399">8</span><span style="color: #990000">&gt;</span> define the minions that will be controlled by this master<span style="color: #990000">.</span> the minions can be defined as dictionary <span style="font-weight: bold"><span style="color: #0000FF">in</span></span> the same way masters are defined as described above<span style="color: #990000">.</span></tt></pre></div></div>
+<span style="color: #990000">}</span></tt></pre></div></div>
+<div class="colist arabic"><ol>
+<li>
+<p>
+a list of dictionaries. each item in the list will generate a container and run salt-master inside
+</p>
+</li>
+<li>
+<p>
+configuration dictionary for the master
+</p>
+</li>
+<li>
+<p>
+use <code>container__config__salt_config__sls</code> to specify an sls file that will be executed during the master set-up stage
+</p>
+</li>
+<li>
+<p>
+use <code>container__config__salt_config__extra_configs</code> to create config files for salt in <code>/etc/salt/master.d</code> in the master container
+</p>
+</li>
+<li>
+<p>
+this creates the file <code>/etc/salt/master.d/rosters_paths.conf</code> in the master container
+</p>
+</li>
+<li>
+<p>
+this creates the file <code>/etc/salt/master.d/salt_api_config.conf</code> in the master container
+</p>
+</li>
+<li>
+<p>
+this creates the file <code>/etc/salt/external_auth.conf</code> in the master container
+</p>
+</li>
+<li>
+<p>
+define the minions that will be controlled by this master. the minions can be defined as dictionary in the same way masters are defined as described above.
+</p>
+</li>
+</ol></div>
+</div>
+<div class="sect3">
+<h4 id="running_the_test_that_we_just_wrote">Running the test that we just wrote</h4>
+<div class="paragraph"><p>The next thing after writing the test would probably be to run it.
+We would do that with:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>make suse.tests SALT_TESTS=tests/test_example.py::test_ping_minion`</code></pre>
+</div></div>
+<div class="paragraph"><p>This will run the test with the default <code>VERSION</code> and <code>FLAVOR</code> values but we probably wrote the test in order to implement a new salt feature or to fix some bug.
+In this case we would probably want to run the test using the local checked out salt repository.
+We do that with:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>make suse.tests FLAVOR=devel SALT_REPO=/home/store/repositories/salt SALT_TESTS=tests/test_example.py::test_ping_minion</code></pre>
+</div></div>
+<div class="paragraph"><p>The test will probably fail (we didn&#8217;t fix the issue yet). We can then change the salt source code and run the test again. The changes are immediatelly visible in the tests. We don&#8217;t have to do anything extra, we just need to run the test again with the command above.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img src="./images/icons/note.png" alt="Note" />
+</td>
+<td class="content">
+<div class="paragraph"><p>When running the tests with <code>FLAVOR=devel</code>, when changing beetween salt branches we might get:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>AttributeError: 'module' object has no attribute 'BASE_THORIUM_ROOTS_DIR'</code></pre>
+</div></div>
+<div class="paragraph"><p>We can get over this by removing the <code>*.pyc</code> files from the salt repo using <code>find . -name "*.pyc" -delete</code></p></div>
+</td>
+</tr></table>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1181,7 +1254,7 @@ http://www.gnu.org/software/src-highlite -->
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2017-04-21 14:13:17 CEST
+ 2017-04-21 15:32:17 CEST
 </div>
 </div>
 </body>
