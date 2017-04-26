@@ -142,7 +142,6 @@ def test_pkg_download(minion):
 
 
 def test_pkg_remove(request, minion):
+    minion.salt_call('pkg.install', 'test-package')
     res = minion.salt_call('pkg.remove', 'test-package')
-    request.addfinalizer(
-        partial(minion['container'].run, 'zypper in test-package'))
     assert res['test-package']['new'] == ''

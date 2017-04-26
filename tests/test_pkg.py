@@ -21,12 +21,18 @@ def test_pkg_info_available(minion):
         res['test-package']['status'])
 
 
-def test_pkg_info_installed(minion):
+def test_pkg_info_installed(request, minion):
+    minion.salt_call('pkg.install', 'test-package')
+    request.addfinalizer(
+        partial(minion.salt_call, 'pkg.remove', 'test-package'))
     res = minion.salt_call('pkg.info_installed', 'test-package')
     assert res['test-package']['vendor'] == "obs://build.opensuse.org/systemsmanagement"
 
 
-def test_pkg_info_installed_epoch(minion):
+def test_pkg_info_installed_epoch(request, minion):
+    minion.salt_call('pkg.install', 'test-package')
+    request.addfinalizer(
+        partial(minion.salt_call, 'pkg.remove', 'test-package'))
     res = minion.salt_call('pkg.info_installed', 'test-package')
     assert res['test-package']['epoch'] == "42"
 
@@ -79,7 +85,12 @@ def test_salt_upgrade(minion):
 
 
 @pytest.mark.xfail
-def test_pkg_info_install_date(minion, timezone):
+def test_pkg_info_install_date(request, minion, timezone):
+    minion.salt_call('pkg.install', 'test-package')
+    request.addfinalizer(
+        partial(minion.salt_call, 'pkg.remove', 'test-package'))
+    request.addfinalizer(
+        partial(minion.salt_call, 'pkg.remove', 'test-package'))
     res = minion.salt_call('pkg.info_installed', 'test-package')
     dt = datetime.datetime.strptime(
         res['test-package']['install_date'], "%Y-%m-%dT%H:%M:%SZ")
@@ -96,9 +107,11 @@ def test_pkg_info_build_date(minion, timezone):
     assert int(timestamp) == int(res['test-package']['build_date_time_t'])
 
 
-def test_pkg_install_downloadonly(minion):
+def test_pkg_install_downloadonly(request, minion):
     list_pkgs_pre = minion.salt_call('pkg.list_downloaded')
     res = minion.salt_call('pkg.install', 'test-package downloadonly=True')
+    request.addfinalizer(
+        partial(minion.salt_call, 'pkg.remove', 'test-package'))
     list_pkgs_post = minion.salt_call('pkg.list_downloaded')
     assert list_pkgs_pre != list_pkgs_post
     assert 'test-package' in res
