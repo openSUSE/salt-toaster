@@ -33,7 +33,7 @@ RUN python /root/get-pip.py
 RUN pip install pytest unittest2 salttesting mock==1.0.0 timelib boto
 RUN yum -y --nogpgcheck install salt-other
 
-RUN yum -y --nogpgcheck install oscap openscap-content
+# RUN yum -y --nogpgcheck install oscap openscap-content
 
 ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
 CMD ["default"]
