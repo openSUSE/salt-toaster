@@ -26,12 +26,14 @@ ARG CACHE_DATE=nocache
 RUN yum-config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/next/RHEL_6
 RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/next/RHEL_6//repodata/repomd.xml.key
 RUN yum -y --nogpgcheck install which make gcc-c++ rpm-build quilt tar iproute bind-utils net-tools
-RUN yum -y --nogpgcheck install python-devel test-package
+RUN yum -y --nogpgcheck install python-devel
 RUN yum -y --nogpgcheck install salt-master salt-minion salt-proxy
 RUN yum -y --nogpgcheck install python-salt-testing openssh-clients openssh-server python-apache-libcloud nc tzdata
 RUN python /root/get-pip.py
 RUN pip install pytest unittest2 salttesting mock==1.0.0 timelib boto
 
+
+RUN yum -y --nogpgcheck install oscap openscap-content
 
 ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
 CMD ["default"]
