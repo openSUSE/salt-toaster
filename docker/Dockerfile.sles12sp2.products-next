@@ -37,7 +37,7 @@ RUN /root/bin/add_packages.sh
 RUN /root/bin/install_salt.sh
 
 
-RUN zypper -n in netcat-openbsd timezone
+RUN zypper -n in netcat-openbsd timezone spacewalk-oscap openscap-content
 RUN rpm -e --quiet python-salt-testing || true
 RUN pip uninstall -y salttesting || true
 RUN zypper -n install git
