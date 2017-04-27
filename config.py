@@ -1,6 +1,9 @@
+import os
+
 TIME_LIMIT = 120
 WHEEL_CONFIG = {
     'user': 'apiuser',
     'password': 'linux'
 }
-DOCKER_CONTEXT="https://mdinca:Fhxa8ssgdTzJGpgTs8Lp@gitlab.suse.de/mdinca/toaster-docker-support.git#dev:docker"
+GITLAB_AUTH = os.environ['GITLAB_AUTH']
+DOCKER_CONTEXT="https://{0}@gitlab.suse.de/mdinca/toaster-docker-support.git#dev:docker".format(GITLAB_AUTH)
