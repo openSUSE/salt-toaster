@@ -6,7 +6,7 @@ from jinja2 import Environment, FileSystemLoader
 from py.path import local as path
 from docker import Client
 
-from config import TIME_LIMIT
+from config import TIME_LIMIT, DOCKER_CONTEXT
 
 
 class TimeLimitReached(Exception):
@@ -37,7 +37,7 @@ def build_docker_image(nocache=False, pull=True):
     return docker_client.build(
         tag=os.environ['DOCKER_IMAGE'],
         dockerfile=os.environ['DOCKER_FILE'],
-        path=os.getcwd() + '/docker/',
+        path=DOCKER_CONTEXT,
         pull=pull,
         decode=True,
         forcerm=True,
