@@ -6,7 +6,7 @@ if [ "$FLAVOR" != "devel" ]
             then
                 bin/rhel_unpack_salt.sh
             else
-                docker/bin/install_salt.sh
+                /root/bin/install_salt.sh
                 bin/sles_unpack_salt.sh
         fi
 fi
