@@ -6,4 +6,4 @@ WHEEL_CONFIG = {
     'password': 'linux'
 }
 GITLAB_AUTH = os.environ['GITLAB_AUTH']
-DOCKER_CONTEXT="https://{0}@gitlab.suse.de/mdinca/toaster-docker-support.git#dev:docker".format(GITLAB_AUTH)
+DOCKER_CONTEXT="https://{0}@gitlab.suse.de/mdinca/toaster-docker-support.git#master:docker".format(GITLAB_AUTH)
