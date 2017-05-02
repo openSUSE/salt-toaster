@@ -6,7 +6,7 @@ from jinja2 import Environment, FileSystemLoader
 from py.path import local as path
 from docker import Client
 
-from config import TIME_LIMIT, DOCKER_CONTEXT
+from config import TIME_LIMIT
 
 
 class TimeLimitReached(Exception):
@@ -37,7 +37,8 @@ def build_docker_image(nocache=False, pull=True):
     return docker_client.build(
         tag=os.environ['DOCKER_IMAGE'],
         dockerfile=os.environ['DOCKER_FILE'],
-        path=DOCKER_CONTEXT,
+        path="https://{0}@gitlab.suse.de/mdinca/toaster-docker-support.git#master:docker".format(
+            os.environ['GITLAB_AUTH']),
         pull=pull,
         decode=True,
         forcerm=True,
