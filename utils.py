@@ -37,8 +37,9 @@ def build_docker_image(nocache=False, pull=True):
     return docker_client.build(
         tag=os.environ['DOCKER_IMAGE'],
         dockerfile=os.environ['DOCKER_FILE'],
-        path="https://{0}@gitlab.suse.de/mdinca/toaster-docker-support.git#master:docker".format(
-            os.environ['GITLAB_AUTH']),
+        path='https://gitlab.suse.de/mdinca/toaster-docker-support.git#master:docker',
+        # path="https://{0}@gitlab.suse.de/mdinca/toaster-docker-support.git#master:docker".format(
+        #     os.environ.get('GITLAB_AUTH')),
         pull=pull,
         decode=True,
         forcerm=True,
