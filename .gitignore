@@ -61,8 +61,8 @@ target/
 #Ipython Notebook
 .ipynb_checkpoints
 
-docker/salt.archive
-docker/develop.zip
+salt.archive
+develop.zip
 
 # Sandbox
 sandbox/

@@ -65,14 +65,14 @@ set_env:
 archive-salt:
 ifeq ("$(FLAVOR)", "devel")
 ifdef SALT_REPO
-	tar -X .tarexclude -czf docker/salt.archive -C $(SALT_REPO) .
+	tar -X .tarexclude -czf salt.archive -C $(SALT_REPO) .
 else
-	curl -s https://codeload.github.com/saltstack/salt/zip/develop > docker/develop.zip
-	rm -f docker/salt.archive
-	unzip docker/develop.zip -d docker > /dev/null
-	rm -f docker/develop.zip
-	tar -cvzf docker/salt.archive -C docker/salt-develop . > /dev/null
-	rm -rf docker/salt-develop
+	curl -s https://codeload.github.com/saltstack/salt/zip/develop > develop.zip
+	rm -f salt.archive
+	unzip develop.zip -d docker > /dev/null
+	rm -f develop.zip
+	tar -cvzf salt.archive -C develop . > /dev/null
+	rm -rf develop
 endif
 endif
 
@@ -82,7 +82,7 @@ ifeq ("$(FLAVOR)", "devel")
 	$(eval BUILD_OPTS:=--nopull)
 endif
 	DOCKER_IMAGE=$(DOCKER_IMAGE) DOCKER_FILE=$(DOCKER_FILE) sandbox/bin/python -m build $(BUILD_OPTS)
-	rm -f docker/salt.archive
+	rm -f salt.archive
 
 pull_image:
 ifndef NOPULL
