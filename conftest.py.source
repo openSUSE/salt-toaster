@@ -33,80 +33,6 @@ KNOWN_ISSUES_INTEGRATION = {
         ]
     },
     'xfail_list': {
-        'products':[
-            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
-            'integration/modules/cp.py::CPModuleTest::test_push',
-            'integration/modules/pillar.py::PillarModuleTest::test_pillar_items',
-            'integration/shell/call.py::CallTest::test_issue_2731_masterless',
-            'integration/shell/key.py::KeyTest::test_keys_generation_no_configdir',
-        ],
-        'rhel6/products': [
-            'integration/cli/grains.py::GrainsTargetingTest::test_grains_targeting_disconnected',
-            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
-            'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
-            'integration/shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
-        ],
-        'rhel7/products': [
-            'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
-        ],
-        'sles12/products': [
-            'integration/cli/grains.py::GrainsTargetingTest::test_grains_targeting_disconnected',
-            'integration/modules/pkg.py::PkgModuleTest::test_pkg_info',
-            'integration/output/output.py::OutputReturnTest::test_output_yaml',
-            'integration/shell/call.py::CallTest::test_issue_14979_output_file_permissions',
-            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
-            'integration/shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
-            'integration/shell/matcher.py::MatchTest::test_grain',
-            'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
-        ],
-        'sles12sp1/products': [
-            'integration/modules/pkg.py::PkgModuleTest::test_pkg_info',
-            'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
-        ],
-        'sles12sp2/products': [
-            'integration/modules/pkg.py::PkgModuleTest::test_pkg_info',
-            'integration/shell/matcher.py::MatchTest::test_grain',
-            'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
-            'integration/shell/call.py::CallTest::test_issue_14979_output_file_permissions',
-            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
-        ],
-        'products-testing':[
-            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
-            'integration/modules/cp.py::CPModuleTest::test_push',
-            'integration/modules/pillar.py::PillarModuleTest::test_pillar_items',
-            'integration/shell/call.py::CallTest::test_issue_2731_masterless',
-            'integration/shell/key.py::KeyTest::test_keys_generation_no_configdir',
-        ],
-        'rhel6/products-testing': [
-            'integration/cli/grains.py::GrainsTargetingTest::test_grains_targeting_disconnected',
-            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
-            'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
-            'integration/shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
-        ],
-        'rhel7/products-testing': [
-            'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
-        ],
-        'sles12/products-testing': [
-            'integration/cli/grains.py::GrainsTargetingTest::test_grains_targeting_disconnected',
-            'integration/modules/pkg.py::PkgModuleTest::test_pkg_info',
-            'integration/output/output.py::OutputReturnTest::test_output_yaml',
-            'integration/shell/call.py::CallTest::test_issue_14979_output_file_permissions',
-            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
-            'integration/shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
-            'integration/shell/matcher.py::MatchTest::test_grain',
-            'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
-        ],
-        'sles12sp1/products-testing': [
-            'integration/modules/pkg.py::PkgModuleTest::test_pkg_info',
-            'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
-        ],
-        'sles12sp2/products-testing': [
-            'integration/modules/pkg.py::PkgModuleTest::test_pkg_info',
-            'integration/shell/matcher.py::MatchTest::test_grain',
-            'integration/shell/matcher.py::MatchTest::test_salt_documentation_arguments_not_assumed',
-            'integration/shell/call.py::CallTest::test_issue_14979_output_file_permissions',
-            'integration/shell/call.py::CallTest::test_issue_6973_state_highstate_exit_code',
-        ],
         'products-next': [
             # Always failing
             'integration/cloud/providers/virtualbox.py::BaseVirtualboxTests::test_get_manager',
@@ -206,58 +132,6 @@ KNOWN_ISSUES_UNIT = {
         ],
     },
     'xfail_list': {
-        'products': [
-            # failing in jenkins + sles12 sles12sp1
-            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_simple',
-            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_timeout',
-
-            # failing in jenkins + sles12
-            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_set_event_handler',
-
-            # failing in jenkins + rhel6
-            'unit/utils/event_test.py::TestSaltEvent::test_event_matching_all',
-
-            'unit/config_test.py::ConfigTestCase::test_get_id_etc_hostname',
-            'unit/config_test.py::ConfigTestCase::test_get_id_etc_hosts',
-            'unit/config_test.py::ConfigTestCase::test_issue_6714_parsing_errors_logged',
-            # https://github.com/saltstack/salt/pull/36325 but not yet in our package
-            'unit/modules/blockdev_test.py::TestBlockdevModule::test_resize2fs',
-            # not working in docker containers
-            'unit/modules/cmdmod_test.py::CMDMODTestCase::test_run',
-            'unit/modules/zypper_test.py::ZypperTestCase::test_repo_noadd_nomod_noref',
-            'unit/states/winrepo_test.py::WinrepoTestCase::test_genrepo',
-            'unit/transport/tcp_test.py::BaseTCPReqCase::runTest',
-            'unit/utils/network.py::NetworkTestCase::test_interfaces_ifconfig_solaris',
-        ],
-        'sles11sp4/products': [
-            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_set_event_handler',
-        ],
-        'products-testing': [
-            # failing in jenkins + sles12 sles12sp1
-            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_simple',
-            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_timeout',
-
-            # failing in jenkins + sles12
-            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_set_event_handler',
-
-            # failing in jenkins + rhel6
-            'unit/utils/event_test.py::TestSaltEvent::test_event_matching_all',
-
-            'unit/config_test.py::ConfigTestCase::test_get_id_etc_hostname',
-            'unit/config_test.py::ConfigTestCase::test_get_id_etc_hosts',
-            'unit/config_test.py::ConfigTestCase::test_issue_6714_parsing_errors_logged',
-            # https://github.com/saltstack/salt/pull/36325 but not yet in our package
-            'unit/modules/blockdev_test.py::TestBlockdevModule::test_resize2fs',
-            # not working in docker containers
-            'unit/modules/cmdmod_test.py::CMDMODTestCase::test_run',
-            'unit/modules/zypper_test.py::ZypperTestCase::test_repo_noadd_nomod_noref',
-            'unit/states/winrepo_test.py::WinrepoTestCase::test_genrepo',
-            'unit/transport/tcp_test.py::BaseTCPReqCase::runTest',
-            'unit/utils/network.py::NetworkTestCase::test_interfaces_ifconfig_solaris',
-        ],
-        'sles11sp4/products-testing': [
-            'unit/netapi/rest_tornado/test_utils.py::TestEventListener::test_set_event_handler',
-        ],
         'products-next': [
             # not working in docker containers
             'unit/modules/cmdmod_test.py::CMDMODTestCase::test_run',
