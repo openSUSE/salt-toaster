@@ -18,8 +18,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/providers/msazure.py',
             'integration/modules/git.py',
             'integration/cloud/helpers/virtualbox.py',
-        ],
-        'products-next': [
+
             'integration/__init__.py',
 
             # Running following tests causes unsuccessfully close
@@ -33,7 +32,7 @@ KNOWN_ISSUES_INTEGRATION = {
         ]
     },
     'xfail_list': {
-        'products-next': [
+        'common': [
             # Always failing
             'integration/cloud/providers/virtualbox.py::BaseVirtualboxTests::test_get_manager',
             'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
@@ -65,7 +64,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/svn.py::SvnTest::test_latest_empty_dir', # sles12sp1
             'integration/runners/state.py::StateRunnerTest::test_orchestrate_output', # sles12sp1 rhel7
         ],
-        'rhel6/products-next': [
+        'rhel6': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
             'integration/cloud/providers/virtualbox.py::CloneVirtualboxTests::test_create_machine',
             'integration/cloud/providers/virtualbox.py::BootVirtualboxTests::test_start_stop',
@@ -76,12 +75,12 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
         ],
-        'rhel7/products-next': [
+        'rhel7': [
             'integration/states/archive.py::ArchiveTest::test_archive_extracted_skip_verify',
             'integration/states/archive.py::ArchiveTest::test_archive_extracted_with_root_user_and_group',
             'integration/states/archive.py::ArchiveTest::test_archive_extracted_with_source_hash',
         ],
-        'sles11sp3/products-next': [
+        'sles11sp3': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
             'integration/cloud/providers/virtualbox.py::CloneVirtualboxTests::test_create_machine',
             'integration/cloud/providers/virtualbox.py::BootVirtualboxTests::test_start_stop',
@@ -92,7 +91,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
         ],
-        'sles11sp4/products-next': [
+        'sles11sp4': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
             'integration/cloud/providers/virtualbox.py::CloneVirtualboxTests::test_create_machine',
             'integration/cloud/providers/virtualbox.py::BootVirtualboxTests::test_start_stop',
@@ -103,11 +102,11 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
         ],
-        'sles12/products-next': [
+        'sles12': [
         ],
-        'sles12sp1/products-next': [
+        'sles12sp1': [
         ],
-        'sles12sp2/products-next': [
+        'sles12sp2': [
         ],
     }
 }
@@ -132,7 +131,7 @@ KNOWN_ISSUES_UNIT = {
         ],
     },
     'xfail_list': {
-        'products-next': [
+        'common': [
             # not working in docker containers
             'unit/modules/cmdmod_test.py::CMDMODTestCase::test_run',
             'unit/conf_test.py::ConfTest::test_conf_cloud_maps_d_files_are_commented',
@@ -153,10 +152,10 @@ KNOWN_ISSUES_UNIT = {
 
             'unit/modules/inspect_collector_test.py::InspectorCollectorTestCase::test_file_tree',
         ],
-        'sles12sp1/products-next': [
+        'sles12sp1': [
             'unit/cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
         ],
-        'sles12sp2/products-next': [
+        'sles12sp2': [
             'unit/cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
         ],
     }
