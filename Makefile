@@ -91,7 +91,7 @@ endif
 
 PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS) $(PYTEST_FLAGS)
 CMD=py.test --timeout=60 $(PYTEST_ARGS)
-EXEC=docker run $(EXPORTS) -e "CMD=timeout 40m $(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
+EXEC=docker run $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
 
 build_image : CMD=""
 build_image :: archive-salt build
@@ -107,10 +107,12 @@ docker_shell :: pull_image
 	$(EXEC)
 
 saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/common.cfg
+saltstack.unit : CMD:=timeout 30m $(CMD)
 saltstack.unit :: pull_image
 	$(EXEC)
 
 saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/common.cfg
+saltstack.integration : CMD:=timeout 40m $(CMD)
 saltstack.integration :: pull_image
 	$(EXEC)
 
