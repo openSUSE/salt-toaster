@@ -90,8 +90,8 @@ ifndef NOPULL
 endif
 
 PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS) $(PYTEST_FLAGS)
-CMD=py.test $(PYTEST_ARGS)
-EXEC=docker run $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
+CMD=py.test --timeout=20 $(PYTEST_ARGS)
+EXEC=docker run $(EXPORTS) -e "CMD=timeout 40m $(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
 
 build_image : CMD=""
 build_image :: archive-salt build
@@ -116,6 +116,6 @@ saltstack.integration :: pull_image
 
 suse.tests : PYTEST_CFG=./configs/suse.tests/$(VERSION)/$(FLAVOR).cfg
 suse.tests : SALT_TESTS=./tests
-suse.tests : EXEC=sandbox/bin/$(CMD)
+suse.tests : EXEC=timeout 40m sandbox/bin/$(CMD)
 suse.tests : pull_image
 	$(EXEC)
