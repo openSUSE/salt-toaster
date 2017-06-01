@@ -29,6 +29,7 @@ KNOWN_ISSUES_INTEGRATION = {
 
             # Evil test
             'integration/reactor/reactor.py', # This test causes "py.test" never finishes
+            'integration/runners/fileserver.py::FileserverTest::test_clear_file_list_cache', # this test hangs
         ]
     },
     'xfail_list': {
