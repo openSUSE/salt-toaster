@@ -90,7 +90,7 @@ ifndef NOPULL
 endif
 
 PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS) $(PYTEST_FLAGS)
-CMD=py.test --timeout=60 $(PYTEST_ARGS)
+CMD=py.test --timeout=100 $(PYTEST_ARGS)
 EXEC=docker run $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
 
 build_image : CMD=""
