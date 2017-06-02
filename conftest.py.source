@@ -130,6 +130,8 @@ KNOWN_ISSUES_UNIT = {
             'unit/states/boto_cloudwatch_event_test.py',
             'unit/states/boto_vpc_test.py',
             'unit/utils/boto_test.py',
+            'unit/modules/win_ip_test.py::WinShadowTestCase::test_set_static_ip', # takes too long to execute
+            'unit/states/blockdev_test.py::BlockdevTestCase::test_formatted', # takes too long to execute
         ],
     },
     'xfail_list': {
