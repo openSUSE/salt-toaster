@@ -38,7 +38,7 @@ def module_config(masters):
 
 
 @pytest.mark.timeout(0)
-def test_syndic_test_ping(setup, masters, syndics, minions):
+def test_manage_status(setup, masters, syndics, minions):
 
     status = masters[0]['fixture'].salt_run('manage.status')
 
