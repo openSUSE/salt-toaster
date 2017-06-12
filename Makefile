@@ -120,7 +120,10 @@ saltstack.integration :: pull_image
 
 suse.tests : PYTEST_CFG=./configs/suse.tests/$(VERSION)/$(FLAVOR).cfg
 suse.tests : SALT_TESTS=./tests
+suse.tests : EXEC=sandbox/bin/$(CMD)
+ifneq ("$(FLAVOR)", "devel")
 suse.tests : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=150
-suse.tests : EXEC=timeout 40m sandbox/bin/$(CMD)
+suse.tests : EXEC:=timeout 40m $(EXEC)
+endif
 suse.tests : pull_image
 	$(EXEC)
