@@ -147,9 +147,8 @@ def test_ssh_port_forwarding(master):
 
 
 @pytest.fixture(scope="module")
-def sshdcontainer(request, salt_root, docker_client):
+def sshdcontainer(request, salt_root):
     obj = ContainerFactory(
-        config__docker_client=docker_client,
         config__image=request.config.getini('MINION_IMAGE') or request.config.getini('IMAGE'),
         config__salt_config=None)
 

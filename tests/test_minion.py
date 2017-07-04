@@ -13,7 +13,7 @@ def test_repo(request, minion):
     repo_path = '/tmp/test_repo/'
 
     with open('./tests/test_repo.tar.gz', 'rb') as f:
-        minion['container']['config']['docker_client'].put_archive(
+        minion['container']['config']['client'].put_archive(
             minion['container']['config']['name'], '/tmp', f.read())
 
     request.addfinalizer(partial(minion.salt_call, 'pkg.del_repo', repo_name))

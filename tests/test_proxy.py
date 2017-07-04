@@ -20,7 +20,6 @@ def proxy_server(request, salt_root, docker_client):
     name = u'proxy_server_{0}_{1}'.format(fake.word(), fake.word())
     command = 'python -m tests.scripts.proxy_server {0}'.format(PROXY_PORT)
     obj = ContainerFactory(
-        config__docker_client=docker_client,
         config__image=request.config.getini('IMAGE'),
         config__command=command,
         config__name=name,

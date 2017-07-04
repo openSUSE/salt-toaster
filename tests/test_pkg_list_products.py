@@ -78,7 +78,7 @@ def pytest_generate_tests(metafunc):
 def oem(request, minion):
     if request.param[0] == 'oem':
         with open('tests/oem.tar.gz', 'rb') as f:
-            minion['container']['config']['docker_client'].put_archive(
+            minion['container']['config']['client'].put_archive(
                 minion['container']['config']['name'], '/', f.read())
         request.addfinalizer(
             lambda: minion['container'].run('rm -rf /var/lib/suseRegister'))
