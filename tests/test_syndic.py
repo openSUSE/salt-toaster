@@ -2,6 +2,9 @@ import pytest
 from utils import retry
 
 
+pytestmark = pytest.mark.skip
+
+
 @pytest.fixture(scope='module')
 def masters(syndics, minions):
     return [
