@@ -1,6 +1,6 @@
 import pytest
 import time
-import json
+import requests
 from functools import partial
 
 @pytest.fixture(scope='module')
@@ -19,7 +19,7 @@ def module_config(request):
                         "salt_api_config": {
                             "rest_cherrypy": {
                                 "port": 9080,
-                                "host": "127.0.0.1",
+                                "host": "0.0.0.0",
                                 "collect_stats": False,
                                 "disable_ssl": True,
                             },
@@ -66,8 +66,8 @@ def test_roster_sshapi_disabled(master, salt_api_running):
 @pytest.fixture()
 def expected(request, minion):
     expectations = {
-        'salt-2017.7': json.dumps({"return": [{minion['id']: False}]}),
-        'default': json.dumps({"return": [{}]})
+        'salt-2017.7': {"return": [{minion['id']: False}]},
+        'default': {"return": [{}]}
     }
     tags = set(request.config.getini('TAGS'))
     intersection = tags.intersection(set(expectations)) or {'default'}
@@ -81,15 +81,21 @@ def test_timeout_and_gather_job_timeout(request, master, salt_api_running, minio
     # Giving some time to salt-api to starting up.
     time.sleep(3)
 
+    endpoint = "http://{ip}:{port}/run".format(ip=master['container']['ip'], port='9080')
+    payload = {
+        'client': 'local',
+        'tgt': '*',
+        'fun': 'test.ping',
+        'timeout': 3,
+        'gather_job_timeout': 1,
+        'username': 'admin',
+        'password': 'admin',
+        'eauth': 'auto'
+    }
+
     pre_ping_time = time.time()
-    cmd = (
-        'curl -sS localhost:9080/run -H "Content-type: application/json"'
-        ' -d \'[{"client": "local", "tgt": "*", "fun": "test.ping", '
-        '"timeout": 3, "gather_job_timeout": 1, "username": "admin", '
-        '"password": "admin", "eauth": "auto"}]\''
-    )
-    api_ret = master['container'].run(cmd)
+    response = requests.post(endpoint, json=payload)
     post_ping_time = time.time()
 
-    assert api_ret == expected
+    assert response.json() == expected
     assert (post_ping_time - pre_ping_time) < 10
