@@ -1,5 +1,7 @@
 import pytest
 import time
+import json
+from functools import partial
 
 @pytest.fixture(scope='module')
 def module_config(request):
@@ -35,16 +37,18 @@ def module_config(request):
     }
 
 
+@pytest.fixture()
+def salt_api_running(master):
+    master['container'].run('salt-call --local pkg.refresh_db')
+    master['container'].run('salt-call --local pkg.install salt-api')
+    master['container'].run('salt-api -d')
+
+
 @pytest.mark.xfail
-def test_roster_sshapi_disabled(master):
+def test_roster_sshapi_disabled(master, salt_api_running):
     '''
     Test if Salt API is not accepting custom roster.
     '''
-    run = master['container'].run
-    run('salt-call --local pkg.refresh_db')
-    run('salt-call --local pkg.install salt-api,curl')
-    run('salt-api -d')
-
     # create a malicious roster
     with open('/tmp/malicious.roster', 'w') as rst:
         for line in ['exploit:\n',
@@ -59,25 +63,33 @@ def test_roster_sshapi_disabled(master):
     assert '- {}' in out
 
 
-def test_timeout_and_gather_job_timeout(master, minion):
-    master_run = master['container'].run
-    master_run('salt-call --local pkg.refresh_db')
-    master_run('salt-call --local pkg.install pkgs=\'["salt-api", "curl"]\'')
-    master_run('salt-api -d')
+@pytest.fixture()
+def expected(request, minion):
+    expectations = {
+        'salt-2017.7': json.dumps({"return": [{minion['id']: False}]}),
+        'default': json.dumps({"return": [{}]})
+    }
+    tags = set(request.config.getini('TAGS'))
+    intersection = tags.intersection(set(expectations)) or {'default'}
+    return expectations[intersection.pop()]
 
-    # Killing salt-minion process to get an unreachable minion
-    minion['container'].run("pkill -9 salt-minion")
+
+def test_timeout_and_gather_job_timeout(request, master, salt_api_running, minion, expected):
+    minion['container'].disconnect()
+    request.addfinalizer(minion['container'].connect)
+
     # Giving some time to salt-api to starting up.
     time.sleep(3)
 
     pre_ping_time = time.time()
-    api_ret = master_run('curl -sS localhost:9080/run -H "Content-type: application/json"'
-                         ' -d \'[{"client": "local", "tgt": "*", "fun": "test.ping", '
-                         '"timeout": 3, "gather_job_timeout": 1, "username": "admin", '
-                         '"password": "admin", "eauth": "auto"}]\'')
+    cmd = (
+        'curl -sS localhost:9080/run -H "Content-type: application/json"'
+        ' -d \'[{"client": "local", "tgt": "*", "fun": "test.ping", '
+        '"timeout": 3, "gather_job_timeout": 1, "username": "admin", '
+        '"password": "admin", "eauth": "auto"}]\''
+    )
+    api_ret = master['container'].run(cmd)
     post_ping_time = time.time()
 
-    # Starting salt-minion process again
-    minion['container'].run("rcsalt-minion start")
-    assert api_ret == '{"return": [{}]}'
+    assert api_ret == expected
     assert (post_ping_time - pre_ping_time) < 10
