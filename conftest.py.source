@@ -3,6 +3,7 @@ import glob
 import pytest
 from functools import partial
 from fnmatch import fnmatch
+from saltrepoinspect import get_salt_version
 
 
 def pytest_addoption(parser):
@@ -162,6 +163,9 @@ KNOWN_ISSUES_UNIT = {
         'sles12sp2': [
             'unit/cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
         ],
+        '2016.11.4': [
+            '*network_test.py::NetworkTestCase::test_host_to_ips',
+        ]
     }
 }
 
@@ -172,15 +176,17 @@ KNOWN_ISSUES = {
 }
 
 
-def get_list(tests_type, name):
+def get_list(config, name):
     version = os.environ.get('VERSION')
     flavor = os.environ.get('FLAVOR')
+    tests_type = config.getini('tests_type')
     assert name in ['ignore_list', 'xfail_list']
     return (
         (KNOWN_ISSUES[tests_type][name].get('common') or []) +
         (KNOWN_ISSUES[tests_type][name].get(flavor) or []) +
         (KNOWN_ISSUES[tests_type][name].get(version) or []) +
-        (KNOWN_ISSUES[tests_type][name].get('{0}/{1}'.format(version, flavor)) or [])
+        (KNOWN_ISSUES[tests_type][name].get('{0}/{1}'.format(version, flavor)) or []) +
+        (KNOWN_ISSUES[tests_type][name].get(config.salt_version) or [])
     )
 
 
@@ -189,17 +195,18 @@ def pytest_ignore_collect(path, config):
 
 
 def pytest_itemcollected(item):
-    xfail_list = get_list(item.config.getini('tests_type'), 'xfail_list')
-    ignore_list = get_list(item.config.getini('tests_type'), 'ignore_list')
-
     matcher = partial(fnmatch, item.nodeid)
-    if any(map(matcher, xfail_list)):
+    if any(map(matcher, item.config.xfail_list)):
         item.addExpectedFailure(item.parent, None)
-    elif any(map(matcher, ignore_list)):
+    elif any(map(matcher, item.config.ignore_list)):
         item.addSkip(item.parent, None)
 
 
 def pytest_configure(config):
+    config.salt_version = get_salt_version(
+        os.environ.get('VERSION'), os.environ.get('FLAVOR'))
+    config.xfail_list = get_list(config, 'xfail_list')
+    config.ignore_list = get_list(config, 'ignore_list')
     os.sys.path.extend(glob.glob(os.environ.get('SALT_TESTS')))
 
 
