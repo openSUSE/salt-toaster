@@ -191,7 +191,8 @@ def get_list(config, name):
 
 
 def pytest_ignore_collect(path, config):
-    return any(map(path.fnmatch, get_list(config, 'ignore_list')))
+    ignore_list = get_list(config, 'ignore_list')
+    return any(map(path.fnmatch, ignore_list))
 
 
 def pytest_itemcollected(item):
