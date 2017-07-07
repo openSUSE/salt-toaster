@@ -207,7 +207,8 @@ def pytest_configure(config):
         os.environ.get('VERSION'), os.environ.get('FLAVOR'))
     config.xfail_list = get_list(config, 'xfail_list')
     config.ignore_list = get_list(config, 'ignore_list')
-    os.sys.path.extend(glob.glob(os.environ.get('SALT_TESTS')))
+    tests_path = '{0}/salt-*/tests'.format(os.environ.get('ROOT_MOUNTPOINT'))
+    os.sys.path.extend(glob.glob(tests_path))
 
 
 @pytest.fixture(scope="session")
