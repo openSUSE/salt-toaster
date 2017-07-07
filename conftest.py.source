@@ -7,7 +7,7 @@ from saltrepoinspect import get_salt_version
 
 
 def pytest_addoption(parser):
-    parser.addini("tests_type", help="Typo of the tests being run", default='unit')
+    parser.addini("tests_type", help="Type of the tests being run", default='unit')
 
 
 KNOWN_ISSUES_INTEGRATION = {
