@@ -135,6 +135,7 @@ KNOWN_ISSUES_UNIT = {
             'unit/states/blockdev_test.py::BlockdevTestCase::test_formatted', # takes too long to execute
         ],
         '2017.7.0rc1': [
+            'unit/utils/cache_mods/cache_mod.py',
             'unit/modules/test_boto_vpc.py',
             'unit/states/test_boto_vpc.py'
         ]
@@ -169,6 +170,9 @@ KNOWN_ISSUES_UNIT = {
         ],
         '2016.11.4': [
             '*network_test.py::NetworkTestCase::test_host_to_ips',
+        ],
+        '2017.7.0rc1': [
+            'unit/fileserver/test_roots.py::RootsTest::test_symlink_list'
         ]
     }
 }
