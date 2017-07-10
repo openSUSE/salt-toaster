@@ -111,9 +111,9 @@ KNOWN_ISSUES_INTEGRATION = {
         'sles12sp2': [
         ],
         '2017.7.0rc1': [
-            'test_fileserver.py::FileserverTest::test_symlink_list',
-            'test_fileserver.py::FileserverTest::test_empty_dir_list',
-            'test_timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
+            '*test_fileserver.py::FileserverTest::test_symlink_list',
+            '*test_fileserver.py::FileserverTest::test_empty_dir_list',
+            '*test_timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
         ]
     }
 }
