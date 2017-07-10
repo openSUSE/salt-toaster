@@ -21,6 +21,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/helpers/virtualbox.py',
 
             'integration/__init__.py',
+            'integration/utils/*'
 
             # Running following tests causes unsuccessfully close
             # of forked processes. This will cause "hanging" jenkins jobs.
@@ -40,9 +41,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/providers/virtualbox.py::BaseVirtualboxTests::test_get_manager',
             'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
 
-            'integration/runners/fileserver.py::FileserverTest::test_symlink_list',
             'integration/modules/timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
-
             'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_develop',
             'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_head',
             'integration/states/git.py::GitTest::test_latest_fast_forward',
@@ -111,6 +110,11 @@ KNOWN_ISSUES_INTEGRATION = {
         ],
         'sles12sp2': [
         ],
+        '2017.7.0rc1': [
+            'test_fileserver.py::FileserverTest::test_symlink_list',
+            'test_fileserver.py::FileserverTest::test_empty_dir_list',
+            'test_timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
+        ]
     }
 }
 
@@ -172,7 +176,8 @@ KNOWN_ISSUES_UNIT = {
             '*network_test.py::NetworkTestCase::test_host_to_ips',
         ],
         '2017.7.0rc1': [
-            'unit/fileserver/test_roots.py::RootsTest::test_symlink_list'
+            'unit/fileserver/test_roots.py::RootsTest::test_symlink_list',
+            'unit/modules/test_cmdmod.py::CMDMODTestCase::test_run',  # test too slow
         ]
     }
 }
