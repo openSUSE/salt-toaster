@@ -33,7 +33,7 @@ function check_requirements() {
 	fi
     done
 
-    if [ -z "$(ps uax | grep docker | grep daemon)" ]; then
+    if [ -z "$(ps uax | grep dockerd | grep -v grep)" ]; then
 	echo "Error: Docker daemon should run"
 	exit 1;
     fi
