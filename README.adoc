@@ -63,9 +63,9 @@ For the suse tests, the approach is different. `py.test` is being run on the hos
 git clone https://github.com/dincamihai/salt-toaster.git
 cd salt-toaster
 virtualenv sandbox
+virtualend --relocatable sandbox
 echo "*" > sandbox/.gitignore
-. sandbox/bin/activate
-pip install -r requirements.txt
+sandbox/bin/pip install -r requirements.txt
 ----
 
 === Running tests
