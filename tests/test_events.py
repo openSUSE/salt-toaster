@@ -6,6 +6,9 @@ import requests
 from jsonschema import validate
 
 
+pytestmark = pytest.mark.skip
+
+
 pytestmark = pytest.mark.usefixtures(
     'setup',
     'terminal_stream',
