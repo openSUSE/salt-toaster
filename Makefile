@@ -118,6 +118,14 @@ saltstack.integration : CMD:=timeout 40m $(CMD)
 saltstack.integration :: pull_image
 	$(EXEC)
 
+
+suse.unit : PYTEST_CFG=./configs/saltstack.unit/common.cfg
+suse.unit : SALT_TESTS=./tests/patches
+suse.unit : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=30
+suse.unit : CMD:=timeout 30m $(CMD)
+suse.unit :: pull_image
+	$(EXEC)
+
 suse.tests : PYTEST_CFG=./configs/suse.tests/$(VERSION)/$(FLAVOR).cfg
 suse.tests : SALT_TESTS=./tests
 suse.tests : EXEC=sandbox/bin/$(CMD)
