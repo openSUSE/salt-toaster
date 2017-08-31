@@ -31,25 +31,6 @@ def retry(func):
     return success
 
 
-def build_docker_image(nocache=False, pull=True):
-    docker_client = Client(base_url='unix://var/run/docker.sock')
-
-    return docker_client.build(
-        tag=os.environ['DOCKER_IMAGE'],
-        dockerfile=os.environ['DOCKER_FILE'],
-        path='https://gitlab.suse.de/mdinca/toaster-docker-support.git#master:docker',
-        # path="https://{0}@gitlab.suse.de/mdinca/toaster-docker-support.git#master:docker".format(
-        #     os.environ.get('GITLAB_AUTH')),
-        pull=pull,
-        decode=True,
-        forcerm=True,
-        # Allows to invalidate cache for certains steps in Dockerfile
-        # https://github.com/docker/docker/issues/22832
-        buildargs={'CACHE_DATE': datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")},
-        nocache=nocache
-    )
-
-
 def get_template_parameters(version, flavor):
     vendor, version_major, separator, version_minor = re.match(
         '(?P<vendor>sles|rhel)(?P<major>\d{1,})(?:(?P<sp>sp)(?P<minor>\d{1,}))*',

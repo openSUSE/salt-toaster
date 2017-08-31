@@ -50,7 +50,6 @@ help:
 	@echo "Commands:"
 	@echo "  set_env                 Create environment"
 	@echo "  docker_shell            Start Docker shell"
-	@echo "  build_image             Build Docker image"
 	@echo "  saltstack.integration   Run Salt integration tests"
 	@echo "  saltstack.unit          Run Salt unit tests"
 	@echo "  suse.integration        Run SUSE custom integration tests"
@@ -92,10 +91,6 @@ endif
 PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS) $(PYTEST_FLAGS)
 CMD=py.test $(PYTEST_ARGS)
 EXEC=docker run $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
-
-build_image : CMD=""
-build_image :: archive-salt build
-	$(EXEC)
 
 ifndef RPDB_PORT
 docker_shell : EXEC=docker run -it $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
