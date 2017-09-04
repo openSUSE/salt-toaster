@@ -60,29 +60,6 @@ default: help
 set_env:
 	bin/prepare_environment.sh --create sandbox
 
-
-archive-salt:
-ifeq ("$(FLAVOR)", "devel")
-ifdef SALT_REPO
-	tar -X .tarexclude -czf salt.archive -C $(SALT_REPO) .
-else
-	curl -s https://codeload.github.com/saltstack/salt/zip/develop > develop.zip
-	rm -f salt.archive
-	unzip develop.zip -d docker > /dev/null
-	rm -f develop.zip
-	tar -cvzf salt.archive -C develop . > /dev/null
-	rm -rf develop
-endif
-endif
-
-build::
-	@echo "Building images"
-ifeq ("$(FLAVOR)", "devel")
-	$(eval BUILD_OPTS:=--nopull)
-endif
-	DOCKER_IMAGE=$(DOCKER_IMAGE) DOCKER_FILE=$(DOCKER_FILE) sandbox/bin/python -m build $(BUILD_OPTS)
-	rm -f salt.archive
-
 pull_image:
 ifndef NOPULL
 	docker pull $(DOCKER_IMAGE)
