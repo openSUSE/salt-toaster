@@ -1,2 +1,2 @@
 -r requirements-common.txt
-git+ssh://git@github.com/dincamihai/pytest-salt-containers
+git+ssh://git@github.com/dincamihai/pytest-salt-containers@devel
