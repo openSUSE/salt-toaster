@@ -38,7 +38,7 @@ KNOWN_ISSUES_INTEGRATION = {
     'xfail_list': {
         'common': [
             # Always failing
-            'integration/modules/sysmod.py::SysModuleTest::test_valid_docs',
+	    '*sysmod.py::SysModuleTest::test_valid_docs',
             'integration/cloud/providers/virtualbox.py::BaseVirtualboxTests::test_get_manager',
             'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
 
