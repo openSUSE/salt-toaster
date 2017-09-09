@@ -146,6 +146,7 @@ KNOWN_ISSUES_UNIT = {
     },
     'xfail_list': {
         'common': [
+            'unit/templates/jinja_test.py::TestCustomExtensions::test_serialize_yaml_unicode'
             # not working in docker containers
             'unit/modules/cmdmod_test.py::CMDMODTestCase::test_run',
             'unit/conf_test.py::ConfTest::test_conf_cloud_maps_d_files_are_commented',
