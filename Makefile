@@ -86,7 +86,7 @@ saltstack.unit :: pull_image
 	$(EXEC)
 
 saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/common.cfg
-saltstack.integration : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=100
+saltstack.integration : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=300
 saltstack.integration : CMD:=timeout 40m $(CMD)
 saltstack.integration :: pull_image
 	$(EXEC)
