@@ -140,6 +140,8 @@ KNOWN_ISSUES_UNIT = {
             'unit/utils/boto_test.py',
             'unit/modules/win_ip_test.py::WinShadowTestCase::test_set_static_ip', # takes too long to execute
             'unit/states/blockdev_test.py::BlockdevTestCase::test_formatted', # takes too long to execute
+            'unit/cloud/clouds/dimensiondata_test.py',
+            'unit/cloud/clouds/gce_test.py',
         ],
         '2017.7.0rc1': [
             'unit/utils/cache_mods/cache_mod.py',
