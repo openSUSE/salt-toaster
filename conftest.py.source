@@ -31,8 +31,10 @@ KNOWN_ISSUES_INTEGRATION = {
 
             # Evil test
             'integration/reactor/reactor.py', # This test causes "py.test" never finishes
-            'integration/runners/fileserver.py::FileserverTest::test_clear_file_list_cache', # this test hangs
-            'integration/wheel/key.py::KeyWheelModuleTest::test_list_all', # ERROR at teardown
+            # 'integration/runners/fileserver.py::FileserverTest::test_clear_file_list_cache',  # this test hangs
+            'integration/runners/fileserver.py',  # workaround for comment above
+            # 'integration/wheel/key.py::KeyWheelModuleTest::test_list_all',  # ERROR at teardown
+            '*/wheel/key.py',  # workaround for comment above
         ]
     },
     'xfail_list': {
@@ -206,8 +208,7 @@ def get_list(config, name):
 
 
 def pytest_ignore_collect(path, config):
-    ignore_list = get_list(config, 'ignore_list')
-    return any(map(path.fnmatch, ignore_list))
+    return any(map(path.fnmatch, config.ignore_list))
 
 
 def pytest_itemcollected(item):
