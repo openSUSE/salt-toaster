@@ -36,6 +36,7 @@ KNOWN_ISSUES_INTEGRATION = {
             # 'integration/wheel/key.py::KeyWheelModuleTest::test_list_all',  # ERROR at teardown
             '*/wheel/key.py',  # workaround for comment above
             '*/wheel/client.py',
+            '*/virtualenv.py',
         ]
     },
     'xfail_list': {
