@@ -38,6 +38,7 @@ KNOWN_ISSUES_INTEGRATION = {
             '*/wheel/client.py',
             '*/virtualenv.py',
             '*/states/user.py',
+            '*states/svn.py',
         ]
     },
     'xfail_list': {
