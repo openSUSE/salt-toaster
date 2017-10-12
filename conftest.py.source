@@ -44,7 +44,7 @@ KNOWN_ISSUES_INTEGRATION = {
         'rhel6/2017.7.1': ['*'],
         'sles11sp3/2017.7.1': ['*'],
         'sles11sp4/2017.7.1': ['*'],
-        'sles11sp3': ['*/modules/gem.py', '*/modules/ssh.py']
+        'sles11sp3': ['*/modules/gem.py', '*/modules/ssh.py'],
         'sles11sp4': ['*/modules/gem.py', '*/modules/ssh.py']
     },
     'xfail_list': {
