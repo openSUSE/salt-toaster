@@ -1,5 +1,5 @@
 DEFAULT_REGISTRY      = registry.mgr.suse.de
-DEFAULT_VERSION       = sles12sp1
+DEFAULT_VERSION       = sles12sp2
 DEFAULT_FLAVOR        = products
 TOASTER_MOUNTPOINT    = /salt-toaster
 ROOT_MOUNTPOINT       = /salt/src
