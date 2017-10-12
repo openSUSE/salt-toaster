@@ -1,5 +1,5 @@
 [pytest]
 addopts = --tb=short
-IMAGE = registry.mgr.suse.de/toaster-sles12sp1-{{ flavor }}
+IMAGE = registry.mgr.suse.de/toaster-sles12sp2-{{ flavor }}
 MINION_IMAGE = registry.mgr.suse.de/toaster-{{ version }}-{{ flavor }}
 TAGS = {{ vendor }} {{ version }}
