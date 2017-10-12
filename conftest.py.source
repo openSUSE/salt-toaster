@@ -116,6 +116,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
+            'integration/shell/master.py::MasterTest::test_exit_status_correct_usage',
         ],
         'sles12': [
         ],
