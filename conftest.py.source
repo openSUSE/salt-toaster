@@ -41,9 +41,9 @@ KNOWN_ISSUES_INTEGRATION = {
             '*states/svn.py',
         ],
         # disable 2017.7.1 on python 2.6
-        'rhel6/2017.7.1': ['*'],
-        'sles11sp3/2017.7.1': ['*'],
-        'sles11sp4/2017.7.1': ['*'],
+        'rhel6/products-next': ['*'],
+        'sles11sp3/products-next': ['*'],
+        'sles11sp4/products-next': ['*'],
         'sles11sp3': ['*/modules/gem.py', '*/modules/ssh.py'],
         'sles11sp4': ['*/modules/gem.py', '*/modules/ssh.py']
     },
@@ -124,7 +124,7 @@ KNOWN_ISSUES_INTEGRATION = {
         ],
         'sles12sp2': [
         ],
-        '2017.7.1': [
+        'products-next': [
             '*test_fileserver.py::FileserverTest::test_symlink_list',
             '*test_fileserver.py::FileserverTest::test_empty_dir_list',
             '*test_timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
@@ -154,7 +154,7 @@ KNOWN_ISSUES_UNIT = {
             'unit/cloud/clouds/dimensiondata_test.py',
             'unit/cloud/clouds/gce_test.py',
         ],
-        '2017.7.1': [
+        'products-next': [
             'unit/utils/cache_mods/cache_mod.py',
             'unit/modules/test_boto_vpc.py',
             'unit/states/test_boto_vpc.py'
@@ -192,7 +192,7 @@ KNOWN_ISSUES_UNIT = {
         '2016.11.4': [
             '*network_test.py::NetworkTestCase::test_host_to_ips',
         ],
-        '2017.7.1': [
+        'products-next': [
             'unit/fileserver/test_roots.py::RootsTest::test_symlink_list',
             'unit/modules/test_cmdmod.py::CMDMODTestCase::test_run',  # test too slow
         ]
@@ -215,6 +215,8 @@ def get_list(config, name):
         (KNOWN_ISSUES[tests_type][name].get('common') or []) +
         (KNOWN_ISSUES[tests_type][name].get(flavor) or []) +
         (KNOWN_ISSUES[tests_type][name].get(version) or []) +
+        (KNOWN_ISSUES[tests_type][name].get(
+            '{0}/{1}'.format(version, flavor)) or []) +
         (KNOWN_ISSUES[tests_type][name].get(
             '{0}/{1}'.format(version, config.salt_version)) or []) +
         (KNOWN_ISSUES[tests_type][name].get(config.salt_version) or [])
