@@ -198,6 +198,10 @@ KNOWN_ISSUES_UNIT = {
             'unit/modules/test_cmdmod.py::CMDMODTestCase::test_run',  # test too slow
             '*test_reactor.py::TestReactor::test_reactions',
             '*test_reactor.py::TestReactor::test_list_reactors',
+            '*test_yumpkg.py::YumTestCase::test_list_pkgs_with_attr',
+            '*test_local_cache.py::Local_CacheTest::test_clean_old_jobs',
+            '*test_local_cache.py::Local_CacheTest::test_not_clean_new_jobs',
+            '*test_jinja.py::TestCustomExtensions::test_http_query',
         ]
     }
 }
