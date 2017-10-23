@@ -128,6 +128,7 @@ KNOWN_ISSUES_INTEGRATION = {
             '*test_fileserver.py::FileserverTest::test_symlink_list',
             '*test_fileserver.py::FileserverTest::test_empty_dir_list',
             '*test_timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
+            '*test_file.py::FileTest::test_managed_check_cmd',
         ]
     }
 }
@@ -195,6 +196,8 @@ KNOWN_ISSUES_UNIT = {
         'products-next': [
             'unit/fileserver/test_roots.py::RootsTest::test_symlink_list',
             'unit/modules/test_cmdmod.py::CMDMODTestCase::test_run',  # test too slow
+            '*test_reactor.py::TestReactor::test_reactions',
+            '*test_reactor.py::TestReactor::test_list_reactors',
         ]
     }
 }
