@@ -64,6 +64,7 @@ def test_get_osrelease_info(minion, expected):
     key = 'osrelease_info'
     assert minion.salt_call('grains.get', 'osrelease_info') == expected[key]
 
+@pytest.mark.skiptags('products-next')
 def test_salt_version(minion):
     rpm_version = minion['container'].run('rpm -q salt --queryformat "%{VERSION}"')
     assert minion.salt_call('grains.get', 'saltversion') == rpm_version
