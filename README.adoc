@@ -87,11 +87,11 @@ make suse.tests
 
 When running any of these commands, salt-toaster uses the default values for OS and salt-package version.
 
-At the moment, the defaults are `sles12sp1` and https://build.opensuse.org/package/show/systemsmanagement:saltstack:products/salt[`saltstack:products:salt`]
+At the moment, the defaults are `sles12sp2` and https://build.opensuse.org/package/show/systemsmanagement:saltstack:products/salt[`saltstack:products:salt`]
 
 The first thing that this command does is to pull the right container image from the registry(hardcoded).
 
-With the default values the image would be: `registry.mgr.suse.de/toaster-sles12sp1-products`
+With the default values the image would be: `registry.mgr.suse.de/toaster-sles12sp2-products`
 
 ==== Parameters
 
