@@ -147,6 +147,7 @@ KNOWN_ISSUES_UNIT = {
             '*rsync_test.py::*',
             'unit/modules/darwin_sysctl_test.py',
             'unit/states/boto_cloudwatch_event_test.py',
+            'unit/modules/boto_vpc_test.py',
             'unit/states/boto_vpc_test.py',
             'unit/utils/boto_test.py',
             'unit/modules/win_ip_test.py::WinShadowTestCase::test_set_static_ip', # takes too long to execute
