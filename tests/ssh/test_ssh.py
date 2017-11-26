@@ -173,4 +173,5 @@ def test_ssh_option(master, sshdcontainer):
         "salt-ssh -l quiet -i --out json --key-deploy --passwd admin123 "
         "--ssh-option='ProxyCommand=\"nc {0} 2222\"' target network.ip_addrs"
     ).format(sshdcontainer['ip'])
-    return json.loads(master['container'].run(SSH)).get('target') == sshdcontainer['ip']
+    target_ip = json.loads(master['container'].run(SSH)).get('target')
+    assert target_ip[0] == sshdcontainer['ip']
