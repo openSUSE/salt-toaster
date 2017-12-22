@@ -154,6 +154,7 @@ KNOWN_ISSUES_UNIT = {
             'unit/states/blockdev_test.py::BlockdevTestCase::test_formatted', # takes too long to execute
             'unit/cloud/clouds/dimensiondata_test.py',
             'unit/cloud/clouds/gce_test.py',
+            '*/utils/test_parsers.py',
         ],
         'products-next': [
             'unit/utils/cache_mods/cache_mod.py',
