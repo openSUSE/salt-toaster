@@ -81,7 +81,7 @@ docker_shell :: pull_image
 
 saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/common.cfg
 saltstack.unit : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=30
-saltstack.unit : CMD:=timeout 30m $(CMD)
+saltstack.unit : CMD:=timeout 60m $(CMD)
 saltstack.unit :: pull_image
 	$(EXEC)
 
