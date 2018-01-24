@@ -41,6 +41,10 @@ ifndef DOCKER_IMAGE
 	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)-$(FLAVOR)
 endif
 
+ifndef DEFAULT_DOCKER_IMAGE
+	DEFAULT_DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(DEFAULT_VERSION)-$(FLAVOR)
+endif
+
 ifndef DOCKER_FILE
 	DOCKER_FILE = Dockerfile.$(VERSION).$(FLAVOR)
 endif
@@ -64,6 +68,11 @@ set_env:
 pull_image:
 ifndef NOPULL
 	docker pull $(DOCKER_IMAGE)
+endif
+
+pull_default_image:
+ifndef NOPULL
+	docker pull ${DEFAULT_DOCKER_IMAGE}
 endif
 
 PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS) $(PYTEST_FLAGS)
@@ -98,5 +107,6 @@ ifneq ("$(FLAVOR)", "devel")
 suse.tests : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
 suse.tests : EXEC:=timeout 120m $(EXEC)
 endif
+suse.tests : pull_default_image
 suse.tests : pull_image
 	$(EXEC)
