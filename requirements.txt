@@ -1,3 +1,3 @@
 -r requirements-common.txt
-pytest-salt-containers==0.2.dev10
+git+https://github.com/dincamihai/pytest-salt-containers.git
 git+https://github.com/dincamihai/saltrepoinspect.git
