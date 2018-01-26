@@ -158,16 +158,13 @@ KNOWN_ISSUES_UNIT = {
         ],
         'products-next': [
             'unit/utils/cache_mods/cache_mod.py',
-            'unit/modules/boto_vpc_test.py',
-            'unit/states/boto_cloudwatch_event_test.py',
-            'unit/utils/boto_test.py',
+            'unit/modules/test_boto_vpc.py',
+            'unit/states/test_boto_vpc.py',
         ],
         'sles15': [
             'unit/utils/cache_mods/cache_mod.py',
-            'unit/modules/boto_vpc_test.py',
-            'unit/states/boto_cloudwatch_event_test.py',
-            'unit/utils/boto_test.py',
             'unit/test_zypp_plugins.py',
+            'unit/modules/test_yumpkg',
         ]
     },
     'xfail_list': {
