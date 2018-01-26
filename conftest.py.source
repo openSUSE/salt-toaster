@@ -208,6 +208,7 @@ KNOWN_ISSUES_UNIT = {
             '*test_local_cache.py::Local_CacheTest::test_clean_old_jobs',
             '*test_local_cache.py::Local_CacheTest::test_not_clean_new_jobs',
             '*test_jinja.py::TestCustomExtensions::test_http_query',
+            '*test_conf.py::ConfTest::test_conf_master_sample_is_commented',
         ]
     }
 }
