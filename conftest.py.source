@@ -164,7 +164,7 @@ KNOWN_ISSUES_UNIT = {
         'sles15': [
             'unit/utils/cache_mods/cache_mod.py',
             'unit/test_zypp_plugins.py',
-            'unit/modules/test_yumpkg',
+            'unit/modules/test_yumpkg.py',
         ]
     },
     'xfail_list': {
