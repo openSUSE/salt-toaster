@@ -20,8 +20,8 @@ def module_config(request, container):
                         },
                     },
                     "container__config__salt_config__apply_states": {
-                        "top": "tests/sls/ssh/top.sls",
-                        "ssh": "tests/sls/ssh/ssh.sls"
+                        "tests/sls/ssh/top.sls",
+                        "tests/sls/ssh/ssh.sls"
                     },
                     "container__config__salt_config__roster": [container]
                 }
