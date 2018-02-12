@@ -39,6 +39,8 @@ KNOWN_ISSUES_INTEGRATION = {
             '*/virtualenv.py',
             '*/states/user.py',
             '*states/svn.py',
+            '*/kitchen/tests/wordpress/*',
+            'integration/pillar/test_git_pillar.py'
         ],
         # disable 2017.7.1 on python 2.6
         'rhel6/products-next': ['*'],
@@ -155,11 +157,14 @@ KNOWN_ISSUES_UNIT = {
             'unit/cloud/clouds/dimensiondata_test.py',
             'unit/cloud/clouds/gce_test.py',
             '*/utils/test_parsers.py',
+            '*/kitchen/tests/wordpress/*',
+            'unit/fileserver/test_gitfs.py',
         ],
         'products-next': [
             'unit/utils/cache_mods/cache_mod.py',
             'unit/modules/test_boto_vpc.py',
             'unit/states/test_boto_vpc.py',
+            'unit/states/test_augeas.py::AugeasTestCase::test_change_no_context_with_full_path_fail',
         ],
         'sles15': [
             'unit/utils/cache_mods/cache_mod.py',
