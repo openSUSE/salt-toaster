@@ -17,7 +17,7 @@ def module_config(request):
                             # "yaml_utf8": True
                         },
                     },
-                    "container__config__salt_config__apply_states": [
+                    "container__config__salt_config__sls": [
                         "tests/sls/unicode/top.sls",
                         "tests/sls/unicode/unicode.sls",
                         "tests/sls/unicode/unicode1.sls",

@@ -10,10 +10,10 @@ def module_config(request):
         'masters': [
             {
                 'config': {
-                    'container__config__salt_config__sls': {
-                        'rsync': 'tests/sls/rsync.sls',
-                        'archextract': 'tests/sls/archextract.sls',
-                    }
+                    'container__config__salt_config__sls': [
+                        'tests/sls/rsync.sls',
+                        'tests/sls/archextract.sls',
+                    ]
                 },
                 'minions': [
                     {

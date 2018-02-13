@@ -8,12 +8,12 @@ def module_config(request):
         'masters': [
             {
                 'config': {
-                    'container__config__salt_config__sls': {
-                        'latest': 'tests/sls/latest.sls',
-                        'latest-again': 'tests/sls/latest-again.sls',
-                        'downloaded': 'tests/sls/downloaded.sls',
-                        'patches-downloaded': 'tests/sls/patches-downloaded.sls'
-                    }
+                    'container__config__salt_config__sls': [
+                        'tests/sls/latest.sls',
+                        'tests/sls/latest-again.sls',
+                        'tests/sls/downloaded.sls',
+                        'tests/sls/patches-downloaded.sls'
+                    ]
                 },
                 'minions': [{'config': {}}, {'config': {}}]
             }

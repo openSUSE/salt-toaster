@@ -9,9 +9,9 @@ def module_config(request):
         "masters": [
             {
                 "config": {
-                    'container__config__salt_config__sls': {
-                        'saltapi': 'tests/sls/saltapi.sls',
-                    },
+                    'container__config__salt_config__sls': [
+                        'tests/sls/saltapi.sls',
+                    ],
                     "container__config__salt_config__extra_configs": {
                         "rosters_paths": {
                             "rosters": ['/salt-toaster/tests/data/good.roster'],
