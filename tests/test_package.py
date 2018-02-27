@@ -18,6 +18,12 @@ def pytest_generate_tests(metafunc):
         if minion_image:
             images.append(minion_image)
         metafunc.parametrize('container', images, indirect=['container'])
+    if 'python' in metafunc.fixturenames:
+        tags = set(metafunc.config.getini('TAGS'))
+        if 'sles15' in tags:
+            metafunc.parametrize("python", ["python3"])
+        else:
+            metafunc.parametrize("python", ["python"])
 
 
 @pytest.fixture(scope='module')
@@ -73,7 +79,7 @@ def test_minion_shipped_with_sha256(container):
     assert content['hash_type'] == 'sha256'
 
 
-def test_hash_type_is_used(request, master):
+def test_hash_type_is_used(request, master, python):
     user = WHEEL_CONFIG['user']
     password_salt = '00'
     password = crypt.crypt(WHEEL_CONFIG['password'], password_salt)
@@ -81,6 +87,6 @@ def test_hash_type_is_used(request, master):
         partial(master['container'].run, "userdel {0}".format(user)))
     master['container'].run("useradd {0} -p '{1}'".format(user, password))
     raw_output = master['container'].run(
-        "python tests/scripts/wheel_config_values.py")
+        "{0} tests/scripts/wheel_config_values.py".format(python))
     output = json.loads(raw_output)
     assert output['data']['return']['hash_type'] == "sha384"

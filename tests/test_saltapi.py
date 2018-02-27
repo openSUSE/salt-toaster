@@ -96,6 +96,7 @@ def test_timeout_and_gather_job_timeout(request, master, salt_api_running, minio
     pre_ping_time = time.time()
     response = requests.post(endpoint, json=payload)
     post_ping_time = time.time()
+    response.raise_for_status()
 
     assert response.json() == expected
     assert (post_ping_time - pre_ping_time) < 10
