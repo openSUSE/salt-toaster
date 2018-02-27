@@ -27,7 +27,7 @@ def daemonize(stdin="/dev/null", stdout="/dev/null", stderr="/dev/null"):
         pid = os.fork() 
         if pid > 0:
             sys.exit(0)
-    except OSError, e: 
+    except OSError as e: 
         sys.stderr.write ("fork #1 failed: (%d) %s\n" % (e.errno, e.strerror) )
         sys.exit(1)
 
@@ -39,7 +39,7 @@ def daemonize(stdin="/dev/null", stdout="/dev/null", stderr="/dev/null"):
         pid = os.fork() 
         if pid > 0:
             sys.exit(0)
-    except OSError, e: 
+    except OSError as e: 
         sys.stderr.write ("fork #2 failed: (%d) %s\n" % (e.errno, e.strerror) )
         sys.exit(1)
 
@@ -55,7 +55,7 @@ def daemonize(stdin="/dev/null", stdout="/dev/null", stderr="/dev/null"):
 
     si = open(stdin, 'r')
     so = open(stdout, 'a+')
-    se = open(stderr, 'a+', 0)
+    se = open(stderr, 'ab+', 0)
     os.dup2(si.fileno(), sys.stdin.fileno())
     os.dup2(so.fileno(), sys.stdout.fileno())
     os.dup2(se.fileno(), sys.stderr.fileno())
@@ -63,7 +63,7 @@ def daemonize(stdin="/dev/null", stdout="/dev/null", stderr="/dev/null"):
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-        print "Usage: {} port /path/to/output.file".format(os.path.basename(sys.argv[0]))
+        print("Usage: {} port /path/to/output.file".format(os.path.basename(sys.argv[0])))
         sys.exit(1)
     else:
         # This has to go background on its own,

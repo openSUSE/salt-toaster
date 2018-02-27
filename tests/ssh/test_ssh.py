@@ -27,6 +27,12 @@ def pytest_generate_tests(metafunc):
     version = set(set(metafunc.config.getini('TAGS'))).intersection(set(expectations)).pop()
     if metafunc.function.func_name in functions and version:
         metafunc.parametrize('expected', [expectations[version]], ids=lambda it: version)
+    if 'python' in metafunc.fixturenames:
+        tags = set(metafunc.config.getini('TAGS'))
+        if 'sles15' in tags:
+            metafunc.parametrize("python", ["python3"])
+        else:
+            metafunc.parametrize("python", ["python"])
 
 
 def test_ssh_grain_os(master, container, expected):
@@ -85,7 +91,7 @@ def test_ssh_pkg_info(master, container):
     '''
     assert master.salt_ssh(
         container,
-        "pkg.info_installed python").get('python', {}).get('install_date')
+        "pkg.info_installed test-package").get('test-package', {}).get('install_date')
 
 
 def test_ssh_sysdoc(master, container):
@@ -135,7 +141,7 @@ def test_master_tops_support(master, container):
     assert 'custom_top' in master.salt_ssh(container, "state.show_top").get('base')
 
 
-def test_ssh_port_forwarding(master, container):
+def test_ssh_port_forwarding(master, container, python):
     '''
     Test SSH port forwarding feature.
     PR: https://github.com/saltstack/salt/pull/38021
@@ -146,12 +152,10 @@ def test_ssh_port_forwarding(master, container):
     loc_port = 8888
     rem_port = 9999
 
-    master['container'].run("/salt-toaster/tests/scripts/socket_server.py {lp} {of}".format(lp=loc_port, of=of))
-    master.salt_ssh(
-        container,
-        "--remote-port-forwards={rp}:127.0.0.1:{lp} cmd.run '{nc} {msg} {rp}'".format(
-            nc=nc, msg=msg, lp=loc_port, rp=rem_port)
-    )
+    master['container'].run("{py} /salt-toaster/tests/scripts/socket_server.py {lp} {of}".format(py=python, lp=loc_port, of=of))
+    params = "--remote-port-forwards={rp}:127.0.0.1:{lp} cmd.run '{nc} {msg} {rp}'".format(
+        nc=nc, msg=msg, lp=loc_port, rp=rem_port)
+    master.salt_ssh(container, params)
 
     assert master['container'].run("cat {}".format(of)).strip() == msg
 
