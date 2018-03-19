@@ -1,0 +1,7 @@
+[TestRepo]
+name=GPG signed test repo
+type=rpm-md
+baseurl=file:///tmp/test_repo/
+gpgcheck=1
+gpgkey=file:///tmp/test_repo//repodata/repomd.xml.key
+enabled=1

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repomd xmlns="http://linux.duke.edu/metadata/repo" xmlns:rpm="http://linux.duke.edu/metadata/rpm">
+ <revision>1468506046</revision>
+ <tags>
+   <repo>obsrepository://build.opensuse.org/Application:Geo/SLE_12_SP1</repo>
+ </tags>
+<data type="filelists">
+  <checksum type="sha256">7c77e0368ba2e4e94bbc9082a38ee7536edb5a7ebd77bcc4f90c5639aba61d71</checksum>
+  <open-checksum type="sha256">31b17c4de60272e911de36289f65bd68728c7cf80a19a9d0407c1fc2fbe1b376</open-checksum>
+  <location href="repodata/7c77e0368ba2e4e94bbc9082a38ee7536edb5a7ebd77bcc4f90c5639aba61d71-filelists.xml.gz"/>
+  <timestamp>1468506048</timestamp>
+  <size>591830</size>
+  <open-size>8738146</open-size>
+</data>
+<data type="other">
+  <checksum type="sha256">ce2ec12188cb5661dd7ed094a99ece867eb3c5e8e59c82dd7eeec83e29e24f91</checksum>
+  <open-checksum type="sha256">81308d5d81b8443e0df51524abaa30e6e624ca355daa336742876ce0b3b5682d</open-checksum>
+  <location href="repodata/ce2ec12188cb5661dd7ed094a99ece867eb3c5e8e59c82dd7eeec83e29e24f91-other.xml.gz"/>
+  <timestamp>1468506048</timestamp>
+  <size>238907</size>
+  <open-size>3989991</open-size>
+</data>
+<data type="primary">
+  <checksum type="sha256">746add9a7edeeb4efc2ef98a483e7d3ba91cf939b997d033ea6a353cc163e698</checksum>
+  <open-checksum type="sha256">aa639a58350984012874830f23e2665f11d8972969ffcb1f4f44cdd38ddf478c</open-checksum>
+  <location href="repodata/746add9a7edeeb4efc2ef98a483e7d3ba91cf939b997d033ea6a353cc163e698-primary.xml.gz"/>
+  <timestamp>1468506048</timestamp>
+  <size>217082</size>
+  <open-size>2270246</open-size>
+</data>
+</repomd>
