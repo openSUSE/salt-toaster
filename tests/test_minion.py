@@ -12,9 +12,8 @@ def test_repo(request, minion):
     repo_name = 'Repo-With-GPGkey'
     repo_path = '/tmp/test_repo/'
 
-    with open('./tests/test_repo.tar.gz', 'rb') as f:
-        minion['container']['config']['client'].put_archive(
-            minion['container']['config']['name'], '/tmp', f.read())
+    minion['container']['config']['client'].copy_to(
+        minion, './tests/data/test_repo', '/tmp')
 
     request.addfinalizer(partial(minion.salt_call, 'pkg.del_repo', repo_name))
     return repo_name, repo_path
