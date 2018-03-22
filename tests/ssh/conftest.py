@@ -19,10 +19,6 @@ def module_config(request, container):
                             },
                         },
                     },
-                    "container__config__salt_config__apply_states": {
-                        "tests/sls/ssh/top.sls",
-                        "tests/sls/ssh/ssh.sls"
-                    },
                     "container__config__salt_config__roster": [container]
                 }
             }
