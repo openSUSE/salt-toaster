@@ -89,14 +89,22 @@ docker_shell :: pull_image
 	$(EXEC)
 
 saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/common.cfg
+ifneq ("$(FLAVOR)", "devel")
+ifdef JENKINS_HOME
 saltstack.unit : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
 saltstack.unit : CMD:=timeout 120m $(CMD)
+endif
+endif
 saltstack.unit :: pull_image
 	$(EXEC)
 
 saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/common.cfg
+ifneq ("$(FLAVOR)", "devel")
+ifdef JENKINS_HOME
 saltstack.integration : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
 saltstack.integration : CMD:=timeout 120m $(CMD)
+endif
+endif
 saltstack.integration :: pull_image
 	$(EXEC)
 
@@ -104,8 +112,10 @@ suse.tests : PYTEST_CFG=./configs/suse.tests/$(VERSION)/$(FLAVOR).cfg
 suse.tests : SALT_TESTS=./tests
 suse.tests : EXEC=sandbox/bin/$(CMD)
 ifneq ("$(FLAVOR)", "devel")
+ifdef JENKINS_HOME
 suse.tests : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
 suse.tests : EXEC:=timeout 120m $(EXEC)
+endif
 endif
 suse.tests : pull_default_image
 suse.tests : pull_image
