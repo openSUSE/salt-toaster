@@ -34,7 +34,9 @@ def pytest_generate_tests(metafunc):
             # not installed on master
             ['master', 'salt-api', False],
             ['master', 'salt-cloud', False],
-            ['master', 'salt-ssh', False],
+            # salt-ssh is now installed in the docker image
+            # needed in other tests
+            # ['master', 'salt-ssh', False],
             ['master', 'salt-syndic', False],
 
             # not installed on minion
