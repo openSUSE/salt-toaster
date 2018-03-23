@@ -42,7 +42,9 @@ def pytest_generate_tests(metafunc):
             # not installed on minion
             ['minion', 'salt-api', False],
             ['minion', 'salt-cloud', False],
-            ['minion', 'salt-ssh', False],
+            # salt-ssh is now installed in the docker image
+            # needed in other tests
+            # ['minion', 'salt-ssh', False],
             ['minion', 'salt-syndic', False],
         ],
         ids=lambda it:
