@@ -85,6 +85,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/svn.py::SvnTest::test_latest_empty_dir', # sles12sp1
             'integration/runners/state.py::StateRunnerTest::test_orchestrate_output', # sles12sp1 rhel7
             'integration/modules/test_saltutil.py::SaltUtilSyncPillarTest::test_pillar_refresh', # sles12sp2
+            '*::test_issue_7754',
         ],
         'rhel6': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
