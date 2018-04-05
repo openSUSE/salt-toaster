@@ -19,12 +19,20 @@ def time_limit_reached(start_time):
         raise TimeLimitReached
 
 
-def retry(func):
+def _dos(func):
+    return func() is True
+
+
+def retry(func, definition_of_success=_dos):
     success = False
     start_time = time.time()
     while not success and not time_limit_reached(start_time):
-        print('retry: ' + func.func_name)
-        success = func() is True
+        if getattr(func, 'func'):
+            # not a normal function but one wrapped with functools.partial
+            print('retry: ' + func.func.func_name)
+        else:
+            print('retry: ' + func.func_name)
+        success = definition_of_success(func)
         if success is not True:
             time.sleep(1)
             continue

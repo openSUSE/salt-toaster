@@ -1,24 +1,45 @@
 import re
 import pytest
 import datetime
+from utils import retry
 from functools import partial
 
 pytestmark = pytest.mark.usefixtures("master", "minion")
 
 
+def _pkg_list_updates(minion):
+    try:
+        res = minion.salt_call('pkg.list_updates', 'test-package')
+        return res['test-package'].startswith('42:0.1-')
+    except TypeError:
+        return False
+
+
 @pytest.mark.xfailtags('rhel', 'leap')
 def test_pkg_list_updates(minion):
     res = minion.salt_call('pkg.list_updates', 'test-package')
-    assert res['test-package'].startswith('42:0.1-')
+    assert retry(partial(_pkg_list_updates, minion))
 
 
-@pytest.mark.xfailtags('rhel', 'leap')
-def test_pkg_info_available(minion):
-    res = minion.salt_call('pkg.info_available', 'test-package')
+def _pkg_info_available(minion):
+    try:
+        return minion.salt_call('pkg.info_available', 'test-package')
+    except TypeError:
+        return False
+
+
+def _pkg_info_available_dos(func):
+    res = func()
     assert res['test-package']['summary'] == "Test package for Salt's pkg.info_installed"
     assert re.match(
         "out-of-date \(version 42:0.0-.+ installed\)",
         res['test-package']['status'])
+    return True
+
+
+@pytest.mark.xfailtags('rhel', 'leap')
+def test_pkg_info_available(minion):
+    assert retry(partial(_pkg_info_available, minion), definition_of_success=_pkg_info_available_dos)
 
 
 def test_pkg_info_installed(request, minion):

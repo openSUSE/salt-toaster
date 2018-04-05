@@ -1,6 +1,7 @@
 import re
 import pytest
-import pdb
+from utils import retry
+from functools import partial
 
 pytestmark = pytest.mark.usefixtures("master", "minion")
 
@@ -61,12 +62,19 @@ def test_rsync_port(master, minion):
     assert resp['rsync_|-/tmp_|-/tmp_|-synchronized']['result']
 
 
+def _archextract(master, minion):
+    try:
+        resp = master.salt(minion['id'], "state.apply archextract")[minion['id']]
+        return resp['archive_|-extract-zip-archive_|-/tmp/_|-extracted']['result']
+    except TypeError:
+        return False
+
+
 def test_archive_extracted(master, minion):
     '''
     Test if the archive.extracted overwrites the destination.
     '''
-    resp = master.salt(minion['id'], "state.apply archextract")[minion['id']]
-    assert resp['archive_|-extract-zip-archive_|-/tmp/_|-extracted']['result']
+    assert retry(partial(_archextract, master, minion))
 
 
 @pytest.mark.tags('rhel')
