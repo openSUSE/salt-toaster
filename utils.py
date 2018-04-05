@@ -27,7 +27,7 @@ def retry(func, definition_of_success=_dos):
     success = False
     start_time = time.time()
     while not success and not time_limit_reached(start_time):
-        if getattr(func, 'func'):
+        if getattr(func, 'func', False):
             # not a normal function but one wrapped with functools.partial
             print('retry: ' + func.func.func_name)
         else:
