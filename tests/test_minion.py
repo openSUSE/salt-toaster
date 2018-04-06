@@ -113,8 +113,13 @@ def test_pkg_del_repo(minion):
 
 @pytest.mark.xfailtags('rhel')
 def test_pkg_refresh_db(minion):
-    res = minion.salt_call('pkg.refresh_db')
-    assert res['testpackages'] is True
+    def test(minion):
+        try:
+            res = minion.salt_call('pkg.refresh_db')
+            return res.get('testpackages', False) is True
+        except TypeError:
+            return False
+    assert retry(partial(test, minion))
 
 
 @pytest.mark.skiptags('leap')
