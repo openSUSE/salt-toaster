@@ -1,5 +1,7 @@
 import pytest
 import os
+from functools import partial
+from utils import retry
 
 
 @pytest.fixture(scope='module')
@@ -25,18 +27,34 @@ def test_pkg_latest_version(setup):
     config, initconfig = setup
     master = config['masters'][0]
     minion = master['minions'][0]
-    resp = master['fixture'].salt(minion['id'], 'state.apply latest')
-    assert resp[minion['id']][
-        'pkg_|-latest-version_|-test-package_|-latest']['result'] is True
+    def test(master, minion):
+        try:
+            resp = master['fixture'].salt(minion['id'], 'state.apply latest')
+            assert resp
+            assert minion['id'] in resp
+            assert resp[minion['id']][
+                'pkg_|-latest-version_|-test-package_|-latest']['result'] is True
+            return True
+        except TypeError:
+            return False
+    assert retry(partial(test, master, minion))
 
 
 def test_pkg_latest_version_already_installed(setup):
     config, initconfig = setup
     master = config['masters'][0]
     minion = master['minions'][1]
-    resp = master['fixture'].salt(minion['id'], 'state.apply latest-again')
-    assert resp[minion['id']][
-        'pkg_|-latest-version_|-test-package_|-latest']['result'] is True
+    def test(master, minion):
+        try:
+            resp = master['fixture'].salt(minion['id'], 'state.apply latest-again')
+            assert resp
+            assert minion['id'] in resp
+            assert resp[minion['id']][
+                'pkg_|-latest-version_|-test-package_|-latest']['result'] is True
+            return True
+        except TypeError:
+            return False
+    assert retry(partial(test, master, minion))
 
 
 def test_pkg_installed_downloadonly(setup):

@@ -30,6 +30,8 @@ def _pkg_info_available(minion):
 
 def _pkg_info_available_dos(func):
     res = func()
+    assert res
+    assert 'test-package' in res
     assert res['test-package']['summary'] == "Test package for Salt's pkg.info_installed"
     assert re.match(
         "out-of-date \(version 42:0.0-.+ installed\)",
