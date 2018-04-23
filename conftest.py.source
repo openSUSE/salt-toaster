@@ -45,6 +45,20 @@ KNOWN_ISSUES_INTEGRATION = {
 
             # We are not interested in the NetapiClientTests
             '*/integration/netapi/test_client.py',
+
+            # NEED INVESTIGATION
+            '*rest_tornado/test_app.py::TestSaltAPIHandler::test_multi_local_async_post',
+            '*rest_tornado/test_app.py::TestSaltAPIHandler::test_multi_local_async_post_multitoken',
+            '*rest_tornado/test_app.py::TestSaltAPIHandler::test_simple_local_async_post',
+            '*rest_tornado/test_app.py::TestSaltAPIHandler::test_simple_local_runner_post',
+            '*/test_state.py::StateModuleTest::test_onchanges_in_requisite',
+            '*/test_state.py::StateModuleTest::test_onchanges_requisite',
+            '*/test_state.py::StateModuleTest::test_onchanges_requisite_multiple',
+            '*/test_state.py::StateModuleTest::test_requisites_onchanges_any',
+            '*/runners/test_state.py::StateRunnerTest::test_orchestrate_retcode',
+            '*/shell/test_call.py::CallTest::test_issue_14979_output_file_permissions',
+            '*/shell/test_call.py::CallTest::test_issue_15074_output_file_append',
+            '*/shell/test_call.py::CallTest::test_issue_2731_masterless',
         ],
         # disable 2017.7.1 on python 2.6
         'rhel6/products-next': ['*'],
@@ -165,6 +179,8 @@ KNOWN_ISSUES_UNIT = {
             '*/utils/test_parsers.py',
             '*/kitchen/tests/wordpress/*',
             'unit/fileserver/test_gitfs.py',
+            # NEEDS INVESTIGATION
+            '*/states/test_pip.py::PipStateTest::test_install_requirements_parsing',
         ],
         'products-next': [
             'unit/utils/cache_mods/cache_mod.py',
