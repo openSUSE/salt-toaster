@@ -72,6 +72,16 @@ sudo update-ca-certificate
 sudo systemctl restart docker
 ----
 
+==== Prerequisites:
+
+Your systems need to have docker and docker.io pkg installed
+
+[source,bash]
+sudo apt in docker docker.io || sudo zypper in docker.io docker
+----
+
+Additionally you need registry certificates for getting the containers (TODO: fix)
+
 [source,bash]
 ----
 git clone https://github.com/openSUSE/salt-toaster.git
