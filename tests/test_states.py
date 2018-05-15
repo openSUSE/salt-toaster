@@ -14,7 +14,8 @@ def module_config(request):
                         'tests/sls/latest.sls',
                         'tests/sls/latest-again.sls',
                         'tests/sls/downloaded.sls',
-                        'tests/sls/patches-downloaded.sls'
+                        'tests/sls/patches-downloaded.sls',
+                        'tests/sls/pipes.sls',
                     ]
                 },
                 'minions': [{'config': {}}, {'config': {}}]
@@ -101,3 +102,8 @@ def test_patches_installed_downloadonly_rhel(setup):
     list_pkgs_post = master['fixture'].salt(minion['id'], 'pkg.list_pkgs')
     assert resp[minion['id']]['pkg_|-test-patches-downloaded_|-test-patches-downloaded_|-installed']['result'] is True
     assert list_pkgs_pre == list_pkgs_post
+
+
+def test_pipes(setup, master):
+    res = master.salt_call('--local --file-root=/etc/salt/sls state.apply', 'pipes')
+    assert res["cmd_|-reboot_|-echo 'shutdown'_|-run"]['changes'] == {}
