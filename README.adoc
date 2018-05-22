@@ -18,8 +18,7 @@ endif::[]
 
 image:https://api.travis-ci.org/openSUSE/salt-toaster.svg?branch=master[Build Status, link=https://travis-ci.org/openSUSE/salt-toaster]
 
-
-=== Description
+== Description
 
 This is a tool used to test https://github.com/saltstack/salt/[salt]
 It uses pytest and containers to do so.
@@ -31,9 +30,9 @@ The tests are separated in 3 groups:
 There are 3 predefined flavors of salt packages plus a `devel` flavor.
 The predefined flavors are packages served from OBS:
 
- - https://build.opensuse.org/package/show/systemsmanagement:saltstack:products/salt[products]
- - https://build.opensuse.org/package/show/systemsmanagement:saltstack:products:testing/salt[products:testing]
- - https://build.opensuse.org/package/show/systemsmanagement:saltstack:products:next/salt[products:next]
+ - https://build.opensuse.org/package/show/systemsmanagement:saltstack:products/salt[products], the flavor for released packages
+ - https://build.opensuse.org/package/show/systemsmanagement:saltstack:products:testing/salt[products:testing], is a staging flavor where new-patches that go to products are tested.
+ - https://build.opensuse.org/package/show/systemsmanagement:saltstack:products:next/salt[products:next], is used for testing the major release of saltstack.
 
 The `devel` flavor means running the tests against a local salt git repository.
 
@@ -45,7 +44,7 @@ For the suse tests, the approach is different. `py.test` is being run on the hos
 ====
 
 
-=== Features
+== Features
 
  - uses containers to isolate the tests
  - possible to run the tests on different operanting systems
@@ -55,12 +54,38 @@ For the suse tests, the approach is different. `py.test` is being run on the hos
  - has ignore and xfail lists (glob-patterns) for the upstream tests (for both integration and unit tests)
  - uses tags to restrict, skip, ignore or xfail suse tests
 
+== Setup
 
-=== Setup
+[source,bash]
+----
+sudo zypper in docker.io docker ca-certificates
+----
+
+Download the registry certificate needed here: `https://gitlab.suse.de/galaxy/infrastructure/raw/master/srv/salt/ca/certs/ca.cert.pem`
+
+Save the certificate in `/usr/share/pki/trust/anchors`
+
+And run:
+[source,bash]
+----
+sudo update-ca-certificate
+sudo systemctl restart docker
+----
+
+==== Prerequisites:
+
+Your systems need to have docker and docker.io pkg installed
+
+[source,bash]
+sudo apt in docker docker.io || sudo zypper in docker.io docker
+----
+
+Additionally you need registry certificates for getting the containers (TODO: fix)
 
 [source,bash]
 ----
 git clone https://github.com/openSUSE/salt-toaster.git
+zypper in python-virtualenv
 cd salt-toaster
 virtualenv sandbox
 virtualenv --relocatable sandbox
@@ -69,21 +94,13 @@ echo "*" > sandbox/.gitignore
 pip install -r requirements.txt
 ----
 
-=== Running tests
+== Running tests
 
 When running tests we can choose to run:
 
-    - the upstream integration testsuite
-    - the upstream unittests testsuite
-    - the suse testsuite
-
-We can do so by running one of these self explanatory commands
-[source,bash]
-----
-make saltstack.integration
-make saltstack.unit
-make suse.tests
-----
+    - the upstream integration testsuite `make saltstack.integration` 
+    - the upstream unittests testsuite ` make saltstack.unit`
+    - the suse testsuite `make suse.tests`
 
 When running any of these commands, salt-toaster uses the default values for OS and salt-package version.
 
@@ -93,7 +110,7 @@ The first thing that this command does is to pull the right container image from
 
 With the default values the image would be: `registry.mgr.suse.de/toaster-sles12sp2-products`
 
-==== Parameters
+== Parameters
 
 .VERSION
 Most of the time we want to run the tests against a specific OS.
@@ -153,7 +170,7 @@ When running the `saltstack.unit` or `saltstack.integration`, `SALT_TESTS` must 
 |===
 
 
-==== Ignore/Xfail upstream tests
+== Ignore/Xfail upstream tests
 
 [source,python]
 .https://github.com/openSUSE/salt-toaster/blob/documentation/conftest.py.source#L12-L289[conftest.py.source]
@@ -184,7 +201,7 @@ KNOWN_ISSUES_INTEGRATION = {
 <4> xfail single test `GrainsTargetingTest::test_grains_targeting_disconnected` on runs using `rhel6` OS and `products` salt-package version combination
 
 
-==== Tags
+== Tags
 
 Tags can be used to identify the context in which a test runs.
 NOTE: tags are only used when running `suse.tests`
@@ -235,7 +252,7 @@ Likewise, the `products` tag would need to be present in all config files used w
 Because tags are just identifiers you placed in the config files, you can create your own according to your needs. Just make sure you put them in the right config files.
 
 
-=== Examples
+== Examples
 
 .Run docker shell in specific local image
 

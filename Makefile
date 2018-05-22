@@ -57,7 +57,7 @@ help:
 	@echo "  docker_shell            Start Docker shell"
 	@echo "  saltstack.integration   Run Salt integration tests"
 	@echo "  saltstack.unit          Run Salt unit tests"
-	@echo "  suse.integration        Run SUSE custom integration tests"
+	@echo "  suse.tests        Run SUSE custom integration tests"
 	@echo ""
 
 default: help
