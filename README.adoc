@@ -85,7 +85,7 @@ Additionally you need registry certificates for getting the containers (TODO: fi
 [source,bash]
 ----
 git clone https://github.com/openSUSE/salt-toaster.git
-zypper in virtualenv
+zypper in python-virtualenv
 cd salt-toaster
 virtualenv sandbox
 virtualenv --relocatable sandbox
