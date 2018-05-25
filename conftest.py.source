@@ -21,7 +21,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/helpers/virtualbox.py',
 
             'integration/__init__.py',
-            'integration/utils/*'
+            'integration/utils/*',
 
             # Running following tests causes unsuccessfully close
             # of forked processes. This will cause "hanging" jenkins jobs.
@@ -47,7 +47,7 @@ KNOWN_ISSUES_INTEGRATION = {
             '*/integration/netapi/test_client.py',
 
             # This makes a request to github.com
-            '*/integration/modules/ssh.py'
+            '*/integration/modules/ssh.py',
 
             # NEED INVESTIGATION
             '*rest_tornado/test_app.py::TestSaltAPIHandler::test_multi_local_async_post',
