@@ -38,16 +38,14 @@ def master(request, salt_root, client):
         container__config__salt_config__conf_type='master',
         container__config__image=request.param,
         container__config__salt_config__extra_configs={
+            "file_roots": {
+                "file_roots": {"base": ["/etc/salt/sls"]}
+            },
             "thin_extra_mods": {
                 "thin_extra_mods": "msgpack"
             },
-            "custom_tops": {
-                "extension_modules": "/salt-toaster/tests/sls/ssh/xmod",
-                "master_tops": {
-                    "toptest": True
-                },
-            },
         },
+        container__config__salt_config__sls=['tests/sls/echo.sls',],
         container__config__salt_config__roster=[client]
     )
     request.addfinalizer(obj['container'].remove)
@@ -67,3 +65,8 @@ def pytest_generate_tests(metafunc):
 
 def test_ping(master, client):
     assert master.salt_ssh(client, "test.ping") is True
+
+
+def test_state_apply_log_file_created(master, client):
+    res = master.salt_ssh(client, "state.apply echo")
+    assert res['cmd_|-test_|-echo "test1"_|-run']['changes']['stdout'] == 'test1'
