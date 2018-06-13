@@ -13,5 +13,5 @@ echo '%_tmppath %{_topdir}/tmp' >> ~/.rpmmacros
 zypper -n si salt
 rpmbuild --without zsh_completion --without docs --without test -bp /usr/src/packages/SPECS/salt.spec
 mkdir -p $SALT_SOURCES/src/
-ln -s /usr/src/packages/BUILD/salt-* $SALT_SOURCES/src/
+cp -R /usr/src/packages/BUILD/salt-* $SALT_SOURCES/src/
 exit 0

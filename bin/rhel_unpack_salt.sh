@@ -17,5 +17,5 @@ rpm -ivh salt-*.src.rpm
 rm -f salt-*.src.rpm
 rpmbuild -bp /usr/src/packages/SPECS/salt.spec
 mkdir -p $SALT_SOURCES/src/
-ln -s /usr/src/packages/BUILD/salt-* $SALT_SOURCES/src/
+cp -R /usr/src/packages/BUILD/salt-* $SALT_SOURCES/src/
 exit 0

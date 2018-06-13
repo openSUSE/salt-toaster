@@ -75,7 +75,6 @@ KNOWN_ISSUES_INTEGRATION = {
             # Always failing
             '*sysmod.py::SysModuleTest::test_valid_docs',
             'integration/cloud/providers/virtualbox.py::BaseVirtualboxTests::test_get_manager',
-            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
 
             'integration/modules/timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
             'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_develop',
