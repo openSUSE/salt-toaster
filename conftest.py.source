@@ -103,6 +103,11 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/runners/state.py::StateRunnerTest::test_orchestrate_output', # sles12sp1 rhel7
             'integration/modules/test_saltutil.py::SaltUtilSyncPillarTest::test_pillar_refresh', # sles12sp2
             '*::test_issue_7754',
+
+            '*test_fileserver.py::FileserverTest::test_symlink_list',
+            '*test_fileserver.py::FileserverTest::test_empty_dir_list',
+            '*test_timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
+            '*test_file.py::FileTest::test_managed_check_cmd',
         ],
         'rhel6': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
@@ -149,12 +154,6 @@ KNOWN_ISSUES_INTEGRATION = {
         ],
         'sles12sp2': [
         ],
-        'products-next': [
-            '*test_fileserver.py::FileserverTest::test_symlink_list',
-            '*test_fileserver.py::FileserverTest::test_empty_dir_list',
-            '*test_timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
-            '*test_file.py::FileTest::test_managed_check_cmd',
-        ]
     }
 }
 
@@ -185,8 +184,6 @@ KNOWN_ISSUES_UNIT = {
             # NEEDS INVESTIGATION
             '*/states/test_pip.py::PipStateTest::test_install_requirements_parsing',
             '*/unit/modules/test_useradd.py',
-        ],
-        'products-next': [
             'unit/utils/cache_mods/cache_mod.py',
             'unit/modules/test_boto_vpc.py',
             'unit/states/test_boto_vpc.py',
@@ -221,9 +218,19 @@ KNOWN_ISSUES_UNIT = {
 
             'unit/modules/inspect_collector_test.py::InspectorCollectorTestCase::test_file_tree',
             '*CoreGrainsTestCase::test_linux_memdata',
-	    'EtcdModTestCase',
+            'EtcdModTestCase',
             'ConfTest::test_conf_master_sample_is_commented',  # this is not passing because we have custom config by default (user "salt")
-            'test_cmdmod.py::CMDMODTestCase::test_run'
+            'test_cmdmod.py::CMDMODTestCase::test_run',
+
+            'unit/fileserver/test_roots.py::RootsTest::test_symlink_list',
+            'unit/modules/test_cmdmod.py::CMDMODTestCase::test_run',  # test too slow
+            '*test_reactor.py::TestReactor::test_reactions',
+            '*test_reactor.py::TestReactor::test_list_reactors',
+            '*test_yumpkg.py::YumTestCase::test_list_pkgs_with_attr',
+            '*test_local_cache.py::Local_CacheTest::test_clean_old_jobs',
+            '*test_local_cache.py::Local_CacheTest::test_not_clean_new_jobs',
+            '*test_jinja.py::TestCustomExtensions::test_http_query',
+            '*test_conf.py::ConfTest::test_conf_master_sample_is_commented',
         ],
         'sles12sp1': [
             'unit/cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
@@ -234,17 +241,6 @@ KNOWN_ISSUES_UNIT = {
         '2016.11.4': [
             '*network_test.py::NetworkTestCase::test_host_to_ips',
         ],
-        'products-next': [
-            'unit/fileserver/test_roots.py::RootsTest::test_symlink_list',
-            'unit/modules/test_cmdmod.py::CMDMODTestCase::test_run',  # test too slow
-            '*test_reactor.py::TestReactor::test_reactions',
-            '*test_reactor.py::TestReactor::test_list_reactors',
-            '*test_yumpkg.py::YumTestCase::test_list_pkgs_with_attr',
-            '*test_local_cache.py::Local_CacheTest::test_clean_old_jobs',
-            '*test_local_cache.py::Local_CacheTest::test_not_clean_new_jobs',
-            '*test_jinja.py::TestCustomExtensions::test_http_query',
-            '*test_conf.py::ConfTest::test_conf_master_sample_is_commented',
-        ]
     }
 }
 
