@@ -1,7 +1,7 @@
 docker-py==1.8.0
 factory-boy==2.7.0
 fake-factory==0.5.7
-pycrypto==2.6.1
+# pycrypto==2.6.1
 pytest
 pytest-timeout
 PyYAML==3.11

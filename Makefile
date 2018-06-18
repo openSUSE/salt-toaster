@@ -67,7 +67,7 @@ ifndef NOPULL
 endif
 
 PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS) $(PYTEST_FLAGS)
-CMD=py.test $(PYTEST_ARGS)
+CMD=pytest $(PYTEST_ARGS)
 EXEC=docker run $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
 
 ifndef RPDB_PORT
