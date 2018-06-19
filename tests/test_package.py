@@ -9,8 +9,8 @@ from saltcontainers.factories import ContainerFactory
 
 def pytest_generate_tests(metafunc):
     functions = [
-        'test_master_shipped_with_sha256',
-        'test_minion_shipped_with_sha256',
+        'test_master_shipped_config',
+        'test_minion_shipped_config',
     ]
     if metafunc.function.func_name in functions:
         images = [metafunc.config.getini('IMAGE')]
@@ -47,36 +47,22 @@ def module_config(request):
 
 
 @pytest.fixture(scope="module")
-def container(request, docker_client):
-    obj = ContainerFactory(
-        config__docker_client=docker_client,
-        config__image=request.param,
-        config__salt_config=None,
-        config__volumes=None,
-        config__host_config=None
-    )
+def container(request):
+    obj = ContainerFactory(config__image=request.param, config__salt_config=None)
     request.addfinalizer(obj.remove)
     return obj
 
 
-@pytest.mark.tags('salt-2015.7')
-def test_master_shipped_with_sha256(container):
-    """
-    Test the Master is *shipped* with hash type set to SHA256.
-    """
+def test_master_shipped_config(container):
     master_config = container.run('cat /etc/salt/master')
     content = yaml.load(master_config)
-    assert content['hash_type'] == 'sha256'
+    assert content == {'user': 'salt', 'syndic_user': 'salt'}
 
 
-@pytest.mark.tags('salt-2015.7')
-def test_minion_shipped_with_sha256(container):
-    """
-    Test the Minion is *shipped* with hash type set to SHA256.
-    """
+def test_minion_shipped_config(container):
     minion_config = container.run('cat /etc/salt/minion')
     content = yaml.load(minion_config)
-    assert content['hash_type'] == 'sha256'
+    assert content is None
 
 
 def test_hash_type_is_used(request, master, python):

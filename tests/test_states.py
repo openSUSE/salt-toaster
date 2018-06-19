@@ -1,4 +1,5 @@
 import pytest
+import json
 import os
 from functools import partial
 from utils import retry
@@ -105,5 +106,5 @@ def test_patches_installed_downloadonly_rhel(setup):
 
 
 def test_pipes(setup, master):
-    res = master.salt_call('--local --file-root=/etc/salt/sls state.apply', 'pipes')
-    assert res["cmd_|-reboot_|-echo 'shutdown'_|-run"]['changes'] == {}
+    res = master['container'].run('salt-call --local --output json --file-root=/etc/salt/sls state.apply pipes')
+    assert json.loads(res)["local"]["cmd_|-reboot_|-echo 'shutdown'_|-run"]['changes'] == {}

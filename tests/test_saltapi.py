@@ -42,6 +42,8 @@ def salt_api_running(master):
     master['container'].run('salt-call --local pkg.refresh_db')
     master['container'].run('salt-call --local pkg.install salt-api')
     master['container'].run('salt-api -d')
+    # Giving some time to salt-api to starting up.
+    time.sleep(3)
 
 
 @pytest.mark.xfail
@@ -66,8 +68,8 @@ def test_roster_sshapi_disabled(master, salt_api_running):
 @pytest.fixture()
 def expected(request, minion):
     expectations = {
-        'salt-2017.7': {"return": [{minion['id']: False}]},
-        'default': {"return": [{}]}
+        'default': {"return": [{minion['id']: False}]},
+        '2016.11.4': {"return": [{}]}
     }
     tags = set(request.config.getini('TAGS'))
     intersection = tags.intersection(set(expectations)) or {'default'}
@@ -77,9 +79,6 @@ def expected(request, minion):
 def test_timeout_and_gather_job_timeout(request, master, salt_api_running, minion, expected):
     minion['container'].disconnect()
     request.addfinalizer(minion['container'].connect)
-
-    # Giving some time to salt-api to starting up.
-    time.sleep(3)
 
     endpoint = "http://{ip}:{port}/run".format(ip=master['container']['ip'], port='9080')
     payload = {
