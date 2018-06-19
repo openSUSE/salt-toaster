@@ -44,6 +44,7 @@ def minion(setup):
     return master['minions'][0]['fixture']
 
 
+@pytest.mark.xfail  # https://bugzilla.suse.com/show_bug.cgi?id=1098072
 @pytest.mark.tags('sles')
 def test_zypp_gpg_pkg(master, minion):
     '''
