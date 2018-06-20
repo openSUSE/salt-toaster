@@ -17,6 +17,7 @@ def module_config(request):
                         'tests/sls/downloaded.sls',
                         'tests/sls/patches-downloaded.sls',
                         'tests/sls/pipes.sls',
+                        'tests/sls/bsc1098394.sls',
                     ]
                 },
                 'minions': [{'config': {}}, {'config': {}}]
@@ -108,3 +109,19 @@ def test_patches_installed_downloadonly_rhel(setup):
 def test_pipes(setup, master):
     res = master['container'].run('salt-call --local --output json --file-root=/etc/salt/sls state.apply pipes')
     assert json.loads(res)["local"]["cmd_|-reboot_|-echo 'shutdown'_|-run"]['changes'] == {}
+
+
+def test_file_managed_bsc1098394(setup, master, minion):
+    master['container']['config']['client'].copy_to(
+        master,
+        'tests/data/1098394/master/rhn-org-trusted-ssl-cert-osimage-1.0-1.noarch.rpm',
+        '/etc/salt/sls/')
+    minion['container'].run('mkdir -p /tmp/bsc1098394/repo')
+    minion['container']['config']['client'].copy_to(
+        minion,
+        'tests/data/1098394/minion/rhn-org-trusted-ssl-cert-osimage-1.0-1.noarch.rpm',
+        '/tmp/bsc1098394/repo')
+    resp = master.salt(minion['id'], 'state.apply bsc1098394')
+    assert resp[minion['id']][
+        'file_|-/tmp/bsc1098394/repo/rhn-org-trusted-ssl-cert-osimage-1.0-1.noarch.rpm_|-/tmp/bsc1098394/repo/rhn-org-trusted-ssl-cert-osimage-1.0-1.noarch.rpm_|-managed'
+    ]['result'] is True
