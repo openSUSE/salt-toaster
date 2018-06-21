@@ -111,6 +111,7 @@ def test_pipes(setup, master):
     assert json.loads(res)["local"]["cmd_|-reboot_|-echo 'shutdown'_|-run"]['changes'] == {}
 
 
+@pytest.mark.skip("skip it until the patch will be in the package")
 def test_file_managed_bsc1098394(setup, master, minion):
     master['container']['config']['client'].copy_to(
         master,
