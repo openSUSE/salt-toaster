@@ -7,7 +7,6 @@ def leap15(c, suse=False):
     """
     run leap15 tests
     """
-    if suse:
-        print("suse")
-    print("Building!")
     c.run("docker pull dmaiocchi/leap15-salt-toaster")
+    if suse:
+        c.run("sandbox/bin/pytest -c ./configs/suse.tests/leap15/products.cfg ./tests")
