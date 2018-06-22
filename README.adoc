@@ -165,7 +165,7 @@ When running the `saltstack.unit` or `saltstack.integration`, `SALT_TESTS` must 
 [cols="1,1a"]
 .Available values for `VERSION` and `FLAVOR`
 |===
-| VERSION | rhel6, rhel7, sles11sp3, sles11sp4, sles12, sles12sp1, sles12sp2, leap42sp1
+| VERSION | rhel6, rhel7, sles11sp3, sles11sp4, sles12, sles12sp1, sles12sp2, leap15
 | FLAVOR  | products, products-testing, products-next, devel
 |===
 
