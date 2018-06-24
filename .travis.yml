@@ -1,6 +1,5 @@
 language: python
 
-sudo: required
 python:
  - 2.7
 
@@ -11,4 +10,4 @@ before_install:
 - pip install -r requirements.txt --exists-action w --upgrade
 - pip install pytest
 
-script: exit 0
+script: pylint --errors-only tests/* utils.py config.py 
