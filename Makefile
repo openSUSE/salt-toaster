@@ -83,7 +83,7 @@ saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/common.cfg
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
 saltstack.unit : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
-saltstack.unit : CMD:=timeout 120m $(CMD)
+saltstack.unit : CMD:=timeout 180m $(CMD)
 endif
 endif
 saltstack.unit :: pull_image
@@ -93,7 +93,7 @@ saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/common.cfg
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
 saltstack.integration : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
-saltstack.integration : CMD:=timeout 120m $(CMD)
+saltstack.integration : CMD:=timeout 180m $(CMD)
 endif
 endif
 saltstack.integration :: pull_image
@@ -105,7 +105,7 @@ suse.tests : EXEC=sandbox/bin/$(CMD)
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
 suse.tests : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
-suse.tests : EXEC:=timeout 120m $(EXEC)
+suse.tests : EXEC:=timeout 180m $(EXEC)
 endif
 endif
 suse.tests : pull_image
