@@ -25,6 +25,7 @@ KNOWN_ISSUES_INTEGRATION = {
 
             # Running following tests causes unsuccessfully close
             # of forked processes. This will cause "hanging" jenkins jobs.
+            'integration/states/supervisord.py',
             '*::MasterTest::test_exit_status_correct_usage',
             '*::ProxyTest::test_exit_status_correct_usage',
             '*::FileTest::test_issue_2227_file_append',
@@ -152,6 +153,14 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
             'integration/shell/master.py::MasterTest::test_exit_status_correct_usage',
+            'integration/states/git.py::GitTest::test_latest',
+            'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_develop',
+            'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_head',
+            'integration/states/git.py::GitTest::test_latest_empty_dir',
+            'integration/states/git.py::GitTest::test_latest_unless_no_cwd_issue_6800',
+            'integration/states/git.py::GitTest::test_latest_with_local_changes',
+            'integration/states/git.py::GitTest::test_latest_with_rev_and_submodules',
+            'integration/states/git.py::GitTest::test_numeric_rev',
         ],
         'sles12': [
         ],
