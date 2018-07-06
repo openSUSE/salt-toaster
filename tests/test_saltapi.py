@@ -43,7 +43,7 @@ def salt_api_running(master):
     master['container'].run('salt-call --local pkg.install salt-api')
     master['container'].run('salt-api -d')
     # Giving some time to salt-api to starting up.
-    time.sleep(3)
+    time.sleep(5)
 
 
 @pytest.mark.xfail
