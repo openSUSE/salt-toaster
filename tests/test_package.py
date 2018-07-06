@@ -53,6 +53,7 @@ def container(request):
     return obj
 
 
+@pytest.mark.xfailtags('rhel')
 def test_master_shipped_config(container):
     master_config = container.run('cat /etc/salt/master')
     content = yaml.load(master_config)
