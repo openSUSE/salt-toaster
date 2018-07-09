@@ -53,6 +53,13 @@ ifdef DOCKER_CPUS
 	DOCKER_RES_LIMITS := $DOCKER_RES_LIMITS --cpus="$DOCKER_CPUS"
 endif
 
+# Setting the defaults for a job execution in Jenkins
+ifdef BUILD_ID
+ifndef DOCKER_RES_LIMITS
+	DOCKER_RES_LIMITS := --mem="2G" --cpus="1.5"
+endif
+endif
+
 help:
 	@echo "Salt Toaster: an ultimate test suite for Salt."
 	@echo
