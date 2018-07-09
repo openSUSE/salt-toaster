@@ -167,6 +167,12 @@ When running the `saltstack.unit` or `saltstack.integration`, `SALT_TESTS` must 
 | FLAVOR  | products, products-testing, products-next, devel
 |===
 
+.DOCKER_CPUS and DOCKER_MEM
+
+With these two parameters you can limit the resouce usage of the spun up Docker container. Examples would be `2G` or `512M` for `DOCKER_MEM` and `1` or `2.5` for `DOCKER_CPUS`. Where the number provided for `DOCKER_CPUS` would the number of host CPUs the container should able to use.
+
+Please take a look at the official https://docs.docker.com/config/containers/resource_constraints/[Docker documentation] for more information about https://docs.docker.com/config/containers/resource_constraints/#limit-a-containers-access-to-memory[DOCKER_MEM] and https://docs.docker.com/config/containers/resource_constraints/#cpu[DOCKER_CPUS]
+
 
 == Ignore/Xfail upstream tests
 
