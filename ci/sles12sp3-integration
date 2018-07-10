@@ -1,0 +1,46 @@
+#!/usr/bin/env groovy
+
+properties([
+    buildDiscarder(logRotator(numToKeepStr: '600', daysToKeepStr: '7')),
+    disableConcurrentBuilds(),
+])
+
+pipeline {
+  environment { 
+      // TODO: check if need really random numbers in that string 
+      ST_JOB_ID = "{env.BUILD_NUMBER}-sle12sp3"
+      VERSION = "sles12sp3"
+      FLAVOR = "products-testing"
+  }
+
+  agent {label 'toaster-node' }
+    stages {
+      stage('prepare sandbox and install requirements') 
+        {
+          steps {
+            sh "rm -rf sandbox"
+            sh "virtualenv sandbox"
+            sh "source sandbox/bin/activate"
+            sh "sandbox/bin/pip install -r requirements.txt --upgrade"
+          }
+        }
+       stage('run salt-toaster tests')
+        {
+          steps {
+             sh "make -s saltstack.integration"
+           }
+        }
+    }
+
+  post {
+    always {
+      dir("${env.WORKSPACE}") {
+        junit '*.xml'
+        sh "docker rm -vf $(docker ps -f \"name=$ST_JOB_ID\" -a -q) || true"
+        deleteDir()
+       }
+     }
+  }
+// TODO: add email notification in pipeline as post-action
+
+}
