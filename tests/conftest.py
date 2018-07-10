@@ -118,17 +118,20 @@ class ToasterTestsProfiling(object):
         self.global_profile = cProfile.Profile()
         self.global_profile.enable()
 
-    def accumulate_values_to_json(values, json_filename):
+    def accumulate_values_to_json(self, values, json_filename):
         output = {}
         # Read possible values on the file
-        with open(json_filename) as infile:
-            output = json.load(infile)
+        try:
+            with open(json_filename) as infile:
+                output = json.load(infile)
+        except IOError:
+            pass
 
         # Accumulate current values with older ones
         for item in output.keys():
             values[item] += output[item]
 
-        with open(json_filename) as outfile:
+        with open(json_filename, 'w') as outfile:
             json.dump(values, outfile)
 
     def pytest_terminal_summary(self, terminalreporter):
@@ -160,7 +163,7 @@ class ToasterTestsProfiling(object):
                    timings['runtest_call_value'] = float(line_list[3])
                 elif 'runtest_teardown' in line:
                    timings['runtest_teardown_value'] = float(line_list[3])
-        accumulate_values_to_json(timings, TOASTER_TIMINGS_JSON)
+        self.accumulate_values_to_json(timings, TOASTER_TIMINGS_JSON)
 
 
 def pytest_configure(config):
