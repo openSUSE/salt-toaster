@@ -46,11 +46,11 @@ ifndef DOCKER_FILE
 endif
 
 ifdef DOCKER_MEM
-	DOCKER_RES_LIMITS = --mem="$DOCKER_MEM"
+	DOCKER_RES_LIMITS = --memory="$(DOCKER_MEM)"
 endif
 
 ifdef DOCKER_CPUS
-	DOCKER_RES_LIMITS := $DOCKER_RES_LIMITS --cpus="$DOCKER_CPUS"
+	DOCKER_RES_LIMITS := $(DOCKER_RES_LIMITS) --cpus="$(DOCKER_CPUS)"
 endif
 
 # Setting the defaults for a job execution in Jenkins
@@ -83,12 +83,12 @@ endif
 
 PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS) $(PYTEST_FLAGS)
 CMD=pytest $(PYTEST_ARGS) --junitxml results.xml
-EXEC=docker run $(EXPORTS) $(DOCKER_RES_LIMITS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE) tests
+EXEC=docker run $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_RES_LIMITS) $(DOCKER_IMAGE) tests
 
 ifndef RPDB_PORT
-docker_shell : EXEC=docker run -it $(EXPORTS) $(DOCKER_RES_LIMITS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
+docker_shell : EXEC=docker run -it $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_RES_LIMITS) $(DOCKER_IMAGE)
 else
-docker_shell : EXEC=docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) $(DOCKER_RES_LIMITS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_IMAGE)
+docker_shell : EXEC=docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_RES_LIMITS) $(DOCKER_IMAGE)
 endif
 docker_shell : CMD=/bin/bash
 docker_shell :: pull_image
