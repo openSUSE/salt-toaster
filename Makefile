@@ -56,7 +56,7 @@ endif
 # Setting the defaults for a job execution in Jenkins
 ifdef BUILD_ID
 ifndef DOCKER_RES_LIMITS
-	DOCKER_RES_LIMITS := --mem="2G" --cpus="1.5"
+	DOCKER_RES_LIMITS := --memory="2G" --cpus="1.5"
 endif
 endif
 
