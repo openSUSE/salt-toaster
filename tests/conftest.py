@@ -1,6 +1,15 @@
+import cProfile
+import json
+import pstats
 import pytest
 import logging
+import StringIO
+import re
 from docker import Client
+
+
+PROFILE_RESULTS_FILE = 'reports/global.prof'
+TOASTER_TIMINGS_JSON = 'reports/toaster-timings.json'
 
 
 logger = logging.getLogger(__name__)
@@ -97,3 +106,63 @@ def minion(setup):
     config, initconfig = setup
     minions = config['masters'][0]['minions']
     return minions[0]['fixture'] if minions else None
+
+
+class ToasterTestsProfiling(object):
+    """Toaster Tests Profiling plugin for pytest."""
+    tests_profs = []
+    docker_profs = []
+    global_profile = None
+
+    def __init__(self):
+        self.global_profile = cProfile.Profile()
+        self.global_profile.enable()
+
+    def accumulate_values_to_json(values, json_filename):
+        output = {}
+        # Read possible values on the file
+        with open(json_filename) as infile:
+            output = json.load(infile)
+
+        # Accumulate current values with older ones
+        for item in output.keys():
+            values[item] += output[item]
+
+        with open(json_filename) as outfile:
+            json.dump(values, outfile)
+
+    def pytest_terminal_summary(self, terminalreporter):
+        self.global_profile.disable()
+        self.global_profile.dump_stats(PROFILE_RESULTS_FILE)
+        terminalreporter.write("--------------------- Salt Toaster Profiling Stats ---------------------\n")
+        stats = pstats.Stats(self.global_profile, stream=terminalreporter)
+        stats.sort_stats('cumulative').print_stats('runtest_setup', 1)
+        stats.sort_stats('cumulative').print_stats('runtest_call', 1)
+        stats.sort_stats('cumulative').print_stats('runtest_teardown', 1)
+
+    def pytest_sessionfinish(self, session):  # @UnusedVariable
+        timings = {
+            'runtest_setup_value': 0,
+            'runtest_call_value': 0,
+            'runtest_teardown_value': 0
+        }
+        stream = StringIO.StringIO()
+        stats = pstats.Stats(PROFILE_RESULTS_FILE, stream=stream)
+        stats.sort_stats('cumulative').print_stats('runtest_setup', 1)
+        stats.sort_stats('cumulative').print_stats('runtest_call', 1)
+        stats.sort_stats('cumulative').print_stats('runtest_teardown', 1)
+        for line in stream.getvalue().split('\n'):
+            if re.match('.+\d+.+\d+\.\d+.+\d+\.\d+.+\d+\.\d+.+\d\.\d+.*', line):
+                line_list = [item for item in line.split(' ') if item]
+                if 'runtest_setup' in line:
+                   timings['runtest_setup_value'] = float(line_list[3])
+                elif 'runtest_call' in line:
+                   timings['runtest_call_value'] = float(line_list[3])
+                elif 'runtest_teardown' in line:
+                   timings['runtest_teardown_value'] = float(line_list[3])
+        accumulate_values_to_json(timings, TOASTER_TIMINGS_JSON)
+
+
+def pytest_configure(config):
+    """pytest_configure hook for profiling plugin"""
+    config.pluginmanager.register(ToasterTestsProfiling())
