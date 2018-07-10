@@ -155,7 +155,7 @@ class ToasterTestsProfiling(object):
         stats.sort_stats('cumulative').print_stats('runtest_call', 1)
         stats.sort_stats('cumulative').print_stats('runtest_teardown', 1)
         for line in stream.getvalue().split('\n'):
-            if re.match('.+\d+.+\d+\.\d+.+\d+\.\d+.+\d+\.\d+.+\d\.\d+.*', line):
+            if re.match('.+\d+.+\d+\.\d+.+\d+\.\d+.+\d+\.\d+.+\d+\.\d+.*', line):
                 line_list = [item for item in line.split(' ') if item]
                 if 'runtest_setup' in line:
                    timings['runtest_setup_value'] = float(line_list[3])
