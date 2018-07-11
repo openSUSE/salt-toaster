@@ -136,24 +136,24 @@ class ToasterTestsProfiling(object):
 
     def process_stats(self):  # @UnusedVariable
         timings = {
-            'runtest_setup_value': 0,
-            'runtest_call_value': 0,
-            'runtest_teardown_value': 0
+            'pytest_runtest_setup_value': 0,
+            'pytest_runtest_call_value': 0,
+            'pytest_runtest_teardown_value': 0
         }
         stream = StringIO.StringIO()
         stats = pstats.Stats(PROFILE_RESULTS_FILE, stream=stream)
-        stats.sort_stats('cumulative').print_stats('runtest_setup', 1)
-        stats.sort_stats('cumulative').print_stats('runtest_call', 1)
-        stats.sort_stats('cumulative').print_stats('runtest_teardown', 1)
+        stats.sort_stats('cumulative').print_stats('pytest_runtest_setup', 1)
+        stats.sort_stats('cumulative').print_stats('pytest_runtest_call', 1)
+        stats.sort_stats('cumulative').print_stats('pytest_runtest_teardown', 1)
         for line in stream.getvalue().split('\n'):
             if re.match('.+\d+.+\d+\.\d+.+\d+\.\d+.+\d+\.\d+.+\d+\.\d+.*', line):
                 line_list = [item for item in line.split(' ') if item]
-                if 'runtest_setup' in line:
-                   timings['runtest_setup_value'] = float(line_list[3])
-                elif 'runtest_call' in line:
-                   timings['runtest_call_value'] = float(line_list[3])
-                elif 'runtest_teardown' in line:
-                   timings['runtest_teardown_value'] = float(line_list[3])
+                if 'pytest_runtest_setup' in line:
+                   timings['pytest_runtest_setup_value'] = float(line_list[3])
+                elif 'pytest_runtest_call' in line:
+                   timings['pytest_runtest_call_value'] = float(line_list[3])
+                elif 'pytest_runtest_teardown' in line:
+                   timings['pytest_runtest_teardown_value'] = float(line_list[3])
         self.accumulate_values_to_json(timings, TOASTER_TIMINGS_JSON)
 
     def pytest_terminal_summary(self, terminalreporter):
@@ -163,9 +163,9 @@ class ToasterTestsProfiling(object):
             "generated cProfile stats file on: {}".format(PROFILE_RESULTS_FILE))
         terminalreporter.write_sep("-", "Salt Toaster Profiling Stats")
         stats = pstats.Stats(self.global_profile, stream=terminalreporter)
-        stats.sort_stats('cumulative').print_stats('runtest_setup', 1)
-        stats.sort_stats('cumulative').print_stats('runtest_call', 1)
-        stats.sort_stats('cumulative').print_stats('runtest_teardown', 1)
+        stats.sort_stats('cumulative').print_stats('pytest_runtest_setup', 1)
+        stats.sort_stats('cumulative').print_stats('pytest_runtest_call', 1)
+        stats.sort_stats('cumulative').print_stats('pytest_runtest_teardown', 1)
         self.process_stats()
 
 
