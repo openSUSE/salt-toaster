@@ -149,7 +149,7 @@ node_salt_toaster{{step="pytest_runtest_teardown"}} {pytest_runtest_teardown}
                         pytest_runtest_setup=values['pytest_runtest_setup'],
                         pytest_runtest_call=values['pytest_runtest_call'],
                         pytest_runtest_teardown=values['pytest_runtest_teardown'],
-                    )
+                    ).strip()
                 )
         except IOError as exc:
             log.error("Failed to export metrics to Prometheus node " \
