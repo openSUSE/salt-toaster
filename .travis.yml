@@ -1,23 +1,10 @@
 language: python
 
 python:
- - 2.7
-
-services:
- - docker
-
-env:
-    global:
-        - VERSION=leap42sp1 FLAVOR=default NOPULL=true
-    matrix:
-        - TARGET=suse.tests PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
-        - TARGET=saltstack.unit PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
-        - TARGET=saltstack.integration PYTEST_CFG=./configs/$TARGET/$VERSION/$FLAVOR.cfg
+         - 2.7
 
 before_install:
-- tar xvfz sandbox.tar.gz > /dev/null
-- source sandbox/bin/activate
-- sandbox/bin/pip install -r requirements.txt --exists-action w --upgrade
-- BUILD_OPTS=--nopull make build_image
+        - pip install -r requirements.txt --exists-action w --upgrade
+        - pip install pytest
 
-script: make $TARGET PYTEST_CFG=$PYTEST_CFG
+script: pylint --errors-only tests/* utils.py config.py
