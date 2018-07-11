@@ -10,6 +10,7 @@ from docker import Client
 
 PROFILE_RESULTS_FILE = 'reports/global.prof'
 TOASTER_TIMINGS_JSON = 'reports/toaster-timings.json'
+NODE_EXPORTER_METRIC_FILE = '/var/lib/node_exporter/textfile_collector/salt_toaster.prom'
 
 
 logger = logging.getLogger(__name__)
@@ -110,6 +111,7 @@ def minion(setup):
 
 class ToasterTestsProfiling(object):
     """Toaster Tests Profiling plugin for pytest."""
+
     tests_profs = []
     docker_profs = []
     global_profile = None
@@ -120,25 +122,44 @@ class ToasterTestsProfiling(object):
 
     def accumulate_values_to_json(self, values, json_filename):
         output = {}
-        # Read possible values on the file
+        # Read possible values on the JSON file
         try:
             with open(json_filename) as infile:
                 output = json.load(infile)
         except IOError:
             pass
-
         # Accumulate current values with older ones
         for item in output.keys():
             values[item] += output[item]
-
         with open(json_filename, 'w') as outfile:
             json.dump(values, outfile)
+        # Export metrics to prometheus node exporter
+        try:
+            with open(NODE_EXPORTER_METRIC_FILE, 'w') as metric_file:
+                metric_str = \
+'''
+# HELP node_salt_toaster Seconds pytest spent in each Salt toaster step.
+# TYPE node_salt_toaster counter
+node_salt_toaster{{step="pytest_runtest_setup"}} {pytest_runtest_setup}
+node_salt_toaster{{step="pytest_runtest_call"}} {pytest_runtest_call}
+node_salt_toaster{{step="pytest_runtest_teardown"}} {pytest_runtest_teardown}
+'''
+                metric_file.write(
+                    metric_str.format(
+                        pytest_runtest_setup=values['pytest_runtest_setup'],
+                        pytest_runtest_call=values['pytest_runtest_call'],
+                        pytest_runtest_teardown=values['pytest_runtest_teardown'],
+                    )
+                )
+        except IOError as exc:
+            log.error("Failed to export metrics to Prometheus node " \
+                "exporter file {}: {}".format(NODE_EXPORTER_METRIC_FILE, exc))
 
     def process_stats(self):  # @UnusedVariable
         timings = {
-            'pytest_runtest_setup_value': 0,
-            'pytest_runtest_call_value': 0,
-            'pytest_runtest_teardown_value': 0
+            'pytest_runtest_setup': 0,
+            'pytest_runtest_call': 0,
+            'pytest_runtest_teardown': 0
         }
         stream = StringIO.StringIO()
         stats = pstats.Stats(PROFILE_RESULTS_FILE, stream=stream)
@@ -149,11 +170,11 @@ class ToasterTestsProfiling(object):
             if re.match('.+\d+.+\d+\.\d+.+\d+\.\d+.+\d+\.\d+.+\d+\.\d+.*', line):
                 line_list = [item for item in line.split(' ') if item]
                 if 'pytest_runtest_setup' in line:
-                   timings['pytest_runtest_setup_value'] = float(line_list[3])
+                   timings['pytest_runtest_setup'] = float(line_list[3])
                 elif 'pytest_runtest_call' in line:
-                   timings['pytest_runtest_call_value'] = float(line_list[3])
+                   timings['pytest_runtest_call'] = float(line_list[3])
                 elif 'pytest_runtest_teardown' in line:
-                   timings['pytest_runtest_teardown_value'] = float(line_list[3])
+                   timings['pytest_runtest_teardown'] = float(line_list[3])
         self.accumulate_values_to_json(timings, TOASTER_TIMINGS_JSON)
 
     def pytest_terminal_summary(self, terminalreporter):
