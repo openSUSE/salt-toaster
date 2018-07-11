@@ -112,8 +112,6 @@ def minion(setup):
 class ToasterTestsProfiling(object):
     """Toaster Tests Profiling plugin for pytest."""
 
-    tests_profs = []
-    docker_profs = []
     global_profile = None
 
     def __init__(self):
