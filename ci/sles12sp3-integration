@@ -36,7 +36,7 @@ pipeline {
     always {
       dir("${env.WORKSPACE}") {
         junit '*.xml'
-        sh "docker rm -vf $(docker ps -f \"name=$ST_JOB_ID\" -a -q) || true"
+        sh "docker rm -vf \$(docker ps -f \"name=$ST_JOB_ID\" -a -q) || true"
         deleteDir()
        }
      }
