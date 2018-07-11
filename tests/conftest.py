@@ -134,16 +134,7 @@ class ToasterTestsProfiling(object):
         with open(json_filename, 'w') as outfile:
             json.dump(values, outfile)
 
-    def pytest_terminal_summary(self, terminalreporter):
-        self.global_profile.disable()
-        self.global_profile.dump_stats(PROFILE_RESULTS_FILE)
-        terminalreporter.write("--------------------- Salt Toaster Profiling Stats ---------------------\n")
-        stats = pstats.Stats(self.global_profile, stream=terminalreporter)
-        stats.sort_stats('cumulative').print_stats('runtest_setup', 1)
-        stats.sort_stats('cumulative').print_stats('runtest_call', 1)
-        stats.sort_stats('cumulative').print_stats('runtest_teardown', 1)
-
-    def pytest_sessionfinish(self, session):  # @UnusedVariable
+    def process_stats(self):  # @UnusedVariable
         timings = {
             'runtest_setup_value': 0,
             'runtest_call_value': 0,
@@ -164,6 +155,18 @@ class ToasterTestsProfiling(object):
                 elif 'runtest_teardown' in line:
                    timings['runtest_teardown_value'] = float(line_list[3])
         self.accumulate_values_to_json(timings, TOASTER_TIMINGS_JSON)
+
+    def pytest_terminal_summary(self, terminalreporter):
+        self.global_profile.disable()
+        self.global_profile.dump_stats(PROFILE_RESULTS_FILE)
+        terminalreporter.write_sep("-",
+            "generated cProfile stats file on: {}".format(PROFILE_RESULTS_FILE))
+        terminalreporter.write_sep("-", "Salt Toaster Profiling Stats")
+        stats = pstats.Stats(self.global_profile, stream=terminalreporter)
+        stats.sort_stats('cumulative').print_stats('runtest_setup', 1)
+        stats.sort_stats('cumulative').print_stats('runtest_call', 1)
+        stats.sort_stats('cumulative').print_stats('runtest_teardown', 1)
+        self.process_stats()
 
 
 def pytest_configure(config):
