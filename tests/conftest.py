@@ -150,7 +150,7 @@ node_salt_toaster{{step="pytest_runtest_teardown"}} {pytest_runtest_teardown}
                     ).strip()
                 )
         except IOError as exc:
-            log.error("Failed to export metrics to Prometheus node " \
+            logger.error("Failed to export metrics to Prometheus node " \
                 "exporter file {}: {}".format(NODE_EXPORTER_METRIC_FILE, exc))
 
     def process_stats(self):  # @UnusedVariable
