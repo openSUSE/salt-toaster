@@ -9,7 +9,7 @@ from docker import Client
 
 
 PROFILE_RESULTS_FILE = 'reports/global.prof'
-TOASTER_TIMINGS_JSON = 'reports/toaster-timings.json'
+TOASTER_TIMINGS_JSON = '/tmp/toaster-timings.json'
 NODE_EXPORTER_METRIC_FILE = '/var/lib/node_exporter/textfile_collector/salt_toaster.prom'
 
 
