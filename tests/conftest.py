@@ -113,24 +113,28 @@ class ToasterTestsProfiling(object):
     """Toaster Tests Profiling plugin for pytest."""
 
     global_profile = None
+    initial_metrics = {}
 
     def __init__(self):
         self.global_profile = cProfile.Profile()
         self.global_profile.enable()
+        self.initial_metrics = self.read_values_from_json(TOASTER_TIMINGS_JSON)
 
-    def accumulate_values_to_json(self, values, json_filename):
-        output = {}
+    def read_values_from_json(self, json_filename):
+        timings = {
+            'pytest_runtest_setup': 0,
+            'pytest_runtest_call': 0,
+            'pytest_runtest_teardown': 0
+        }
         # Read possible values on the JSON file
         try:
             with open(json_filename) as infile:
-                output = json.load(infile)
+                timings.update(json.load(infile))
+                return timings
         except IOError:
-            pass
-        # Accumulate current values with older ones
-        for item in output.keys():
-            values[item] += output[item]
-        with open(json_filename, 'w') as outfile:
-            json.dump(values, outfile)
+            return timings
+
+    def export_metrics_to_prometheus(self, metrics):
         # Export metrics to prometheus node exporter
         try:
             with open(NODE_EXPORTER_METRIC_FILE, 'w') as metric_file:
@@ -144,14 +148,22 @@ node_salt_toaster{{step="pytest_runtest_teardown"}} {pytest_runtest_teardown}
 '''
                 metric_file.write(
                     metric_str.format(
-                        pytest_runtest_setup=values['pytest_runtest_setup'],
-                        pytest_runtest_call=values['pytest_runtest_call'],
-                        pytest_runtest_teardown=values['pytest_runtest_teardown'],
+                        pytest_runtest_setup=metrics['pytest_runtest_setup'],
+                        pytest_runtest_call=metrics['pytest_runtest_call'],
+                        pytest_runtest_teardown=metrics['pytest_runtest_teardown'],
                     ).lstrip()
                 )
         except IOError as exc:
             logger.error("Failed to export metrics to Prometheus node " \
                 "exporter file {}: {}".format(NODE_EXPORTER_METRIC_FILE, exc))
+
+    def accumulate_values_to_json(self, values, json_filename):
+        # Accumulate current values with the initial ones
+        for item in self.initial_metrics.keys():
+            values[item] += self.initial_metrics[item]
+        with open(json_filename, 'w') as outfile:
+            json.dump(values, outfile)
+        self.export_metrics_to_prometheus(values)
 
     def process_stats(self):  # @UnusedVariable
         timings = {
@@ -159,6 +171,9 @@ node_salt_toaster{{step="pytest_runtest_teardown"}} {pytest_runtest_teardown}
             'pytest_runtest_call': 0,
             'pytest_runtest_teardown': 0
         }
+        self.global_profile.disable()
+        self.global_profile.dump_stats(PROFILE_RESULTS_FILE)
+        self.global_profile.enable()
         stream = StringIO.StringIO()
         stats = pstats.Stats(PROFILE_RESULTS_FILE, stream=stream)
         stats.sort_stats('cumulative').print_stats('pytest_runtest_setup', 1)
@@ -175,6 +190,9 @@ node_salt_toaster{{step="pytest_runtest_teardown"}} {pytest_runtest_teardown}
                    timings['pytest_runtest_teardown'] = float(line_list[3])
         self.accumulate_values_to_json(timings, TOASTER_TIMINGS_JSON)
 
+    def pytest_runtest_teardown(self, item, nextitem):  # @UnusedVariable
+        self.process_stats()
+
     def pytest_terminal_summary(self, terminalreporter):
         self.global_profile.disable()
         self.global_profile.dump_stats(PROFILE_RESULTS_FILE)
@@ -185,7 +203,6 @@ node_salt_toaster{{step="pytest_runtest_teardown"}} {pytest_runtest_teardown}
         stats.sort_stats('cumulative').print_stats('pytest_runtest_setup', 1)
         stats.sort_stats('cumulative').print_stats('pytest_runtest_call', 1)
         stats.sort_stats('cumulative').print_stats('pytest_runtest_teardown', 1)
-        self.process_stats()
 
 
 def pytest_configure(config):
