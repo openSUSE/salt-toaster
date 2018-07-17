@@ -109,30 +109,41 @@ def minion(setup):
     return minions[0]['fixture'] if minions else None
 
 
+class SaltToasterException(Exception):
+    pass
+
 class ToasterTestsProfiling(object):
     """Toaster Tests Profiling plugin for pytest."""
 
-    global_profile = None
-    initial_metrics = {}
+    AVAILABLE_MODES = ['boolean', 'cumulative']
 
-    def __init__(self):
+    global_profile = None
+    mode = None
+    metrics = {}
+
+    def __init__(self, mode="default"):
         self.global_profile = cProfile.Profile()
         self.global_profile.enable()
-        self.initial_metrics = self.read_values_from_json(TOASTER_TIMINGS_JSON)
+        self.metrics = self.read_initial_values()
+        if mode in self.AVAILABLE_MODES:
+            self.mode = mode
+        else:
+            raise SaltToasterException("Mode '{}' is not supported".format(mode))
 
-    def read_values_from_json(self, json_filename):
+    def read_initial_values(self, from_json=False):
         timings = {
             'pytest_runtest_setup': 0,
             'pytest_runtest_call': 0,
             'pytest_runtest_teardown': 0
         }
-        # Read possible values on the JSON file
-        try:
-            with open(json_filename) as infile:
-                timings.update(json.load(infile))
-                return timings
-        except IOError:
-            return timings
+        if from_json:
+            # Read possible values on the JSON file
+            try:
+                with open(TOASTER_TIMINGS_JSON) as infile:
+                    timings.update(json.load(infile))
+            except IOError as exc:
+                logger.error("Failed to read JSON file: {}".format(exc))
+        return timings
 
     def export_metrics_to_prometheus(self, metrics):
         # Export metrics to prometheus node exporter
@@ -159,11 +170,20 @@ node_salt_toaster{{step="pytest_runtest_teardown"}} {pytest_runtest_teardown}
 
     def accumulate_values_to_json(self, values, json_filename):
         # Accumulate current values with the initial ones
-        for item in self.initial_metrics.keys():
-            values[item] += self.initial_metrics[item]
+        for item in self.metrics.keys():
+            values[item] += self.metrics[item]
         with open(json_filename, 'w') as outfile:
             json.dump(values, outfile)
         self.export_metrics_to_prometheus(values)
+
+    def export_metrics_delta(self, old_metrics, new_metrics, json_filename):
+        deltas = {}
+        for item in self.metrics.keys():
+            deltas[item] = new_metrics[item] - old_metrics[item]
+        with open(json_filename, 'w') as outfile:
+            json.dump(new_metrics, outfile)
+        self.metrics = new_metrics
+        self.export_metrics_to_prometheus(deltas)
 
     def process_stats(self):  # @UnusedVariable
         timings = {
@@ -188,10 +208,45 @@ node_salt_toaster{{step="pytest_runtest_teardown"}} {pytest_runtest_teardown}
                    timings['pytest_runtest_call'] = float(line_list[3])
                 elif 'pytest_runtest_teardown' in line:
                    timings['pytest_runtest_teardown'] = float(line_list[3])
-        self.accumulate_values_to_json(timings, TOASTER_TIMINGS_JSON)
+        self.export_metrics_delta(self.metrics, timings, TOASTER_TIMINGS_JSON)
 
+    def process_stats_switch_on(self, stepname):
+        self.metrics[stepname] = 1
+        self.export_metrics_to_prometheus(self.metrics)
+
+    def process_stats_switch_off(self, stepname):
+        self.metrics[stepname] = 0
+        self.export_metrics_to_prometheus(self.metrics)
+
+    @pytest.hookimpl(hookwrapper=True)
+    def pytest_runtest_setup(self, item):  # @UnusedVariable
+        if self.mode == "boolean":
+            self.process_stats_switch_on("pytest_runtest_setup")
+            yield
+            self.process_stats_switch_off("pytest_runtest_setup")
+        else:
+            yield
+
+    @pytest.hookimpl(hookwrapper=True)
+    def pytest_runtest_call(self, item):  # @UnusedVariable
+        if self.mode == "boolean":
+            self.process_stats_switch_on("pytest_runtest_call")
+            yield
+            self.process_stats_switch_off("pytest_runtest_call")
+        else:
+            yield
+
+    @pytest.hookimpl(hookwrapper=True)
     def pytest_runtest_teardown(self, item, nextitem):  # @UnusedVariable
-        self.process_stats()
+        if self.mode == "boolean":
+            self.process_stats_switch_on("pytest_runtest_teardown")
+            yield
+            self.process_stats_switch_off("pytest_runtest_teardown")
+        elif self.mode == "cumulative":
+            yield
+            self.process_stats()
+        else:
+            yield
 
     def pytest_terminal_summary(self, terminalreporter):
         self.global_profile.disable()
@@ -207,4 +262,4 @@ node_salt_toaster{{step="pytest_runtest_teardown"}} {pytest_runtest_teardown}
 
 def pytest_configure(config):
     """pytest_configure hook for profiling plugin"""
-    config.pluginmanager.register(ToasterTestsProfiling())
+    config.pluginmanager.register(ToasterTestsProfiling(mode="boolean"))
