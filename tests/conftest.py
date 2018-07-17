@@ -148,18 +148,28 @@ class ToasterTestsProfiling(object):
 
     def export_metrics_to_prometheus(self, metrics):
         # Export metrics to prometheus node exporter
-        try:
-            with open(NODE_EXPORTER_METRIC_FILE, 'w') as metric_file:
-                metric_str = \
+        if self.mode == "boolean":
+            metrics_header = \
+'''
+# HELP node_salt_toaster Pytest step being executed at the moment (1 = yes, 0 = no).
+# TYPE node_salt_toaster gauge
+'''
+        else:
+            metrics_header = \
 '''
 # HELP node_salt_toaster Seconds pytest spent in each Salt toaster step.
 # TYPE node_salt_toaster counter
+'''
+        metrics_str = metrics_header + \
+'''
 node_salt_toaster{{step="pytest_runtest_setup"}} {pytest_runtest_setup}
 node_salt_toaster{{step="pytest_runtest_call"}} {pytest_runtest_call}
 node_salt_toaster{{step="pytest_runtest_teardown"}} {pytest_runtest_teardown}
 '''
-                metric_file.write(
-                    metric_str.format(
+        try:
+            with open(NODE_EXPORTER_METRIC_FILE, 'w') as metrics_file:
+                metrics_file.write(
+                    metrics_str.format(
                         pytest_runtest_setup=metrics['pytest_runtest_setup'],
                         pytest_runtest_call=metrics['pytest_runtest_call'],
                         pytest_runtest_teardown=metrics['pytest_runtest_teardown'],
