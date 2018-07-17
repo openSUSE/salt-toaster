@@ -115,7 +115,7 @@ class SaltToasterException(Exception):
 class ToasterTestsProfiling(object):
     """Toaster Tests Profiling plugin for pytest."""
 
-    AVAILABLE_MODES = ['boolean', 'cumulative']
+    AVAILABLE_MODES = ['boolean', 'cumulative', "deltas"]
 
     global_profile = None
     mode = None
@@ -124,11 +124,12 @@ class ToasterTestsProfiling(object):
     def __init__(self, mode="default"):
         self.global_profile = cProfile.Profile()
         self.global_profile.enable()
-        self.metrics = self.read_initial_values()
         if mode in self.AVAILABLE_MODES:
             self.mode = mode
         else:
             raise SaltToasterException("Mode '{}' is not supported".format(mode))
+        from_json = True if self.mode == "cumulative" else False
+        self.metrics = self.read_initial_values(from_json=from_json)
 
     def read_initial_values(self, from_json=False):
         timings = {
@@ -208,7 +209,10 @@ node_salt_toaster{{step="pytest_runtest_teardown"}} {pytest_runtest_teardown}
                    timings['pytest_runtest_call'] = float(line_list[3])
                 elif 'pytest_runtest_teardown' in line:
                    timings['pytest_runtest_teardown'] = float(line_list[3])
-        self.export_metrics_delta(self.metrics, timings, TOASTER_TIMINGS_JSON)
+        if self.mode == "deltas":
+            self.export_metrics_delta(self.metrics, timings, TOASTER_TIMINGS_JSON)
+        elif self.mode == "cumulative":
+            self.accumulate_values_to_json(timings, TOASTER_TIMINGS_JSON)
 
     def process_stats_switch_on(self, stepname):
         self.metrics[stepname] = 1
@@ -242,7 +246,7 @@ node_salt_toaster{{step="pytest_runtest_teardown"}} {pytest_runtest_teardown}
             self.process_stats_switch_on("pytest_runtest_teardown")
             yield
             self.process_stats_switch_off("pytest_runtest_teardown")
-        elif self.mode == "cumulative":
+        elif self.mode in ["cumulative", "deltas"]:
             yield
             self.process_stats()
         else:
