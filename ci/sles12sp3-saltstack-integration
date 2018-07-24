@@ -7,10 +7,11 @@ properties([
 
 pipeline {
   environment { 
-      ST_JOB_ID = "{env.BUILD_NUMBER}-sle12sp3"
       VERSION = "sles12sp3"
       FLAVOR = "products-testing"
       TEST_TYPE = "saltstack.integration"
+      // private vars (don't modify this)
+      ST_JOB_ID = "${env.BUILD_NUMBER}${env.JOB_NAME}"
   }
 
   agent {label 'toaster-node' }
