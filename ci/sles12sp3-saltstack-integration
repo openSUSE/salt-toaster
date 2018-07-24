@@ -7,10 +7,10 @@ properties([
 
 pipeline {
   environment { 
-      // TODO: check if need really random numbers in that string 
       ST_JOB_ID = "{env.BUILD_NUMBER}-sle12sp3"
       VERSION = "sles12sp3"
       FLAVOR = "products-testing"
+      TEST_TYPE = "saltstack.integration"
   }
 
   agent {label 'toaster-node' }
@@ -27,7 +27,7 @@ pipeline {
        stage('run salt-toaster tests')
         {
           steps {
-             sh "make -s saltstack.integration"
+             sh "make -s ${TEST_TYPE}"
            }
         }
     }
@@ -36,11 +36,10 @@ pipeline {
     always {
       dir("${env.WORKSPACE}") {
         junit '*.xml'
-        sh "docker rm -vf \$(docker ps -f \"name=$ST_JOB_ID\" -a -q) || true"
+        sh "docker rm -vf \$(docker ps -f \"name=${$ST_JOB_ID}\" -a -q) || true"
         deleteDir()
        }
      }
   }
-// TODO: add email notification in pipeline as post-action
 
 }
