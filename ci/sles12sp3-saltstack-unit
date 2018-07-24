@@ -14,6 +14,8 @@ pipeline {
   }
 
   agent {label 'toaster-node' }
+  // run every 3 hours
+  triggers { cron('H */3 * * *') }
     stages {
       stage('prepare sandbox and install requirements') 
         {
