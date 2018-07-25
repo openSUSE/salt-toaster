@@ -1,0 +1,3 @@
+[TYPECHECK]
+ignored-modules=py
+ignored-classes=_socketobject
