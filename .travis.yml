@@ -3,8 +3,8 @@ language: python
 python:
          - 2.7
 
-before_install:
+install:
         - pip install -r requirements.txt --exists-action w --upgrade
-        - pip install pytest pylint pytest-factoryboy
+        - pip install pytest pylint pytest-factoryboy salt
 
-script: pylint --errors-only tests/ utils.py config.py toaster_profile.py
+script: pylint --errors-only tests/ utils.py config.py
