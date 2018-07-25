@@ -48,10 +48,6 @@ class ExtraSaltPlugin(object):
         yield
 
 
-def pytest_configure(config):
-    plugin = ExtraSaltPlugin()
-    config.pluginmanager.register(plugin, 'ExtraSaltPlugin')
-
 
 @pytest.fixture(scope="session")
 def docker_client():
@@ -275,5 +271,6 @@ node_salt_toaster{{step="pytest_runtest_teardown"}} {pytest_runtest_teardown}
 
 
 def pytest_configure(config):
-    """pytest_configure hook for profiling plugin"""
+    plugin = ExtraSaltPlugin()
+    config.pluginmanager.register(plugin, 'ExtraSaltPlugin')
     config.pluginmanager.register(ToasterTestsProfiling(mode="boolean"))
