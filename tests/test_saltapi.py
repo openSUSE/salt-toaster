@@ -60,8 +60,8 @@ def test_roster_sshapi_disabled(master, salt_api_running):
             rst.write(line)
 
     # call malicious roster
-    out = run("curl -sS localhost:9080/run -H 'Accept: application/x-yaml' -d client='ssh' "
-              "-d tgt='exploit' -d fun='test.ping' -d roster_file='/tmp/malicious.roster'")
+    out = master['container'].run("curl -sS localhost:9080/run -H 'Accept: application/x-yaml' "
+			  "-d client='ssh' -d tgt='exploit' -d fun='test.ping' -d roster_file='/tmp/malicious.roster'")
     assert '- {}' in out
 
 
