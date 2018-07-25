@@ -5,6 +5,6 @@ python:
 
 before_install:
         - pip install -r requirements.txt --exists-action w --upgrade
-        - pip install pytest pylint
+        - pip install pytest pylint pytest-factoryboy
 
-script: pylint --errors-only tests/* utils.py config.py
+script: pylint --errors-only tests/ utils.py config.py toaster_profile.py
