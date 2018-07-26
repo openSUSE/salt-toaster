@@ -20,7 +20,7 @@ logger.setLevel(logging.INFO)
 class Handler(logging.Handler):
 
     def emit(self, report):
-        logger.logentries.append(self.format(report))
+        pytest.logentries.append(self.format(report))  # pylint: disable=no-member
 
 
 class ExtraSaltPlugin(object):
@@ -37,13 +37,13 @@ class ExtraSaltPlugin(object):
 
     @pytest.hookimpl(hookwrapper=True)
     def pytest_terminal_summary(self, terminalreporter):
-        for item in logger.logentries:
+        for item in pytest.logentries:  # pylint: disable=no-member
             terminalreporter.write_line(item)
         yield
 
     @pytest.hookimpl(hookwrapper=True)
     def pytest_runtest_setup(self, item):
-        if not item.module.__name__ in logger.logentries:
+        if not item.module.__name__ in pytest.logentries:  # pylint: disable=no-member
             logger.info(item.module.__name__)
         yield
 
