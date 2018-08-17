@@ -1,13 +1,10 @@
 language: python
 
 python:
- - 2.7
+         - 2.7
 
-services:
- - docker
+install:
+        - pip install -r requirements.txt --exists-action w --upgrade
+        - pip install pytest pylint pytest-factoryboy salt
 
-before_install:
-- pip install -r requirements.txt --exists-action w --upgrade
-- pip install pytest
-
-script: pylint --errors-only tests/* utils.py config.py 
+script: pylint --errors-only tests/ utils.py config.py
