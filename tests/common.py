@@ -71,12 +71,12 @@ GRAINS_EXPECTATIONS = {
         'osrelease': '15',
         'osrelease_info': [15],
     },
-    'leap42sp1': {
+    'leap15': {
         'os': 'openSUSE Leap',
-        'oscodename': 'openSUSE Leap 42.1 (x86_64)',
+        'oscodename': 'openSUSE Leap 15 (x86_64)',
         'os_family': 'Suse',
         'osfullname': 'openSUSE Leap',
-        'osrelease': '42.1',
-        'osrelease_info': [42, 1],
+        'osrelease': '15',
+        'osrelease_info': [15],
     }
 }

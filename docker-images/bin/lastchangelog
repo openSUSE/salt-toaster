@@ -1,0 +1,68 @@
+#!/usr/bin/python
+#
+# Author: bo@suse.de
+#
+# Show change log last N entries.
+#
+
+import os
+import sys
+import time
+
+def has_rpm():
+    '''
+    Is RPM around?
+    '''
+    return not not os.popen('which rpm').read().strip()
+
+
+def usage():
+    '''
+    Display help usage and exit.
+    '''
+    print "Usage: <PACKAGE> [NUM (default 1)]"
+    sys.exit(1)
+
+
+def changelog_tail(pkg_nm, nm_logs):
+    '''
+    Split changelog into pieces and display only last chunks.
+    '''
+    chunks = list()
+    chunk = list()
+    for st_line in os.popen("rpm -q --changelog {packagename}".format(packagename=pkg_nm)).read().split(os.linesep):
+        if not st_line.strip():
+            continue
+        if st_line.startswith('*'):
+            st_line = st_line.split(" ")
+            if len(st_line) == 6 and '@' in st_line[-1]:  # Likely an entry.
+                try:
+                    time.strptime(' '.join(st_line[1:5]), '%a %b %d %Y')
+                    st_line = ' '.join(st_line)
+                    if chunk:
+                        chunks.append("\n".join(chunk))
+                        chunk = list()
+                    chunk.append(st_line)
+                except Exception as error:
+                    print >> sys.stderr, "ERROR: Cannot parse entry '{line}'".format(line=' '.join(st_line))
+        elif chunk:
+            chunk.append("  " + st_line)
+    if chunk:
+        chunks.append("\n".join(chunk))
+
+    return chunks and chunks[:nm_logs] or chunks
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        usage()
+    else:
+        if not has_rpm():
+            print >> sys.stderr, 'This tool is useful only on RPM-operated systems.'
+            sys.exit(1)
+
+        sys.argv.append(1)
+        package_name, num_logs = sys.argv[1:3]
+        print >> sys.stdout, "-" * 40
+        print >> sys.stdout, "\n\n".join(changelog_tail(package_name, int(num_logs)))
+        print >> sys.stdout, "-" * 40
