@@ -1,0 +1,14 @@
+pytest==3.2.5
+mock
+pytest-timeout
+timelib
+boto
+six
+kubernetes==2.0.0
+apache-libcloud
+pyyaml==3.12
+unittest2
+py==1.4.33
+ordereddict==1.0
+python-dateutil==2.6.1
+/root/wheels/salt-testing-2018.1.16.tar.gz
