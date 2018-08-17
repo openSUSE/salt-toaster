@@ -4,7 +4,7 @@ Welcome to salt-toaster jenkins pipelines!
 
 # How is the design architecture of toaster pipelines?
 
-
+![toaster-ci](.documentation_images/toaster-ci.jpg)
 
 ## Currently workflow
 
