@@ -1,0 +1,48 @@
+#!/usr/bin/env groovy
+
+properties([
+    buildDiscarder(logRotator(numToKeepStr: '600', daysToKeepStr: '7')),
+    disableConcurrentBuilds(),
+])
+
+pipeline {
+  environment { 
+      VERSION = "sles12sp3"
+      FLAVOR = "products"
+      TEST_TYPE = "saltstack.unit"
+      // private vars (don't modify this)
+      ST_JOB_ID = "${env.BUILD_NUMBER}${env.JOB_NAME}"
+  }
+
+  agent {label 'toaster-node' }
+  // run every 3 hours
+  triggers { cron('H */3 * * *') }
+    stages {
+      stage('prepare sandbox and install requirements') 
+        {
+          steps {
+            sh "rm -rf sandbox"
+            sh "virtualenv sandbox"
+            sh "source sandbox/bin/activate"
+            sh "sandbox/bin/pip install -r requirements.txt --upgrade"
+          }
+        }
+       stage('run salt-toaster tests')
+        {
+          steps {
+             sh "make -s ${TEST_TYPE}"
+           }
+        }
+    }
+
+  post {
+    always {
+      dir("${env.WORKSPACE}") {
+        junit '*.xml'
+        sh "docker rm -vf \$(docker ps -f \"name=${$ST_JOB_ID}\" -a -q) || true"
+        deleteDir()
+       }
+     }
+  }
+
+}
