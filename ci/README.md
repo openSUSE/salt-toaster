@@ -2,6 +2,10 @@
 
 Welcome to salt-toaster jenkins pipelines!
 
+# How is the design architecture of toaster pipelines?
+
+
+
 ## Currently workflow
 
 Currently you need to create manual the jenkins job and configure as pipeline.
