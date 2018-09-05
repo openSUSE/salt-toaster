@@ -5,7 +5,8 @@ if [ "$FLAVOR" != "devel" ]
         if [[ "$VERSION" =~ ^rhel ]]
             then
                 bin/rhel_unpack_salt.sh
-            else
+        elif [[ "$VERSION" =~ ^sles ]]
+            then
                 /root/bin/install_salt.sh
                 bin/sles_unpack_salt.sh
         fi
