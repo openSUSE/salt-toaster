@@ -7,6 +7,12 @@ pytestmark = pytest.mark.usefixtures("master", "minion")
 def get_expectations(tags, oem=False):
 
     PARAMS = {
+        'ubuntu1804': {
+            'name': 'SUSE_SLES',
+            'version': '11.3',
+            'productline': 'sles',
+            'release': 'OEM' if oem else '1.201'
+        },
         'sles11sp3': {
             'name': 'SUSE_SLES',
             'version': '11.3',
@@ -66,7 +72,7 @@ def get_expectations(tags, oem=False):
     tag = set(tags).intersection(set(PARAMS)).pop()
 
     message = 'The config with this tags: {0} is not tested'.format(tags)
-    assert not tags.isdisjoint({'sles', 'rhel', 'leap'}), message
+    assert not tags.isdisjoint({'sles', 'rhel', 'leap', 'ubuntu'}), message
     assert not set(PARAMS[tag]).symmetric_difference(
         {'name', 'release', 'version', 'productline'}
     )
@@ -97,7 +103,7 @@ def oem(request, minion):
     return request.param == 'oem'
 
 
-@pytest.mark.xfailtags('rhel')
+@pytest.mark.xfailtags('rhel', 'ubuntu')
 def test_pkg_list_products(minion, oem, expected):
     [output] = minion.salt_call('pkg.list_products')
     assert output['name'] == expected['name']
