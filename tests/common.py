@@ -1,4 +1,20 @@
 GRAINS_EXPECTATIONS = {
+    'ubuntu1604': {
+        'os': 'Ubuntu',
+        'oscodename': '',
+        'os_family': '',
+        'osfullname': '',
+        'osrelease': '',
+        'osrelease_info': [],
+    },
+    'ubuntu1804': {
+        'os': 'Ubuntu',
+        'oscodename': '',
+        'os_family': '',
+        'osfullname': '',
+        'osrelease': '',
+        'osrelease_info': [],
+    },
     'rhel6': {
         'os': 'RedHat',
         'oscodename': 'Santiago',

@@ -7,11 +7,17 @@ pytestmark = pytest.mark.usefixtures("master", "minion")
 def get_expectations(tags, oem=False):
 
     PARAMS = {
+        'ubuntu1604': {
+            'name': '',
+            'version': '',
+            'productline': '',
+            'release': ''
+        },
         'ubuntu1804': {
-            'name': 'SUSE_SLES',
-            'version': '11.3',
-            'productline': 'sles',
-            'release': 'OEM' if oem else '1.201'
+            'name': '',
+            'version': '',
+            'productline': '',
+            'release': ''
         },
         'sles11sp3': {
             'name': 'SUSE_SLES',
