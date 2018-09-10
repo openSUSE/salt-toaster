@@ -8,6 +8,7 @@ pytestmark = pytest.mark.usefixtures("master")
 
 def pytest_generate_tests(metafunc):
     functions = [
+        'test_get_osarch',
         'test_get_os',
         'test_get_oscodename',
         'test_get_os_family',
@@ -51,8 +52,8 @@ def test_get_osfullname(minion, expected):
     assert minion.salt_call('grains.get', key) == expected[key]
 
 
-def test_get_osarch(minion):
-    assert minion.salt_call('grains.get', 'osarch') == 'x86_64'
+def test_get_osarch(minion, expected):
+    assert minion.salt_call('grains.get', 'osarch') == expected.get('osarch', 'x86_64')
 
 
 def test_get_osrelease(minion, expected):
@@ -64,7 +65,7 @@ def test_get_osrelease_info(minion, expected):
     key = 'osrelease_info'
     assert minion.salt_call('grains.get', 'osrelease_info') == expected[key]
 
-@pytest.mark.skiptags('products-next')
+@pytest.mark.skiptags('products-next', 'ubuntu')
 def test_salt_version(minion):
     rpm_version = minion['container'].run('rpm -q salt --queryformat "%{VERSION}"')
     assert minion.salt_call('grains.get', 'saltversion') == rpm_version
