@@ -56,13 +56,17 @@ For the suse tests, the approach is different. `py.test` is being run on the hos
 
 == Setup
 
-[source,bash]
+
 openSUSE system:
+
+[source,bash]
 ----
 sudo zypper in docker ca-certificates
 ----
 
 Debian system:
+
+[source,bash]
 ----
 sudo zypper in docker.io ca-certificates
 ----
