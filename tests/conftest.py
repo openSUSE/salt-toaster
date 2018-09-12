@@ -59,9 +59,9 @@ def docker_client():
 def tagschecker(request):
     tags = set(request.config.getini('TAGS'))
 
-    tags_marker = request.node.get_marker('tags')
-    xfailtags_marker = request.node.get_marker('xfailtags')
-    skiptags_marker = request.node.get_marker('skiptags')
+    tags_marker = request.node.get_closest_marker('tags')
+    xfailtags_marker = request.node.get_closest_marker('xfailtags')
+    skiptags_marker = request.node.get_closest_marker('skiptags')
 
     if xfailtags_marker and not tags.isdisjoint(set(xfailtags_marker.args)):
         request.node.add_marker(pytest.mark.xfail())
