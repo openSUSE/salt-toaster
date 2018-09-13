@@ -3,6 +3,10 @@ import time
 import requests
 from functools import partial
 
+
+# RUN LIKE THIS: make suse.tests VERSION=sles12sp3 FLAVOR=products NOPULL=true SALT_TESTS=tests/test_batch_async.py
+
+
 @pytest.fixture(scope='module')
 def module_config(request):
     return {
