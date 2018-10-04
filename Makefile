@@ -97,7 +97,11 @@ docker_shell : CMD=/bin/bash
 docker_shell :: pull_image
 	$(EXEC)
 
+ifeq ("$(VERSION)", "sles15")
+saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/sles15.cfg
+else
 saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/common.cfg
+endif
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
 saltstack.unit : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
@@ -107,7 +111,11 @@ endif
 saltstack.unit :: pull_image
 	$(EXEC)
 
+ifeq ("$(VERSION)", "sles15")
+saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/sles15.cfg
+else
 saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/common.cfg
+endif
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
 saltstack.integration : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
