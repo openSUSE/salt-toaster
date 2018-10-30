@@ -124,6 +124,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
+            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
         ],
         'rhel7': [
             'integration/states/archive.py::ArchiveTest::test_archive_extracted_skip_verify',
@@ -140,6 +141,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
             'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
+            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
         ],
         'sles11sp4': [
             'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
@@ -161,6 +163,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/states/git.py::GitTest::test_latest_with_local_changes',
             'integration/states/git.py::GitTest::test_latest_with_rev_and_submodules',
             'integration/states/git.py::GitTest::test_numeric_rev',
+            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
         ],
         'sles12': [
         ],
