@@ -84,7 +84,7 @@ endif
 # Temporary disable Docker containers MEM/CPU limitations
 DOCKER_RES_LIMITS=
 
-PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS) $(PYTEST_FLAGS)
+PYTEST_ARGS=--capture=fd -c $(PYTEST_CFG) $(SALT_TESTS) $(PYTEST_FLAGS)
 CMD=pytest $(PYTEST_ARGS) --junitxml results.xml
 EXEC=docker run $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_RES_LIMITS) $(DOCKER_IMAGE) tests
 
