@@ -56,8 +56,8 @@ def pytest_generate_tests(metafunc):
 @pytest.fixture()
 def test_container(request):
     params = {
-        'master': partial(request.getfuncargvalue, 'master_container'),
-        'minion': partial(request.getfuncargvalue, 'minion_container')
+        'master': partial(request.getfixturevalue, 'master_container'),
+        'minion': partial(request.getfixturevalue, 'minion_container')
     }
     return params[request.param]()
 
