@@ -32,6 +32,12 @@ def module_config(request, docker_client):
                         '/home/mdinca/store/repositories/salt'
                     ],
                     "container__config__salt_config__extra_configs": {
+                        "ext_pillar": {
+                            "extension_modules": "/etc/salt/extmodules",
+                            "ext_pillar": [
+                                {"custom_pillar": True}
+                            ]
+                        },
                         "salt_api_config": {
                             "rest_cherrypy": {
                                 "port": 9080,
@@ -93,6 +99,7 @@ def salt_api_running(master):
     master['container'].run('pip install CherryPy rpdb epdb')
     master['container'].run('salt-api -d')
     master['container'].run('ln -s /salt-toaster/.bashrc /root/.bashrc')
+    master['container'].run('ln -s /salt-toaster/tests/extmodules /etc/salt/extmodules')
     # Giving some time to salt-api to starting up.
     time.sleep(5)
 
