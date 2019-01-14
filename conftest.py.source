@@ -206,6 +206,14 @@ KNOWN_ISSUES_UNIT = {
             'unit/states/test_boto_vpc.py',
             'unit/states/test_augeas.py::AugeasTestCase::test_change_no_context_with_full_path_fail',
         ],
+        'sles11sp4': [
+            # SSLError: [Errno 1] _ssl.c:492: error:1409442E:SSL routines:SSL3_READ_BYTES:tlsv1 alert protocol version
+            'unit/modules/random_org_test.py',
+        ],
+        'rhel6': [
+            # SSLError: [Errno 1] _ssl.c:492: error:1409442E:SSL routines:SSL3_READ_BYTES:tlsv1 alert protocol version
+            'unit/modules/random_org_test.py',
+        ],
         'sles15': [
             'unit/utils/cache_mods/cache_mod.py',
             'unit/test_zypp_plugins.py',
