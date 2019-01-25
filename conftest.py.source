@@ -21,7 +21,6 @@ KNOWN_ISSUES_INTEGRATION = {
             'integration/cloud/helpers/virtualbox.py',
 
             'integration/utils/*',
-            'integration/__init__.py',
 
             # Running following tests causes unsuccessfully close
             # of forked processes. This will cause "hanging" jenkins jobs.
