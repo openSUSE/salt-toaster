@@ -13,6 +13,7 @@ def pytest_addoption(parser):
 KNOWN_ISSUES_INTEGRATION = {
     'ignore_list': {
         'common': [
+            'test_state.py::StateModuleTest::test_requisites_onfail_any',
             'integration/files/file/base/*',           # should no be included
             'integration/utils/test_reactor.py',       # not yet implemented
             '*::SaltnadoTestCase::*',                  # these are not actual tests
