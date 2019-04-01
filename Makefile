@@ -112,6 +112,7 @@ saltstack.unit : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
 saltstack.unit : CMD:=timeout 180m $(CMD)
 endif
 endif
+saltstack.unit : SALT_TESTS:=$(SALT_TESTS)/unit
 saltstack.unit :: pull_image
 	$(EXEC)
 
@@ -130,6 +131,7 @@ saltstack.integration : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
 saltstack.integration : CMD:=timeout 180m $(CMD)
 endif
 endif
+saltstack.integration : SALT_TESTS:=$(SALT_TESTS)/integration
 saltstack.integration :: pull_image
 	$(EXEC)
 
