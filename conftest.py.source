@@ -14,41 +14,41 @@ KNOWN_ISSUES_INTEGRATION = {
     'ignore_list': {
         'common': [
             'test_state.py::StateModuleTest::test_requisites_onfail_any',
-            'integration/files/file/base/*',           # should no be included
-            'integration/utils/test_reactor.py',       # not yet implemented
+            'files/file/base/*',           # should no be included
+            'utils/test_reactor.py',       # not yet implemented
             '*::SaltnadoTestCase::*',                  # these are not actual tests
-            'integration/cloud/providers/msazure.py',
-            'integration/modules/git.py',
-            'integration/cloud/helpers/virtualbox.py',
+            'cloud/providers/msazure.py',
+            'modules/git.py',
+            'cloud/helpers/virtualbox.py',
 
-            'integration/utils/*',
+            'utils/*',
 
             # Running following tests causes unsuccessfully close
             # of forked processes. This will cause "hanging" jenkins jobs.
-            'integration/states/supervisord.py',
+            'states/supervisord.py',
             '*::MasterTest::test_exit_status_correct_usage',
             '*::ProxyTest::test_exit_status_correct_usage',
             '*::FileTest::test_issue_2227_file_append',
             '*::FileTest::test_issue_8947_utf8_sls',
 
             # Evil test
-            'integration/reactor/reactor.py', # This test causes "py.test" never finishes
-            # 'integration/runners/fileserver.py::FileserverTest::test_clear_file_list_cache',  # this test hangs
-            'integration/runners/fileserver.py',  # workaround for comment above
-            # 'integration/wheel/key.py::KeyWheelModuleTest::test_list_all',  # ERROR at teardown
+            'reactor/reactor.py', # This test causes "py.test" never finishes
+            # 'runners/fileserver.py::FileserverTest::test_clear_file_list_cache',  # this test hangs
+            'runners/fileserver.py',  # workaround for comment above
+            # 'wheel/key.py::KeyWheelModuleTest::test_list_all',  # ERROR at teardown
             '*/wheel/key.py',  # workaround for comment above
             '*/wheel/client.py',
             '*/virtualenv.py',
             '*/states/user.py',
             '*states/svn.py',
             '*/kitchen/tests/wordpress/*',
-            'integration/pillar/test_git_pillar.py',
+            'pillar/test_git_pillar.py',
 
             # We are not interested in the NetapiClientTests
-            '*/integration/netapi/test_client.py',
+            '*/netapi/test_client.py',
 
             # This makes a request to github.com
-            '*/integration/modules/ssh.py',
+            '*/modules/ssh.py',
 
             # NEED INVESTIGATION
             '*rest_tornado/test_app.py::TestSaltAPIHandler::test_multi_local_async_post',
@@ -63,12 +63,12 @@ KNOWN_ISSUES_INTEGRATION = {
             '*/shell/test_call.py::CallTest::test_issue_14979_output_file_permissions',
             '*/shell/test_call.py::CallTest::test_issue_15074_output_file_append',
             '*/shell/test_call.py::CallTest::test_issue_2731_masterless',
-            '*/integration/modules/ssh.py',
+            '*/modules/ssh.py',
         ],
         'rhel6': [
             # Avoid error due:
             # [Errno 1] _ssl.c:492: error:1409442E:SSL routines:SSL3_READ_BYTES:tlsv1 alert protocol version
-            '*/integration/modules/gem.py',
+            '*/modules/gem.py',
         ],
         # disable 2017.7.1 on python 2.6
         'rhel6/products-next': ['*'],
@@ -81,33 +81,33 @@ KNOWN_ISSUES_INTEGRATION = {
         'common': [
             # Always failing
             '*sysmod.py::SysModuleTest::test_valid_docs',
-            'integration/cloud/providers/virtualbox.py::BaseVirtualboxTests::test_get_manager',
+            'cloud/providers/virtualbox.py::BaseVirtualboxTests::test_get_manager',
 
-            'integration/modules/timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
-            'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_develop',
-            'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_head',
-            'integration/states/git.py::GitTest::test_latest_fast_forward',
-            'integration/states/git.py::LocalRepoGitTest::test_renamed_default_branch',
+            'modules/timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
+            'states/git.py::GitTest::test_latest_changed_local_branch_rev_develop',
+            'states/git.py::GitTest::test_latest_changed_local_branch_rev_head',
+            'states/git.py::GitTest::test_latest_fast_forward',
+            'states/git.py::LocalRepoGitTest::test_renamed_default_branch',
 
-            'integration/loader/ext_grains.py::LoaderGrainsTest::test_grains_overwrite',
-            'integration/loader/ext_modules.py::LoaderOverridesTest::test_overridden_internal',
+            'loader/ext_grains.py::LoaderGrainsTest::test_grains_overwrite',
+            'loader/ext_modules.py::LoaderOverridesTest::test_overridden_internal',
 
-            'integration/modules/decorators.py::DecoratorTest::test_depends',
-            'integration/modules/decorators.py::DecoratorTest::test_depends_will_not_fallback',
-            'integration/modules/decorators.py::DecoratorTest::test_missing_depends_will_fallback',
+            'modules/decorators.py::DecoratorTest::test_depends',
+            'modules/decorators.py::DecoratorTest::test_depends_will_not_fallback',
+            'modules/decorators.py::DecoratorTest::test_missing_depends_will_fallback',
 
             # Sometimes failing in jenkins.
-            'integration/shell/call.py::CallTest::test_issue_14979_output_file_permissions',
-            'integration/shell/call.py::CallTest::test_issue_15074_output_file_append',
-            'integration/shell/call.py::CallTest::test_issue_2731_masterless',
-            'integration/shell/matcher.py::MatchTest::test_grain',
+            'shell/call.py::CallTest::test_issue_14979_output_file_permissions',
+            'shell/call.py::CallTest::test_issue_15074_output_file_append',
+            'shell/call.py::CallTest::test_issue_2731_masterless',
+            'shell/matcher.py::MatchTest::test_grain',
 
-            'integration/netapi/rest_tornado/test_app.py::TestSaltAPIHandler::test_simple_local_post_only_dictionary_request',
-            'integration/shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
-            'integration/states/svn.py::SvnTest::test_latest', # sles12sp1
-            'integration/states/svn.py::SvnTest::test_latest_empty_dir', # sles12sp1
-            'integration/runners/state.py::StateRunnerTest::test_orchestrate_output', # sles12sp1 rhel7
-            'integration/modules/test_saltutil.py::SaltUtilSyncPillarTest::test_pillar_refresh', # sles12sp2
+            'netapi/rest_tornado/test_app.py::TestSaltAPIHandler::test_simple_local_post_only_dictionary_request',
+            'shell/master_tops.py::MasterTopsTest::test_custom_tops_gets_utilized',
+            'states/svn.py::SvnTest::test_latest', # sles12sp1
+            'states/svn.py::SvnTest::test_latest_empty_dir', # sles12sp1
+            'runners/state.py::StateRunnerTest::test_orchestrate_output', # sles12sp1 rhel7
+            'modules/test_saltutil.py::SaltUtilSyncPillarTest::test_pillar_refresh', # sles12sp2
             '*::test_issue_7754',
 
             '*test_fileserver.py::FileserverTest::test_symlink_list',
@@ -116,55 +116,55 @@ KNOWN_ISSUES_INTEGRATION = {
             '*test_file.py::FileTest::test_managed_check_cmd',
         ],
         'rhel6': [
-            'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
-            'integration/cloud/providers/virtualbox.py::CloneVirtualboxTests::test_create_machine',
-            'integration/cloud/providers/virtualbox.py::BootVirtualboxTests::test_start_stop',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_attributes',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistent_attribute_with_default',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistent_attributes',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
-            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
+            'cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
+            'cloud/providers/virtualbox.py::CloneVirtualboxTests::test_create_machine',
+            'cloud/providers/virtualbox.py::BootVirtualboxTests::test_start_stop',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_attributes',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistent_attribute_with_default',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistent_attributes',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
+            'fileserver/roots_test.py::RootsTest::test_symlink_list',
         ],
         'rhel7': [
-            'integration/states/archive.py::ArchiveTest::test_archive_extracted_skip_verify',
-            'integration/states/archive.py::ArchiveTest::test_archive_extracted_with_root_user_and_group',
-            'integration/states/archive.py::ArchiveTest::test_archive_extracted_with_source_hash',
+            'states/archive.py::ArchiveTest::test_archive_extracted_skip_verify',
+            'states/archive.py::ArchiveTest::test_archive_extracted_with_root_user_and_group',
+            'states/archive.py::ArchiveTest::test_archive_extracted_with_source_hash',
         ],
         'sles11sp3': [
-            'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
-            'integration/cloud/providers/virtualbox.py::CloneVirtualboxTests::test_create_machine',
-            'integration/cloud/providers/virtualbox.py::BootVirtualboxTests::test_start_stop',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_attributes',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistent_attribute_with_default',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistent_attributes',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
-            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
+            'cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
+            'cloud/providers/virtualbox.py::CloneVirtualboxTests::test_create_machine',
+            'cloud/providers/virtualbox.py::BootVirtualboxTests::test_start_stop',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_attributes',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistent_attribute_with_default',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistent_attributes',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
+            'fileserver/roots_test.py::RootsTest::test_symlink_list',
         ],
         'sles11sp4': [
-            'integration/cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
-            'integration/cloud/providers/virtualbox.py::CloneVirtualboxTests::test_create_machine',
-            'integration/cloud/providers/virtualbox.py::BootVirtualboxTests::test_start_stop',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_attributes',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistent_attribute_with_default',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistent_attributes',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
-            'integration/cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
-            'integration/shell/master.py::MasterTest::test_exit_status_correct_usage',
-            'integration/states/git.py::GitTest::test_config_set_value_with_space_character',
-            'integration/states/git.py::GitTest::test_latest',
-            'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_develop',
-            'integration/states/git.py::GitTest::test_latest_changed_local_branch_rev_head',
-            'integration/states/git.py::GitTest::test_latest_empty_dir',
-            'integration/states/git.py::GitTest::test_latest_unless_no_cwd_issue_6800',
-            'integration/states/git.py::GitTest::test_latest_with_local_changes',
-            'integration/states/git.py::GitTest::test_latest_with_rev_and_submodules',
-            'integration/states/git.py::GitTest::test_numeric_rev',
-            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list',
+            'cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
+            'cloud/providers/virtualbox.py::CloneVirtualboxTests::test_create_machine',
+            'cloud/providers/virtualbox.py::BootVirtualboxTests::test_start_stop',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_attributes',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistent_attribute_with_default',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_extra_nonexistent_attributes',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_imachine_object_default',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_override_attributes',
+            'cloud/providers/virtualbox.py::XpcomConversionTests::test_unknown_object',
+            'shell/master.py::MasterTest::test_exit_status_correct_usage',
+            'states/git.py::GitTest::test_config_set_value_with_space_character',
+            'states/git.py::GitTest::test_latest',
+            'states/git.py::GitTest::test_latest_changed_local_branch_rev_develop',
+            'states/git.py::GitTest::test_latest_changed_local_branch_rev_head',
+            'states/git.py::GitTest::test_latest_empty_dir',
+            'states/git.py::GitTest::test_latest_unless_no_cwd_issue_6800',
+            'states/git.py::GitTest::test_latest_with_local_changes',
+            'states/git.py::GitTest::test_latest_with_rev_and_submodules',
+            'states/git.py::GitTest::test_numeric_rev',
+            'fileserver/roots_test.py::RootsTest::test_symlink_list',
         ],
         'sles12': [
         ],
@@ -179,47 +179,47 @@ KNOWN_ISSUES_INTEGRATION = {
 KNOWN_ISSUES_UNIT = {
     'ignore_list': {
         'common': [
-            'unit/zypp_plugins_test.py', # BogusIO missing in zypp_plugin
-            'unit/netapi/rest_tornado/test_handlers.py',
-            'unit/returners/smtp_return_test.py',
-            'unit/transport/zeromq_test.py',  # Prevent pytests hang after tests
-            'unit/conf_test.py::ConfTest::test_conf_master_sample_is_commented', # we have uncommented custom config
-            'unit/conf_test.py::ConfTest::test_conf_minion_sample_is_commented', # we have uncommented custom config
-            'unit/conf_test.py::ConfTest::test_conf_proxy_sample_is_commented', # we have uncommented custom config
+            'zypp_plugins_test.py', # BogusIO missing in zypp_plugin
+            'netapi/rest_tornado/test_handlers.py',
+            'returners/smtp_return_test.py',
+            'transport/zeromq_test.py',  # Prevent pytests hang after tests
+            'conf_test.py::ConfTest::test_conf_master_sample_is_commented', # we have uncommented custom config
+            'conf_test.py::ConfTest::test_conf_minion_sample_is_commented', # we have uncommented custom config
+            'conf_test.py::ConfTest::test_conf_proxy_sample_is_commented', # we have uncommented custom config
             '*rsync_test.py::*',
-            'unit/test_module_names.py',
-            'unit/modules/darwin_sysctl_test.py',
-            'unit/states/boto_cloudwatch_event_test.py',
-            'unit/modules/boto_vpc_test.py',
-            'unit/states/boto_vpc_test.py',
-            'unit/utils/boto_test.py',
-            'unit/modules/win_ip_test.py::WinShadowTestCase::test_set_static_ip', # takes too long to execute
-            'unit/states/blockdev_test.py::BlockdevTestCase::test_formatted', # takes too long to execute
-            'unit/cloud/clouds/dimensiondata_test.py',
-            'unit/cloud/clouds/gce_test.py',
+            'test_module_names.py',
+            'modules/darwin_sysctl_test.py',
+            'states/boto_cloudwatch_event_test.py',
+            'modules/boto_vpc_test.py',
+            'states/boto_vpc_test.py',
+            'utils/boto_test.py',
+            'modules/win_ip_test.py::WinShadowTestCase::test_set_static_ip', # takes too long to execute
+            'states/blockdev_test.py::BlockdevTestCase::test_formatted', # takes too long to execute
+            'cloud/clouds/dimensiondata_test.py',
+            'cloud/clouds/gce_test.py',
             '*/utils/test_parsers.py',
             '*/kitchen/tests/wordpress/*',
-            'unit/fileserver/test_gitfs.py',
+            'fileserver/test_gitfs.py',
             # NEEDS INVESTIGATION
             'test_pip.py::PipStateTest::test_install_requirements_parsing',
-            '*/unit/modules/test_useradd.py',
-            'unit/utils/cache_mods/cache_mod.py',
-            'unit/modules/test_boto_vpc.py',
-            'unit/states/test_boto_vpc.py',
-            'unit/states/test_augeas.py::AugeasTestCase::test_change_no_context_with_full_path_fail',
+            '*/modules/test_useradd.py',
+            'utils/cache_mods/cache_mod.py',
+            'modules/test_boto_vpc.py',
+            'states/test_boto_vpc.py',
+            'states/test_augeas.py::AugeasTestCase::test_change_no_context_with_full_path_fail',
         ],
         'sles11sp4': [
             # SSLError: [Errno 1] _ssl.c:492: error:1409442E:SSL routines:SSL3_READ_BYTES:tlsv1 alert protocol version
-            'unit/modules/random_org_test.py',
+            'modules/random_org_test.py',
         ],
         'rhel6': [
             # SSLError: [Errno 1] _ssl.c:492: error:1409442E:SSL routines:SSL3_READ_BYTES:tlsv1 alert protocol version
-            'unit/modules/random_org_test.py',
+            'modules/random_org_test.py',
         ],
         'sles15': [
-            'unit/utils/cache_mods/cache_mod.py',
-            'unit/test_zypp_plugins.py',
-            'unit/modules/test_yumpkg.py',
+            'utils/cache_mods/cache_mod.py',
+            'test_zypp_plugins.py',
+            'modules/test_yumpkg.py',
         ]
     },
     'xfail_list': {
@@ -231,33 +231,33 @@ KNOWN_ISSUES_UNIT = {
             'test_zypper.py::ZypperTestCase::test_list_pkgs_with_attr',
             'test_zfs.py::ZfsUtilsTestCase::test_property_data_zpool',
 
-            'unit/templates/jinja_test.py::TestCustomExtensions::test_serialize_yaml_unicode',
+            'templates/jinja_test.py::TestCustomExtensions::test_serialize_yaml_unicode',
             # not working in docker containers
-            'unit/modules/cmdmod_test.py::CMDMODTestCase::test_run',
-            'unit/conf_test.py::ConfTest::test_conf_cloud_maps_d_files_are_commented',
-            'unit/conf_test.py::ConfTest::test_conf_cloud_profiles_d_files_are_commented',
-            'unit/conf_test.py::ConfTest::test_conf_cloud_providers_d_files_are_commented',
-            'unit/utils/extend_test.py::ExtendTestCase::test_run',
-            'unit/beacons/glxinfo.py::GLXInfoBeaconTestCase::test_no_user',
-            'unit/beacons/glxinfo.py::GLXInfoBeaconTestCase::test_non_dict_config',
+            'modules/cmdmod_test.py::CMDMODTestCase::test_run',
+            'conf_test.py::ConfTest::test_conf_cloud_maps_d_files_are_commented',
+            'conf_test.py::ConfTest::test_conf_cloud_profiles_d_files_are_commented',
+            'conf_test.py::ConfTest::test_conf_cloud_providers_d_files_are_commented',
+            'utils/extend_test.py::ExtendTestCase::test_run',
+            'beacons/glxinfo.py::GLXInfoBeaconTestCase::test_no_user',
+            'beacons/glxinfo.py::GLXInfoBeaconTestCase::test_non_dict_config',
 
             # Boto failing tests
-            'unit/modules/boto_apigateway_test.py::BotoApiGatewayTestCaseBase::runTest',
-            'unit/modules/boto_cloudwatch_event_test.py::BotoCloudWatchEventTestCaseBase::runTest',
-            'unit/modules/boto_cognitoidentity_test.py::BotoCognitoIdentityTestCaseBase::runTest',
-            'unit/modules/boto_elasticsearch_domain_test.py::BotoElasticsearchDomainTestCaseBase::runTest',
-            'unit/states/boto_apigateway_test.py::BotoApiGatewayStateTestCaseBase::runTest',
-            'unit/states/boto_cognitoidentity_test.py::BotoCognitoIdentityStateTestCaseBase::runTest',
-            'unit/states/boto_elasticsearch_domain_test.py::BotoElasticsearchDomainStateTestCaseBase::runTest',
+            'modules/boto_apigateway_test.py::BotoApiGatewayTestCaseBase::runTest',
+            'modules/boto_cloudwatch_event_test.py::BotoCloudWatchEventTestCaseBase::runTest',
+            'modules/boto_cognitoidentity_test.py::BotoCognitoIdentityTestCaseBase::runTest',
+            'modules/boto_elasticsearch_domain_test.py::BotoElasticsearchDomainTestCaseBase::runTest',
+            'states/boto_apigateway_test.py::BotoApiGatewayStateTestCaseBase::runTest',
+            'states/boto_cognitoidentity_test.py::BotoCognitoIdentityStateTestCaseBase::runTest',
+            'states/boto_elasticsearch_domain_test.py::BotoElasticsearchDomainStateTestCaseBase::runTest',
 
-            'unit/modules/inspect_collector_test.py::InspectorCollectorTestCase::test_file_tree',
+            'modules/inspect_collector_test.py::InspectorCollectorTestCase::test_file_tree',
             '*CoreGrainsTestCase::test_linux_memdata',
             'EtcdModTestCase',
             'ConfTest::test_conf_master_sample_is_commented',  # this is not passing because we have custom config by default (user "salt")
             'test_cmdmod.py::CMDMODTestCase::test_run',
 
-            'unit/fileserver/test_roots.py::RootsTest::test_symlink_list',
-            'unit/modules/test_cmdmod.py::CMDMODTestCase::test_run',  # test too slow
+            'fileserver/test_roots.py::RootsTest::test_symlink_list',
+            'modules/test_cmdmod.py::CMDMODTestCase::test_run',  # test too slow
             '*test_reactor.py::TestReactor::test_reactions',
             '*test_reactor.py::TestReactor::test_list_reactors',
             '*test_yumpkg.py::YumTestCase::test_list_pkgs_with_attr',
@@ -267,10 +267,10 @@ KNOWN_ISSUES_UNIT = {
             '*test_conf.py::ConfTest::test_conf_master_sample_is_commented',
         ],
         'sles12sp1': [
-            'unit/cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
+            'cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
         ],
         'sles12sp2': [
-            'unit/cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
+            'cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
         ],
         '2016.11.4': [
             '*network_test.py::NetworkTestCase::test_host_to_ips',
