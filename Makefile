@@ -106,13 +106,13 @@ saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/rhel6.cfg
 else
 saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/common.cfg
 endif
+saltstack.unit : SALT_TESTS:=$(SALT_TESTS)/unit
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
 saltstack.unit : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
 saltstack.unit : CMD:=timeout 180m $(CMD)
 endif
 endif
-saltstack.unit : SALT_TESTS:=$(SALT_TESTS)/unit
 saltstack.unit :: pull_image
 	$(EXEC)
 
@@ -125,13 +125,13 @@ saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/rhel6.cfg
 else
 saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/common.cfg
 endif
+saltstack.integration : SALT_TESTS:=$(SALT_TESTS)/integration
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
 saltstack.integration : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
 saltstack.integration : CMD:=timeout 180m $(CMD)
 endif
 endif
-saltstack.integration : SALT_TESTS:=$(SALT_TESTS)/integration
 saltstack.integration :: pull_image
 	$(EXEC)
 
