@@ -201,7 +201,7 @@ KNOWN_ISSUES_UNIT = {
             '*/kitchen/tests/wordpress/*',
             'unit/fileserver/test_gitfs.py',
             # NEEDS INVESTIGATION
-            '*/states/test_pip.py::PipStateTest::test_install_requirements_parsing',
+            'test_pip.py::PipStateTest::test_install_requirements_parsing',
             '*/unit/modules/test_useradd.py',
             'unit/utils/cache_mods/cache_mod.py',
             'unit/modules/test_boto_vpc.py',
