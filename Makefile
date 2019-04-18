@@ -140,7 +140,7 @@ suse.tests : SALT_TESTS=./tests
 suse.tests : EXEC=sandbox/bin/$(CMD)
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
-suse.tests : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500 -x
+suse.tests : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
 suse.tests : EXEC:=timeout 180m $(EXEC)
 endif
 endif
