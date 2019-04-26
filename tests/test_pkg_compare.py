@@ -15,7 +15,7 @@ def pytest_generate_tests(metafunc):
         ['1:0.2-1', '0.2-1', 1],
     ]
     if not tags.isdisjoint(
-        {'sles15', 'sles12', 'sles12sp1', 'sles12sp2', 'sles12sp3', 'leap42sp1', 'rhel6', 'rhel7'}
+        {'sles15sp1', 'sles15', 'sles12', 'sles12sp1', 'sles12sp2', 'sles12sp3', 'leap42sp1', 'rhel6', 'rhel7'}
     ):
         VERSIONS += [
             ['0.2-1', '0.2~beta1-1', 1],
