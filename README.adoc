@@ -164,6 +164,20 @@ You can pass extra py.test parameters using `PYTEST_FLAGS`
 make suse.tests SALT_TESTS=tests/test_pkg.py PYTEST_FLAGS=-x
 ----
 
+.DESTRUCTIVE_TESTS
+Salt tests marked as "destructive" tests are currently disabled by default. If you want to run then, simple set `DESTRUCTIVE_TESTS=True`
+
+----
+make saltstack.integration DESTRUCTIVE_TESTS=True
+----
+
+.EXPENSIVE_TESTS
+Salt tests marked as "expensive" tests are currently disabled by default. If you want to run then, simple set `EXPENSIVE_TESTS=True`
+
+----
+make saltstack.integration EXPENSIVE_TESTS=True
+----
+
 [NOTE]
 ====
 When running the `suse.tests`, `SALT_TESTS` must be a path relative to the current folder (salt-toaster)
