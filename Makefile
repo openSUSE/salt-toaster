@@ -6,8 +6,8 @@ ROOT_MOUNTPOINT       = /salt/src
 SALT_REPO_MOUNTPOINT  = $(ROOT_MOUNTPOINT)/salt-devel
 SALT_TESTS            = $(ROOT_MOUNTPOINT)/salt-*/tests
 DOCKER_VOLUMES        = -v "$(CURDIR)/:$(TOASTER_MOUNTPOINT)"
-DESTRUCTIVE_TESTS     = True
-EXPENSIVE_TESTS       = True
+DESTRUCTIVE_TESTS     = False
+EXPENSIVE_TESTS       = False
 
 ifeq ("$(FLAVOR)", "devel")
 ifdef SALT_REPO
