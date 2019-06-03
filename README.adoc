@@ -171,6 +171,13 @@ Salt tests marked as "destructive" tests are currently disabled by default. If y
 make saltstack.integration DESTRUCTIVE_TESTS=True
 ----
 
+.EXPENSIVE_TESTS
+Salt tests marked as "expensive" tests are currently disabled by default. If you want to run then, simple set `EXPENSIVE_TESTS=True`
+
+----
+make saltstack.integration EXPENSIVE_TESTS=True
+----
+
 [NOTE]
 ====
 When running the `suse.tests`, `SALT_TESTS` must be a path relative to the current folder (salt-toaster)
