@@ -115,6 +115,7 @@ KNOWN_ISSUES_INTEGRATION = {
             '*test_fileserver.py::FileserverTest::test_empty_dir_list',
             '*test_timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
             '*test_file.py::FileTest::test_managed_check_cmd',
+            'modules/test_network.py::NetworkTest::test_network_ping', # Bad test implementation
         ],
         'rhel6': [
             'cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
