@@ -173,6 +173,12 @@ KNOWN_ISSUES_INTEGRATION = {
         ],
         'sles12sp2': [
         ],
+        'sles12sp3': [
+            'modules/test_pkg.py::PkgModuleTest::test_mod_del_repo_multiline_values', # this test should not be executed on SUSE systems
+        ],
+        'sles15': [
+            'modules/test_pkg.py::PkgModuleTest::test_mod_del_repo_multiline_values', # this test should not be executed on SUSE systems
+        ],
     }
 }
 
