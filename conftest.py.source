@@ -283,6 +283,9 @@ KNOWN_ISSUES_UNIT = {
         '2016.11.4': [
             '*network_test.py::NetworkTestCase::test_host_to_ips',
         ],
+        'sles15': [
+            'utils/test_args.py::ArgsTestCase::test_argspec_report', # Bad tests, fixed at https://github.com/saltstack/salt/pull/52852
+        ],
     }
 }
 
