@@ -215,6 +215,9 @@ KNOWN_ISSUES_UNIT = {
             'modules/test_boto_vpc.py',
             'states/test_boto_vpc.py',
             'states/test_augeas.py::AugeasTestCase::test_change_no_context_with_full_path_fail',
+
+            # This produces a bad file descriptor error at the end of the testsuite, even if the tests passes
+            'utils/test_thin.py::SSHThinTestCase::test_gen_thin_compression_fallback_py3',
         ],
         'sles11sp4': [
             # SSLError: [Errno 1] _ssl.c:492: error:1409442E:SSL routines:SSL3_READ_BYTES:tlsv1 alert protocol version
