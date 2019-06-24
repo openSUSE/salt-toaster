@@ -1,6 +1,6 @@
 DEFAULT_REGISTRY      = registry.hub.docker.com
 DEFAULT_VERSION       = opensuse151
-DEFAULT_FLAVOR        = released
+DEFAULT_FLAVOR        = devel
 SUSE_DEFAULT_REGISTRY = registry.mgr.suse.de
 SUSE_DEFAULT_VERSION  = sles12sp3
 SUSE_DEFAULT_FLAVOR   = products
@@ -128,6 +128,12 @@ docker_shell : EXEC=docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) -e "CMD=$(CMD
 endif
 docker_shell : CMD=/bin/bash
 docker_shell :: pull_image
+ifeq ("$(FLAVOR)", "devel")
+ifndef SALT_REPO
+	@echo "ERROR: Using 'devel' FLAVOR requires SALT_REPO";
+	exit 1
+endif
+endif
 	$(EXEC)
 
 ifeq ("$(VERSION)", "sles15")
@@ -147,6 +153,12 @@ saltstack.unit : CMD:=timeout 180m $(CMD)
 endif
 endif
 saltstack.unit :: pull_image
+ifeq ("$(FLAVOR)", "devel")
+ifndef SALT_REPO
+	@echo "ERROR: Using 'devel' FLAVOR requires SALT_REPO"
+	exit 1
+endif
+endif
 	$(EXEC)
 
 ifeq ("$(VERSION)", "sles15")
@@ -166,6 +178,12 @@ saltstack.integration : CMD:=timeout 180m $(CMD)
 endif
 endif
 saltstack.integration :: pull_image
+ifeq ("$(FLAVOR)", "devel")
+ifndef SALT_REPO
+	@echo "ERROR: Using 'devel' FLAVOR requires SALT_REPO"
+	exit 1
+endif
+endif
 	$(EXEC)
 
 suse.tests : PYTEST_CFG=./configs/suse.tests/$(VERSION)/$(FLAVOR).cfg
@@ -177,5 +195,12 @@ suse.tests : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
 suse.tests : EXEC:=timeout 180m $(EXEC)
 endif
 endif
+
 suse.tests : pull_image
+ifeq ("$(FLAVOR)", "devel")
+ifndef SALT_REPO
+	@echo "ERROR: Using 'devel' FLAVOR requires SALT_REPO"
+	exit 1
+endif
+endif
 	$(EXEC)
