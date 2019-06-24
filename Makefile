@@ -1,4 +1,4 @@
-DEFAULT_REGISTRY      = registry.hub.docker.com
+DEFAULT_REGISTRY      = salttoaster
 DEFAULT_VERSION       = opensuse151
 DEFAULT_FLAVOR        = devel
 SUSE_DEFAULT_REGISTRY = registry.mgr.suse.de
