@@ -101,10 +101,13 @@ list_targets:
 	@echo "SUSE internal use only:"
 	@echo "  SUSE SLE11SP4           VERSION: sles11sp4   - FLAVOR: products-old, products-old-testing, devel"
 	@echo "  SUSE SLE12SP3           VERSION: sles12sp3   - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE12SP4           VERSION: sles12sp4   - FLAVOR: products, products-testing, products-next, devel"
 	@echo "  SUSE SLE15              VERSION: sles15      - FLAVOR: products, products-testing, products-next, devel"
 	@echo "  SUSE SLE15SP1           VERSION: sles15sp1   - FLAVOR: products, products-testing, products-next, devel"
 	@echo "  RedHat RHEL6            VERSION: rhel6       - FLAVOR: products-old, products-old-testing, devel"
 	@echo "  RedHat RHEL7            VERSION: rhel7       - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  Ubuntu 16.04            VERSION: ubuntu1604  - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  Ubuntu 18.04            VERSION: ubuntu1804  - FLAVOR: products, products-testing, products-next, devel"
 
 pull_image:
 ifndef NOPULL
