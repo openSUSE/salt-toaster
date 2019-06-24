@@ -1,6 +1,9 @@
-DEFAULT_REGISTRY      = registry.mgr.suse.de
-DEFAULT_VERSION       = sles12sp3
-DEFAULT_FLAVOR        = products
+DEFAULT_REGISTRY      = registry.hub.docker.com
+DEFAULT_VERSION       = opensuse151
+DEFAULT_FLAVOR        = released
+SUSE_DEFAULT_REGISTRY = registry.mgr.suse.de
+SUSE_DEFAULT_VERSION  = sles12sp3
+SUSE_DEFAULT_FLAVOR   = products
 TOASTER_MOUNTPOINT    = /salt-toaster
 ROOT_MOUNTPOINT       = /salt/src
 SALT_REPO_MOUNTPOINT  = $(ROOT_MOUNTPOINT)/salt-devel
@@ -29,24 +32,28 @@ EXPORTS += \
 	-e "DESTRUCTIVE_TESTS=$(DESTRUCTIVE_TESTS)" \
 	-e "EXPENSIVE_TESTS=$(EXPENSIVE_TESTS)"
 
-ifndef DOCKER_REGISTRY
-	DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
-endif
-
 ifndef VERSION
 	VERSION = $(DEFAULT_VERSION)
 endif
 
-ifndef FLAVOR
+ifneq (,$(findstring sles,$(FLAVOR)))
+	FLAVOR = $(SUSE_DEFAULT_FLAVOR)
+else ifneq (,$(findstring rhel,$(FLAVOR)))
+	FLAVOR = $(SUSE_DEFAULT_FLAVOR)
+else ifndef FLAVOR
 	FLAVOR = $(DEFAULT_FLAVOR)
+endif
+
+ifneq (,$(findstring sles,$(VERSION)))
+	DOCKER_REGISTRY = $(SUSE_DEFAULT_REGISTRY)
+else ifneq (,$(findstring rhel,$(VERSION)))
+	DOCKER_REGISTRY = $(SUSE_DEFAULT_REGISTRY)
+else ifndef DOCKER_REGISTRY
+	DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
 endif
 
 ifndef DOCKER_IMAGE
 	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)-$(FLAVOR)
-endif
-
-ifndef DOCKER_FILE
-	DOCKER_FILE = Dockerfile.$(VERSION).$(FLAVOR)
 endif
 
 ifdef DOCKER_MEM
