@@ -75,6 +75,7 @@ help:
 	@echo
 	@echo "Commands:"
 	@echo "  set_env                 Create environment"
+	@echo "  list_targets            List available versions and flavors targets"
 	@echo "  docker_shell            Start Docker shell"
 	@echo "  saltstack.integration   Run Salt integration tests"
 	@echo "  saltstack.unit          Run Salt unit tests"
@@ -85,6 +86,25 @@ default: help
 
 set_env:
 	bin/prepare_environment.sh --create sandbox
+
+list_targets:
+	@echo "Salt Toaster: An ultimate test suite for Salt."
+	@echo
+	@echo "Available targets:"
+	@echo "  OpenSUSE Leap 15.0      VERSION: opensuse150 - FLAVOR: released, devel"
+	@echo "  OpenSUSE Leap 15.1      VERSION: opensuse151 - FLAVOR: released, devel"
+	@echo "  OpenSUSE Tumbleweed     VERSION: opensusetw  - FLAVOR: released, devel"
+	@echo "  CentOS 7                VERSION: centos7     - FLAVOR: released, devel"
+	@echo "  Ubuntu 16.04            VERSION: ubuntu1604  - FLAVOR: released, devel"
+	@echo "  Ubuntu 18.04            VERSION: ubuntu1804  - FLAVOR: released, devel"
+	@echo
+	@echo "SUSE internal use only:"
+	@echo "  SUSE SLE11SP4           VERSION: sles11sp4   - FLAVOR: products-old, products-old-testing, devel"
+	@echo "  SUSE SLE12SP3           VERSION: sles12sp3   - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE15              VERSION: sles15      - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE15SP1           VERSION: sles15sp1   - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  RedHat RHEL6            VERSION: rhel6       - FLAVOR: products-old, products-old-testing, devel"
+	@echo "  RedHat RHEL7            VERSION: rhel7       - FLAVOR: products, products-testing, products-next, devel"
 
 pull_image:
 ifndef NOPULL
