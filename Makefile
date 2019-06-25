@@ -81,7 +81,7 @@ title:
 	@echo
 	@echo "///////////////////////////////////////////////////"
 	@echo "// Salt Toaster: An ultimate test suite for Salt //"
-	@echo "//   https://github.com/openSUSE/salt-toaster/   //
+	@echo "//   https://github.com/openSUSE/salt-toaster/   //"
 	@echo "///////////////////////////////////////////////////"
 	@echo
 
@@ -119,6 +119,7 @@ list_targets: title
 	@echo "  RedHat RHEL7            VERSION: rhel7       - FLAVOR: products, products-testing, products-next, devel"
 	@echo "  Ubuntu 16.04            VERSION: ubuntu1604  - FLAVOR: products, products-testing, products-next, devel"
 	@echo "  Ubuntu 18.04            VERSION: ubuntu1804  - FLAVOR: products, products-testing, products-next, devel"
+	@echo
 
 pull_image:
 ifndef NOPULL
