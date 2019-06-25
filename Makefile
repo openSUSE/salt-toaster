@@ -104,7 +104,7 @@ list_targets: title
 	@echo "Available public targets:"
 	@echo "  OpenSUSE Leap 15.0      VERSION: opensuse150 - FLAVOR: devel"
 	@echo "  OpenSUSE Leap 15.1      VERSION: opensuse151 - FLAVOR: devel"
-	@echo "  OpenSUSE Tumbleweed     VERSION: opensusetw  - FLAVOR: devel"
+	@echo "  OpenSUSE Tumbleweed     VERSION: tumbleweed  - FLAVOR: devel"
 	@echo "  CentOS 7                VERSION: centos7     - FLAVOR: devel"
 #	@echo "  Ubuntu 16.04            VERSION: ubuntu1604  - FLAVOR: devel"
 #	@echo "  Ubuntu 18.04            VERSION: ubuntu1804  - FLAVOR: devel"
