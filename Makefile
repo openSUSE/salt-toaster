@@ -70,9 +70,21 @@ ifndef DOCKER_RES_LIMITS
 endif
 endif
 
-help:
-	@echo "Salt Toaster: An ultimate test suite for Salt."
+title:
 	@echo
+	@echo "███████╗ █████╗ ██╗  ████████╗    ████████╗ ██████╗  █████╗ ███████╗████████╗███████╗██████╗"
+	@echo "██╔════╝██╔══██╗██║  ╚══██╔══╝    ╚══██╔══╝██╔═══██╗██╔══██╗██╔════╝╚══██╔══╝██╔════╝██╔══██╗"
+	@echo "███████╗███████║██║     ██║          ██║   ██║   ██║███████║███████╗   ██║   █████╗  ██████╔╝"
+	@echo "╚════██║██╔══██║██║     ██║          ██║   ██║   ██║██╔══██║╚════██║   ██║   ██╔══╝  ██╔══██╗"
+	@echo "███████║██║  ██║███████╗██║          ██║   ╚██████╔╝██║  ██║███████║   ██║   ███████╗██║  ██║"
+	@echo "╚══════╝╚═╝  ╚═╝╚══════╝╚═╝          ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝"
+	@echo
+	@echo "///////////////////////////////////////////////////"
+	@echo "// Salt Toaster: An ultimate test suite for Salt //"
+	@echo "///////////////////////////////////////////////////"
+	@echo
+
+help: title
 	@echo "Commands:"
 	@echo "  set_env                 Create environment"
 	@echo "  list_targets            List available versions and flavors targets"
@@ -87,10 +99,8 @@ default: help
 set_env:
 	bin/prepare_environment.sh --create sandbox
 
-list_targets:
-	@echo "Salt Toaster: An ultimate test suite for Salt."
-	@echo
-	@echo "Available targets:"
+list_targets: title
+	@echo "Available public targets:"
 	@echo "  OpenSUSE Leap 15.0      VERSION: opensuse150 - FLAVOR: devel"
 	@echo "  OpenSUSE Leap 15.1      VERSION: opensuse151 - FLAVOR: devel"
 	@echo "  OpenSUSE Tumbleweed     VERSION: opensusetw  - FLAVOR: devel"
@@ -127,7 +137,7 @@ else
 docker_shell : EXEC=docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_RES_LIMITS) $(DOCKER_IMAGE)
 endif
 docker_shell : CMD=/bin/bash
-docker_shell :: pull_image
+docker_shell :: title pull_image
 ifeq ("$(FLAVOR)", "devel")
 ifndef SALT_REPO
 	@echo "ERROR: Using 'devel' FLAVOR requires SALT_REPO";
@@ -152,7 +162,7 @@ saltstack.unit : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
 saltstack.unit : CMD:=timeout 180m $(CMD)
 endif
 endif
-saltstack.unit :: pull_image
+saltstack.unit :: title pull_image
 ifeq ("$(FLAVOR)", "devel")
 ifndef SALT_REPO
 	@echo "ERROR: Using 'devel' FLAVOR requires SALT_REPO"
@@ -177,7 +187,7 @@ saltstack.integration : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
 saltstack.integration : CMD:=timeout 180m $(CMD)
 endif
 endif
-saltstack.integration :: pull_image
+saltstack.integration :: title pull_image
 ifeq ("$(FLAVOR)", "devel")
 ifndef SALT_REPO
 	@echo "ERROR: Using 'devel' FLAVOR requires SALT_REPO"
