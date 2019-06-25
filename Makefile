@@ -12,12 +12,6 @@ DOCKER_VOLUMES        = -v "$(CURDIR)/:$(TOASTER_MOUNTPOINT)"
 DESTRUCTIVE_TESTS     = False
 EXPENSIVE_TESTS       = False
 
-ifeq ("$(FLAVOR)", "devel")
-ifdef SALT_REPO
-$(eval DOCKER_VOLUMES:=$(DOCKER_VOLUMES) -v $(SALT_REPO):$(SALT_REPO_MOUNTPOINT))
-endif
-endif
-
 EXPORTS += \
 	-e "SALT_TESTS=$(SALT_TESTS)" \
 	-e "VERSION=$(VERSION)" \
@@ -49,6 +43,12 @@ else ifneq (,$(findstring rhel,$(VERSION)))
 	DOCKER_REGISTRY = $(SUSE_DEFAULT_REGISTRY)
 else ifndef DOCKER_REGISTRY
 	DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
+endif
+
+ifeq ("$(FLAVOR)", "devel")
+ifdef SALT_REPO
+$(eval DOCKER_VOLUMES:=$(DOCKER_VOLUMES) -v $(SALT_REPO):$(SALT_REPO_MOUNTPOINT))
+endif
 endif
 
 ifndef DOCKER_IMAGE
