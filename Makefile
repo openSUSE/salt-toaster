@@ -81,6 +81,7 @@ title:
 	@echo
 	@echo "///////////////////////////////////////////////////"
 	@echo "// Salt Toaster: An ultimate test suite for Salt //"
+	@echo "//   https://github.com/openSUSE/salt-toaster/   //
 	@echo "///////////////////////////////////////////////////"
 	@echo
 
