@@ -105,8 +105,8 @@ list_targets: title
 	@echo "  OpenSUSE Leap 15.1      VERSION: opensuse151 - FLAVOR: devel"
 	@echo "  OpenSUSE Tumbleweed     VERSION: opensusetw  - FLAVOR: devel"
 	@echo "  CentOS 7                VERSION: centos7     - FLAVOR: devel"
-	@echo "  Ubuntu 16.04            VERSION: ubuntu1604  - FLAVOR: devel"
-	@echo "  Ubuntu 18.04            VERSION: ubuntu1804  - FLAVOR: devel"
+#	@echo "  Ubuntu 16.04            VERSION: ubuntu1604  - FLAVOR: devel"
+#	@echo "  Ubuntu 18.04            VERSION: ubuntu1804  - FLAVOR: devel"
 	@echo
 	@echo "SUSE internal use only:"
 	@echo "  SUSE SLE11SP4           VERSION: sles11sp4   - FLAVOR: products-old, products-old-testing, devel"
