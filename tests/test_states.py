@@ -73,7 +73,7 @@ def test_pkg_installed_downloadonly(setup):
 
 
 @pytest.mark.xfail
-@pytest.mark.tags('sles')
+@pytest.mark.tags('sles', 'opensuse')
 def test_patches_installed_downloadonly_sles(setup):
     config, initconfig = setup
     master = config['masters'][0]

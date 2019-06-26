@@ -1,7 +1,7 @@
 import pytest
 
 
-@pytest.mark.tags('sles')
+@pytest.mark.tags('sles', 'opensuse')
 def test_pkg_owner(setup):
     '''
     Test pkg.owner
@@ -9,7 +9,7 @@ def test_pkg_owner(setup):
     #assert master.salt_ssh("pkg.owner /etc/zypp") == 'libzypp'
 
 
-@pytest.mark.tags('sles')
+@pytest.mark.tags('sles', 'opensuse')
 def test_pkg_list_products(master, container):
     '''
     List test products

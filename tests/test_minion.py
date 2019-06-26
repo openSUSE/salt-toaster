@@ -80,7 +80,7 @@ def test_pkg_modrepo_modify(request, minion, test_repo):
     }
 
 
-@pytest.mark.tags('sles')
+@pytest.mark.tags('sles', 'opensuse')
 def test_zypper_refresh_repo_with_gpgkey(request, master, minion, test_repo):
     name, path = test_repo
     minion.salt_call(

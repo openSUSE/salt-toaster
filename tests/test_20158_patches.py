@@ -45,7 +45,7 @@ def minion(setup):
 
 
 @pytest.mark.xfail  # https://bugzilla.suse.com/show_bug.cgi?id=1098072
-@pytest.mark.tags('sles')
+@pytest.mark.tags('sles', 'opensuse')
 def test_zypp_gpg_pkg(master, minion):
     '''
     Fake packages gpg-pubkey* should be filtered out by zypper.

@@ -60,7 +60,7 @@ def test_pkg_info_installed_epoch(request, minion):
     assert res['test-package']['epoch'] == "42"
 
 
-@pytest.mark.tags('sles')
+@pytest.mark.tags('sles', 'opensuse')
 def test_grains_items_sles(minion):
     res = minion.salt_call('grains.items', 'test-package')
     assert res['os_family'] == "Suse"
