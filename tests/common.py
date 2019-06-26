@@ -101,7 +101,7 @@ GRAINS_EXPECTATIONS = {
         'os': 'SUSE',
         'oscodename': 'openSUSE Leap 42.3',
         'os_family': 'Suse',
-        'osfullname': 'openSUSE Leap',
+        'osfullname': 'Leap',
         'osrelease': '42.3',
         'osrelease_info': [42, 3],
     },
@@ -109,7 +109,7 @@ GRAINS_EXPECTATIONS = {
         'os': 'SUSE',
         'oscodename': 'openSUSE Leap 15.0',
         'os_family': 'Suse',
-        'osfullname': 'openSUSE Leap',
+        'osfullname': 'Leap',
         'osrelease': '15.0',
         'osrelease_info': [15, 0],
     },
@@ -117,7 +117,7 @@ GRAINS_EXPECTATIONS = {
         'os': 'SUSE',
         'oscodename': 'openSUSE Leap 15.1',
         'os_family': 'Suse',
-        'osfullname': 'openSUSE Leap',
+        'osfullname': 'Leap',
         'osrelease': '15.1',
         'osrelease_info': [15, 1],
     },
@@ -125,7 +125,9 @@ GRAINS_EXPECTATIONS = {
         'os': 'SUSE',
         'oscodename': 'openSUSE Tumbleweed',
         'os_family': 'Suse',
-        'osfullname': 'openSUSE Tumbleweed',
+        'osfullname': 'Tumbleweed',
+        'osrelease': None, # This grain changes on each snapshot
+        'osrelease_info': None, # This grain changes on each snapshot
     },
     'leap42sp1': {
         'os': 'openSUSE Leap',

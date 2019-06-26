@@ -23,6 +23,13 @@ def test_pkg_list_products(master, container):
             assert prod['isbase']
             assert prod['installed']
             break
+        elif prod['productline'] == 'openSUSE':
+            assert prod['productline'] == 'openSUSE'
+            assert prod['name'] == 'openSUSE'
+            assert 'SUSE' in prod['vendor']
+            assert prod['isbase']
+            assert prod['installed']
+            break
         else:
             raise Exception("Product not found")
 
