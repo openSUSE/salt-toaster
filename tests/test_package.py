@@ -12,7 +12,7 @@ def pytest_generate_tests(metafunc):
         'test_master_shipped_config',
         'test_minion_shipped_config',
     ]
-    if metafunc.function.func_name in functions:
+    if metafunc.function.__name__ in functions:
         images = [metafunc.config.getini('IMAGE')]
         minion_image = metafunc.config.getini('MINION_IMAGE')
         if minion_image:

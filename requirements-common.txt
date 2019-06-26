@@ -5,7 +5,8 @@ fake-factory==0.5.7
 pytest==3.8.0
 pytest-helpers-namespace
 pytest-timeout
-PyYAML==3.11
+PyYAML
 requests
 jinja2
 rpdb
+six

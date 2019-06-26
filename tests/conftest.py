@@ -3,9 +3,13 @@ import json
 import pstats
 import pytest
 import logging
-import StringIO
 import re
 from docker import Client
+
+try:
+    import StringIO
+except ImportError:
+    from io import StringIO
 
 
 PROFILE_RESULTS_FILE = 'reports/global.prof'

@@ -25,7 +25,7 @@ def pytest_generate_tests(metafunc):
 
     # TODO: Replace this construction with just reading a current version
     version = set(set(metafunc.config.getini('TAGS'))).intersection(set(expectations)).pop()
-    if metafunc.function.func_name in functions and version:
+    if metafunc.function.__name__ in functions and version:
         metafunc.parametrize('expected', [expectations[version]], ids=lambda it: version)
     if 'python' in metafunc.fixturenames:
         tags = set(metafunc.config.getini('TAGS'))
