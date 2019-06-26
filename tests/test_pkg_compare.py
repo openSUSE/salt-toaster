@@ -36,4 +36,4 @@ def test_pkg_compare(params, minion):
         ver1, ver2
     )
     raw = minion['container'].run(command)
-    assert json.loads(raw)['local'] == expected
+    assert json.loads(str(raw.decode()))['local'] == expected

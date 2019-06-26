@@ -1,6 +1,7 @@
 import pytest
 import hashlib
 import time
+import six
 
 from saltcontainers.factories import ContainerFactory
 
@@ -146,7 +147,10 @@ def test_ssh_port_forwarding(master, container, python):
     Test SSH port forwarding feature.
     PR: https://github.com/saltstack/salt/pull/38021
     '''
-    msg = hashlib.sha256(str(time.time())).hexdigest()
+    if six.PY3:
+        msg = hashlib.sha256(str(time.time()).encode()).hexdigest()
+    else:
+        msg = hashlib.sha256(str(time.time())).hexdigest()
     nc = "/salt-toaster/tests/scripts/netsend.sh"
     of = "/tmp/socket-8888.txt"
     loc_port = 8888
@@ -185,4 +189,4 @@ def test_ssh_option(master, sshdcontainer):
         "salt-ssh -l quiet -i --out json --key-deploy --passwd admin123 "
         "--ssh-option='ProxyCommand=\"nc {0} 2222\"' {1} network.ip_addrs"
     ).format(sshdcontainer['ip'], sshdcontainer['config']['name'])
-    return json.loads(master['container'].run(SSH)).get('target') == sshdcontainer['ip']
+    return json.loads(str(master['container'].run(SSH).get('target').decode()) == sshdcontainer['ip'])

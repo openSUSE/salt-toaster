@@ -75,5 +75,5 @@ def test_hash_type_is_used(request, master, python):
     master['container'].run("useradd {0} -p '{1}'".format(user, password))
     raw_output = master['container'].run(
         "{0} tests/scripts/wheel_config_values.py".format(python))
-    output = json.loads(raw_output)
+    output = json.loads(str(raw_output.decode()))
     assert output['data']['return']['hash_type'] == "sha384"
