@@ -122,7 +122,7 @@ def test_pkg_refresh_db(minion):
     assert retry(partial(test, minion))
 
 
-@pytest.mark.skiptags('leap')
+@pytest.mark.skiptags('opensuse')
 @pytest.mark.xfailtags('rhel')
 def test_pkg_list_patterns(minion):
     res = minion.salt_call('pkg.list_patterns')

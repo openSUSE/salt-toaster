@@ -122,7 +122,7 @@ def test_ssh_pkg_remove_rhel(master, container):
     assert not out.get('test-package', {}).get('new')
 
 
-@pytest.mark.tags('sles', 'leap')
+@pytest.mark.tags('sles', 'opensuse')
 def test_ssh_pkg_remove_sles(master, container):
     '''
     Test pkg.remove on SLES

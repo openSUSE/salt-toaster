@@ -27,12 +27,12 @@ def test_pkg_list_products(master, container):
             raise Exception("Product not found")
 
 
-@pytest.mark.tags('sles', 'leap')
+@pytest.mark.tags('sles', 'opensuse')
 def test_pkg_search(master, container):
     assert 'test-package-zypper' in master.salt_ssh(container, "pkg.search test-package")
 
 
-@pytest.mark.tags('sles', 'leap')
+@pytest.mark.tags('sles', 'opensuse')
 def test_pkg_repo_sles(master, container):
     assert master.salt_ssh(container, 'pkg.list_repos')['testpackages']['enabled']
 
@@ -57,7 +57,7 @@ def test_pkg_mod_repo_rhel(master, container):
     assert res[res.keys()[0]][repo]['enabled']
 
 
-@pytest.mark.tags('sles', 'leap')
+@pytest.mark.tags('sles', 'opensuse')
 def test_pkg_mod_repo_sles(master, container):
     assert not master.salt_ssh(container, 'pkg.mod_repo testpackages enabled=false')['enabled']
     assert master.salt_ssh(container, 'pkg.mod_repo testpackages enabled=true')['enabled']
@@ -70,7 +70,7 @@ def test_pkg_del_repo_rhel(master, container):
     assert '{0} has been removed'.format(repo) in out
 
 
-@pytest.mark.tags('sles', 'leap')
+@pytest.mark.tags('sles', 'opensuse')
 def test_pkg_del_repo_sles(master, container):
     msg = "Repository 'testpackages' has been removed."
     out = master.salt_ssh(container, 'pkg.del_repo testpackages')

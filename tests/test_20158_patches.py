@@ -90,8 +90,8 @@ def test_yum_plugin_installed(master, minion):
     assert 'text executable' in out
 
 
-@pytest.mark.xfailtags('rhel', 'sles', 'leap')
-@pytest.mark.tags('sles', 'leap')
+@pytest.mark.xfailtags('rhel', 'sles', 'opensuse')
+@pytest.mark.tags('sles', 'opensuse')
 def test_change_tz(master, minion):
     assert master.salt(minion['id'], "timezone.set_zone UTC")[minion['id']]
     assert master.salt(minion['id'], "timezone.get_zone")[minion['id']] == 'UTC'
