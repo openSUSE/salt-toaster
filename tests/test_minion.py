@@ -95,7 +95,7 @@ def test_zypper_refresh_repo_with_gpgkey(request, master, minion, test_repo):
     # do not use pkg.mod_repo next
     # assert `zypper refresh` doesn't ask for gpg confirmation anymore
     res = minion['container'].run('zypper refresh')
-    assert "Repository '{0}' is up to date.".format(name) in res
+    assert "Repository '{0}' is up to date.".format(name) in str(res.decode())
 
 
 @pytest.mark.xfailtags('rhel')

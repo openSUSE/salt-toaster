@@ -67,5 +67,5 @@ def test_get_osrelease_info(minion, expected):
 
 @pytest.mark.skiptags('products-next', 'ubuntu')
 def test_salt_version(minion):
-    rpm_version = minion['container'].run('rpm -q salt --queryformat "%{VERSION}"')
+    rpm_version = str(minion['container'].run('rpm -q salt --queryformat "%{VERSION}"').decode())
     assert minion.salt_call('grains.get', 'saltversion') == rpm_version
