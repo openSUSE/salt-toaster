@@ -97,12 +97,6 @@ def get_expectations(tags, oem=False):
             'productline': 'openSUSE',
             'release': '0'
         },
-        'opensuse': {
-            'name': 'openSUSE',
-            'version': '42.1',
-            'productline': 'Leap',
-            'release': '0'
-        }
     }
 
     tag = set(tags).intersection(set(PARAMS)).pop()

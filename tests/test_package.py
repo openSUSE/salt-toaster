@@ -20,7 +20,7 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('container', images, indirect=['container'])
     if 'python' in metafunc.fixturenames:
         tags = set(metafunc.config.getini('TAGS'))
-        if 'sles15' in tags or 'sles15sp1' in tags:
+        if 'sles15' in tags or 'sles15sp1' in tags or 'opensuse' in tags:
             metafunc.parametrize("python", ["python3"])
         else:
             metafunc.parametrize("python", ["python"])
@@ -53,7 +53,7 @@ def container(request):
     return obj
 
 
-@pytest.mark.xfailtags('rhel')
+@pytest.mark.xfailtags('rhel', 'devel')
 def test_master_shipped_config(container):
     master_config = container.run('cat /etc/salt/master')
     content = yaml.load(master_config)
