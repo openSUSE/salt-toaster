@@ -208,7 +208,7 @@ suse.tests : EXEC:=timeout 180m $(EXEC)
 endif
 endif
 
-suse.tests : pull_image
+suse.tests : title pull_image
 ifeq ("$(FLAVOR)", "devel")
 ifndef SALT_REPO
 	@echo "ERROR: Using 'devel' FLAVOR requires SALT_REPO"
