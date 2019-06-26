@@ -136,5 +136,13 @@ GRAINS_EXPECTATIONS = {
         'osfullname': 'openSUSE Leap',
         'osrelease': '42.1',
         'osrelease_info': [42, 1],
-    }
+    },
+    'centos7': {
+        'os': 'CentOS',
+        'oscodename': 'CentOS Linux 7 (Core)',
+        'os_family': 'RedHat',
+        'osfullname': 'CentOS Linux',
+        'osrelease': '7.6.1810',
+        'osrelease_info': [7, 6, 1810],
+    },
 }
