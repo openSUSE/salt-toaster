@@ -23,7 +23,7 @@ Additionally to the common setup, if you are inside SUSE R&D network, you have a
 
 === Install SUSE CA Certificate
 
-[source,bash]
+[source,subs=attributes+]
 ----
 sudo zypper in ca-certificates
 ----
@@ -33,7 +33,7 @@ Then you need to download the registry certificate needed here: `https://gitlab.
 Save the certificate in `/usr/share/pki/trust/anchors` (openSUSE) or in `/usr/local/share/ca-certificates/` for Debian systems
 
 And run:
-[source,bash]
+[source,subs=attributes+]
 ----
 sudo update-ca-certificates
 sudo systemctl restart docker

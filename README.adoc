@@ -22,8 +22,11 @@ image:https://api.travis-ci.org/openSUSE/salt-toaster.svg?branch=master[Build St
 == Description
 
 This is a tool used to test https://github.com/saltstack/salt/[salt]
+
 It uses pytest and containers to do so.
+
 The tests are separated in 3 groups:
+
  - Saltstack upstream integration tests
  - Saltstack upstream unit tests
  - SUSE custom integration tests
@@ -62,7 +65,7 @@ For the suse tests, the approach is different. `py.test` is being run on the hos
 
 openSUSE system:
 
-[source,bash]
+[source,subs=attributes+]
 ----
 sudo zypper in docker python python-virtualenv make
 ----
@@ -70,7 +73,7 @@ sudo zypper in docker python python-virtualenv make
 Debian system:
 Your systems need to have docker and docker.io pkg installed
 
-[source,bash]
+[source,subs=attributes+]
 ----
 sudo apt install docker.io || sudo apt install docker
 ----
@@ -79,7 +82,7 @@ If you are part of the SUSE R&D network, you can access the non-public images. P
 
 === Preparing the sandbox:
 
-[source,bash]
+[source,subs=attributes+]
 ----
 git clone https://github.com/openSUSE/salt-toaster.git
 cd salt-toaster
@@ -90,7 +93,7 @@ pip install -r requirements.txt
 
 === Show help:
 
-[source,bash]
+[source,subs=attributes+]
 ----
 make help
 ----
@@ -99,7 +102,7 @@ make help
 
 In order to list the what targets (VERSION and FLAVOR) are available for testing:
 
-[source,bash]
+[source,subs=attributes+]
 ----
 make list_targets
 ----
