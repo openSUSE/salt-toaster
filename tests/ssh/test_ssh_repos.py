@@ -62,7 +62,7 @@ def test_pkg_repo_rhel(master, container):
 
 @pytest.mark.tags('rhel')
 def test_pkg_mod_repo_rhel(master, container):
-    repo = master.salt_ssh(container, 'pkg.list_repos').keys()[0]
+    repo = list(master.salt_ssh(container, 'pkg.list_repos').keys())[0]
 
     res = master.salt_ssh(container, 'pkg.mod_repo {} enabled=0'.format(repo))
     assert not res[res.keys()[0]][repo]['enabled']
@@ -79,7 +79,7 @@ def test_pkg_mod_repo_sles(master, container):
 
 @pytest.mark.tags('rhel')
 def test_pkg_del_repo_rhel(master, container):
-    repo = master.salt_ssh(container, 'pkg.list_repos').keys()[0]
+    repo = list(master.salt_ssh(container, 'pkg.list_repos').keys())[0]
     out = master.salt_ssh(container, 'pkg.del_repo {0}'.format(repo))
     assert '{0} has been removed'.format(repo) in out
 

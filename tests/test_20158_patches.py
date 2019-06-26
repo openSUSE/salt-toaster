@@ -78,6 +78,7 @@ def test_archive_extracted(master, minion):
     assert retry(partial(_archextract, master, minion))
 
 
+@pytest.mark.skiptags('devel')
 @pytest.mark.tags('rhel')
 def test_yum_plugin_installed(master, minion):
     path = '/etc/yum/pluginconf.d/yumnotify.conf'
