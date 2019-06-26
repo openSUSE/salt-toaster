@@ -1,0 +1,40 @@
+= Salt Toaster: An ultimate test suite for Salt
+
+== SUSE internal only setup
+
+// settings:
+:page-layout: base
+:idprefix:
+:idseparator: -
+:source-highlighter: pygments
+:source-language: python
+ifndef::env-github[:icons: font]
+ifdef::env-github[]
+:status:
+:outfilesuffix: .adoc
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+Additionally to the common setup, if you are inside SUSE R&D network, you have also access to the non-public Salt Toaster images listed using the `list_targets` command, but you will require to perform some extra configuration steps:
+
+=== Install SUSE CA Certificate
+
+[source,bash]
+----
+sudo zypper in ca-certificates
+----
+ 
+Then you need to download the registry certificate needed here: `https://gitlab.suse.de/galaxy/infrastructure/raw/master/srv/salt/ca/certs/ca.cert.pem`
+
+Save the certificate in `/usr/share/pki/trust/anchors` (openSUSE) or in `/usr/local/share/ca-certificates/` for Debian systems
+
+And run:
+[source,bash]
+----
+sudo update-ca-certificates
+sudo systemctl restart docker
+----
