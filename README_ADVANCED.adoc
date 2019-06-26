@@ -20,7 +20,7 @@ endif::[]
 == Ignore/Xfail upstream tests
 
 [source,python]
-.https://github.com/openSUSE/salt-toaster/blob/documentation/conftest.py.source#L12-L289[conftest.py.source]
+.https://github.com/openSUSE/salt-toaster/blob/master/conftest.py.source#L12-L289[conftest.py.source]
 ----
 KNOWN_ISSUES_INTEGRATION = {
     'ignore_list': {
@@ -53,11 +53,11 @@ KNOWN_ISSUES_INTEGRATION = {
 Tags can be used to identify the context in which a test runs.
 NOTE: tags are only used when running `suse.tests`
 
-Tags are set in pytest configuration files in the https://github.com/openSUSE/salt-toaster/tree/documentation/configs[./configs] folder.
+Tags are set in pytest configuration files in the https://github.com/openSUSE/salt-toaster/tree/master/configs[./configs] folder.
 
 Running `VERSION=sles12sp1 FLAVOR=products make suse.tests` uses the following pytest config file:
 
-.https://github.com/openSUSE/salt-toaster/blob/documentation/configs/suse.tests/sles12sp1/products.cfg[`./configs/suse.tests/sles12sp2/products.cfg`]
+.https://github.com/openSUSE/salt-toaster/blob/master/configs/suse.tests/sles12sp1/products.cfg[`./configs/suse.tests/sles12sp2/products.cfg`]
 ----
 [pytest]
 addopts = --tb=short
@@ -95,7 +95,7 @@ In order for the `sles` tag to work as expected, it needs to be present in all c
 
 Likewise, the `products` tag would need to be present in all config files used with salt `products`: `./configs/<tests-type>/<os>/products.cfg`
 ====
-    
+
 Because tags are just identifiers you placed in the config files, you can create your own according to your needs. Just make sure you put them in the right config files.
 
 
@@ -152,10 +152,9 @@ from utils import retry
 
 def test_ping_minion(master, minion, minion_key_accepted):
 
-    def ping():                                                                 
-        return master.salt(minion['id'], "test.ping")[minion['id']]             
-                                                                               
-    assert retry(ping)       
+    def ping():
+        return master.salt(minion['id'], "test.ping")[minion['id']]
+        assert retry(ping)
 ----
 
 .Complex test requirements
@@ -200,8 +199,8 @@ def module_config(request):
 ----
 <1> a list of dictionaries. each item in the list will generate a container and run salt-master inside
 <2> configuration dictionary for the master
-<3> use `container__config__salt_config__sls` to specify an sls file that will be executed during the master set-up stage
-<4> use `container__config__salt_config__extra_configs` to create config files for salt in `/etc/salt/master.d` in the master container 
+<3> use ``container__config__salt_config__sls`` to specify an sls file that will be executed during the master set-up stage
+<4> use ``container__config__salt_config__extra_configs`` to create config files for salt in `/etc/salt/master.d` in the master container
 <5> this creates the file `/etc/salt/master.d/rosters_paths.conf` in the master container
 <6> this creates the file `/etc/salt/master.d/salt_api_config.conf` in the master container
 <7> this creates the file `/etc/salt/external_auth.conf` in the master container

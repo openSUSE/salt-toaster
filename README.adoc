@@ -126,7 +126,7 @@ The first step this command will perform is to pull the right container image fr
 .VERSION
 Most of the time we want to run the tests against a specific OS.
 We can do so by using the `VERSION` environmental variable.
- 
+
 ----
 make suse.tests VERSION=opensuse151
 ----
@@ -148,7 +148,7 @@ make suse.tests VERSION=sles15 FLAVOR=products-testing
 To run the tests against a local salt repository, you need to use `FLAVOR=devel` and you also need to specify the path to the salt repository with `SALT_REPO`
 
 ----
-make suse.tests FLAVOR=devel SALT_REPO=/home/store/repositories/salt 
+make suse.tests FLAVOR=devel SALT_REPO=/home/store/repositories/salt
 ----
 
 .SALT_TESTS
@@ -210,11 +210,11 @@ Please take a look at the official https://docs.docker.com/config/containers/res
 
 .Run docker shell in specific local image
 
-    make docker_shell VERSION=sles12sp1 FLAVOR=products 
+    make docker_shell VERSION=sles12sp1 FLAVOR=products
 
 .Run docker shell in repository image based on version and bind rpdb port
 
-    make docker_shell RPDB_PORT="4444" VERSION=sles12sp1 FLAVOR=products 
+    make docker_shell RPDB_PORT="4444" VERSION=sles12sp1 FLAVOR=products
 
 .Run a specific suse test using a local salt repository and sles12sp1
 
@@ -226,8 +226,8 @@ Please take a look at the official https://docs.docker.com/config/containers/res
 
 .Run all upstream integration tests
 
-    make saltstack.integration VERSION=sles12sp1 FLAVOR=products 
+    make saltstack.integration VERSION=sles12sp1 FLAVOR=products
 
 == Advanced Usage:
 
-Please read the link:README_ADVANCED.adoc[ADVANCED README] 
+Please read the link:README_ADVANCED.adoc[ADVANCED README]
