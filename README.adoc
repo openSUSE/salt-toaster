@@ -65,7 +65,7 @@ For the suse tests, the approach is different. `py.test` is being run on the hos
 
 openSUSE system:
 
-[source,subs=attributes+]
+[source,bash]
 ----
 sudo zypper in docker python python-virtualenv make
 ----
@@ -73,7 +73,7 @@ sudo zypper in docker python python-virtualenv make
 Debian system:
 Your systems need to have docker and docker.io pkg installed
 
-[source,subs=attributes+]
+[source,bash]
 ----
 sudo apt install docker.io || sudo apt install docker
 ----
@@ -82,7 +82,7 @@ If you are part of the SUSE R&D network, you can access the non-public images. P
 
 === Preparing the sandbox:
 
-[source,subs=attributes+]
+[source,bash]
 ----
 git clone https://github.com/openSUSE/salt-toaster.git
 cd salt-toaster
@@ -93,7 +93,7 @@ pip install -r requirements.txt
 
 === Show help:
 
-[source,subs=attributes+]
+[source,bash]
 ----
 make help
 ----
@@ -102,7 +102,7 @@ make help
 
 In order to list the what targets (VERSION and FLAVOR) are available for testing:
 
-[source,subs=attributes+]
+[source,bash]
 ----
 make list_targets
 ----
@@ -205,37 +205,6 @@ When running the `saltstack.unit` or `saltstack.integration`, `SALT_TESTS` must 
 With these two parameters you can limit the resouce usage of the spun up Docker container. Examples would be `2G` or `512M` for `DOCKER_MEM` and `1` or `2.5` for `DOCKER_CPUS`. Where the number provided for `DOCKER_CPUS` would the number of host CPUs the container should able to use.
 
 Please take a look at the official https://docs.docker.com/config/containers/resource_constraints/[Docker documentation] for more information about https://docs.docker.com/config/containers/resource_constraints/#limit-a-containers-access-to-memory[DOCKER_MEM] and https://docs.docker.com/config/containers/resource_constraints/#cpu[DOCKER_CPUS]
-
-
-== Ignore/Xfail upstream tests
-
-[source,python]
-.https://github.com/openSUSE/salt-toaster/blob/documentation/conftest.py.source#L12-L289[conftest.py.source]
-----
-KNOWN_ISSUES_INTEGRATION = {
-    'ignore_list': {
-        'common': [
-            'integration/files/file/base/*'  # <1>
-        ],
-        'products-next': [
-            '*::MasterTest::test_exit_status_correct_usage'  # <2>
-        ]
-
-    },
-    'xfail_list': {
-        'products':[
-            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list'  # <3>
-        ]
-        'rhel6/products': [
-            'integration/cli/grains.py::GrainsTargetingTest::test_grains_targeting_disconnected'  # <4>
-        ]
-    }
-}
-----
-<1> ignore all upstream integration tests found in `integration/files/file/base/` on all OS and salt-package version testsuite runs
-<2> ignore single test `MasterTest::test_exit_status_correct_usage` on runs using the `products-next` salt-package version
-<3> xfail single test `RootsTest::test_symlink_list` on runs using the `products` salt-package version
-<4> xfail single test `GrainsTargetingTest::test_grains_targeting_disconnected` on runs using `rhel6` OS and `products` salt-package version combination
 
 == Examples
 

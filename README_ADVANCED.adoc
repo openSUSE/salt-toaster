@@ -1,5 +1,4 @@
-= Salt Toaster: An ultimate test suite for Salt
-== Advanced Documentation
+= Salt Toaster: Advanced Documentation
 
 // settings:
 :page-layout: base
@@ -17,6 +16,37 @@ ifdef::env-github[]
 :tip-caption: :bulb:
 :warning-caption: :warning:
 endif::[]
+
+== Ignore/Xfail upstream tests
+
+[source,python]
+.https://github.com/openSUSE/salt-toaster/blob/documentation/conftest.py.source#L12-L289[conftest.py.source]
+----
+KNOWN_ISSUES_INTEGRATION = {
+    'ignore_list': {
+        'common': [
+            'integration/files/file/base/*'  # <1>
+        ],
+        'products-next': [
+            '*::MasterTest::test_exit_status_correct_usage'  # <2>
+        ]
+
+    },
+    'xfail_list': {
+        'products':[
+            'integration/fileserver/roots_test.py::RootsTest::test_symlink_list'  # <3>
+        ]
+        'rhel6/products': [
+            'integration/cli/grains.py::GrainsTargetingTest::test_grains_targeting_disconnected'  # <4>
+        ]
+    }
+}
+----
+<1> ignore all upstream integration tests found in `integration/files/file/base/` on all OS and salt-package version testsuite runs
+<2> ignore single test `MasterTest::test_exit_status_correct_usage` on runs using the `products-next` salt-package version
+<3> xfail single test `RootsTest::test_symlink_list` on runs using the `products` salt-package version
+<4> xfail single test `GrainsTargetingTest::test_grains_targeting_disconnected` on runs using `rhel6` OS and `products` salt-package version combination
+
 
 === Tags
 
