@@ -208,6 +208,7 @@ suse.tests : EXEC:=timeout 180m $(EXEC)
 endif
 endif
 
+suse.tests : EXEC:=VERSION=$(VERSION) FLAVOR=$(FLAVOR) $(EXEC)
 suse.tests : title pull_image
 ifeq ("$(FLAVOR)", "devel")
 ifndef SALT_REPO
