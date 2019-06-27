@@ -19,7 +19,7 @@ endif::[]
 
 Additionally to the common setup, if you are inside SUSE R&D network, you have also access to the non-public Salt Toaster images listed using the `list_targets` command, but you will require to perform some extra configuration steps:
 
-=== Install SUSE CA Certificate
+== Install SUSE CA Certificate
 
 [source,bash]
 ----
