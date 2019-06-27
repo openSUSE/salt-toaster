@@ -6,7 +6,12 @@
 :idseparator: -
 :source-highlighter: pygments
 :source-language: python
-ifndef::env-github[:icons: font]
+ifndef::env-github[]
+:icons: font
+++++
+<link rel="stylesheet"  href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.1.0/css/font-awesome.min.css">
+++++
+endif::[]
 ifdef::env-github[]
 :status:
 :outfilesuffix: .adoc
