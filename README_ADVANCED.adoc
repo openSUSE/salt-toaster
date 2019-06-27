@@ -20,7 +20,7 @@ endif::[]
 == Ignore/Xfail upstream tests
 
 [source,python]
-.https://github.com/openSUSE/salt-toaster/blob/master/conftest.py.source#L12-L289[conftest.py.source]
+.https://github.com/openSUSE/salt-toaster/blob/master/conftest_source.py#L12-L289[conftest_source.py]
 ----
 KNOWN_ISSUES_INTEGRATION = {
     'ignore_list': {
