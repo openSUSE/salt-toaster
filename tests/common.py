@@ -97,6 +97,38 @@ GRAINS_EXPECTATIONS = {
         'osrelease': '15.1',
         'osrelease_info': [15, 1],
     },
+    'opensuse423': {
+        'os': 'SUSE',
+        'oscodename': 'openSUSE Leap 42.3',
+        'os_family': 'Suse',
+        'osfullname': 'Leap',
+        'osrelease': '42.3',
+        'osrelease_info': [42, 3],
+    },
+    'opensuse150': {
+        'os': 'SUSE',
+        'oscodename': 'openSUSE Leap 15.0',
+        'os_family': 'Suse',
+        'osfullname': 'Leap',
+        'osrelease': '15.0',
+        'osrelease_info': [15, 0],
+    },
+    'opensuse151': {
+        'os': 'SUSE',
+        'oscodename': 'openSUSE Leap 15.1',
+        'os_family': 'Suse',
+        'osfullname': 'Leap',
+        'osrelease': '15.1',
+        'osrelease_info': [15, 1],
+    },
+    'tumbleweed': {
+        'os': 'SUSE',
+        'oscodename': 'openSUSE Tumbleweed',
+        'os_family': 'Suse',
+        'osfullname': 'Tumbleweed',
+        'osrelease': None, # This grain changes on each snapshot
+        'osrelease_info': None, # This grain changes on each snapshot
+    },
     'leap42sp1': {
         'os': 'openSUSE Leap',
         'oscodename': 'openSUSE Leap 42.1 (x86_64)',
@@ -104,5 +136,13 @@ GRAINS_EXPECTATIONS = {
         'osfullname': 'openSUSE Leap',
         'osrelease': '42.1',
         'osrelease_info': [42, 1],
-    }
+    },
+    'centos7': {
+        'os': 'CentOS',
+        'oscodename': 'CentOS Linux 7 (Core)',
+        'os_family': 'RedHat',
+        'osfullname': 'CentOS Linux',
+        'osrelease': '7.6.1810',
+        'osrelease_info': [7, 6, 1810],
+    },
 }

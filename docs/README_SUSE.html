@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.9">
-<title>Salt Toaster: An ultimate test suite for Salt</title>
+<title>Salt Toaster: SUSE internal R&amp;D setup</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -437,383 +437,46 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Salt Toaster: An ultimate test suite for Salt</h1>
+<h1>Salt Toaster: SUSE internal R&amp;D setup</h1>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <link rel="stylesheet"  href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.1.0/css/font-awesome.min.css">
 <div class="paragraph">
-<p><span class="image"><a class="image" href="https://travis-ci.org/openSUSE/salt-toaster"><img src="https://api.travis-ci.org/openSUSE/salt-toaster.svg?branch=master" alt="Build Status"></a></span></p>
+<p>Additionally to the common setup, if you are inside SUSE R&amp;D network, you have also access to the non-public Salt Toaster images listed using the <code>list_targets</code> command, but you will require to perform some extra configuration steps:</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="description">Description</h2>
+<h2 id="install-suse-ca-certificate">Install SUSE CA Certificate</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>This is a tool used to test <a href="https://github.com/saltstack/salt/">salt</a></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">sudo zypper in ca-certificates</code></pre>
 </div>
-<div class="paragraph">
-<p>It uses pytest and containers to do so.</p>
-</div>
-<div class="paragraph">
-<p>The tests are separated in 3 groups:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Saltstack upstream integration tests</p>
-</li>
-<li>
-<p>Saltstack upstream unit tests</p>
-</li>
-<li>
-<p>SUSE custom integration tests</p>
-</li>
-</ul>
 </div>
 <div class="paragraph">
-<p>There are 3 predefined flavors of Salt packages plus a <code>devel</code> flavor.
-The predefined flavors are packages served from OBS:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://build.opensuse.org/package/show/systemsmanagement:saltstack:products/salt">products</a>, the flavor for released packages</p>
-</li>
-<li>
-<p><a href="https://build.opensuse.org/package/show/systemsmanagement:saltstack:products:testing/salt">products:testing</a>, is a staging flavor where new-patches that go to products are tested.</p>
-</li>
-<li>
-<p><a href="https://build.opensuse.org/package/show/systemsmanagement:saltstack:products:next/salt">products:next</a>, is used for testing the major release of saltstack.</p>
-</li>
-</ul>
+<p>Then you need to download the registry certificate needed here: <code><a href="https://gitlab.suse.de/galaxy/infrastructure/raw/master/srv/salt/ca/certs/ca.cert.pem" class="bare">https://gitlab.suse.de/galaxy/infrastructure/raw/master/srv/salt/ca/certs/ca.cert.pem</a></code></p>
 </div>
 <div class="paragraph">
-<p>The <code>devel</code> flavor means running the tests against a local Salt git repository.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>When running the upstream tests, a docker container is created first and then <code>py.test</code> is being run inside the container.</p>
+<p>Save the certificate in <code>/usr/share/pki/trust/anchors</code> (openSUSE) or in <code>/usr/local/share/ca-certificates/</code> for Debian systems</p>
 </div>
 <div class="paragraph">
-<p>For the suse tests, the approach is different. <code>py.test</code> is being run on the host and the containers are created and used as objects in the tests.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="features">Features</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Uses containers to isolate the tests</p>
-</li>
-<li>
-<p>Possible to run the tests on different operanting systems</p>
-</li>
-<li>
-<p>Possible to run the tests in any available (OS, salt-package-version) combination</p>
-</li>
-<li>
-<p>Capable to run the tests using salt from a local git repository</p>
-</li>
-<li>
-<p>Capable of running a subset of tests</p>
-</li>
-<li>
-<p>Has ignore and xfail lists (glob-patterns) for the upstream tests (for both integration and unit tests)</p>
-</li>
-<li>
-<p>Uses tags to restrict, skip, ignore or xfail suse tests</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="how-to-run-salt-toaster">How to run Salt Toaster</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="prerequisites">Prerequisites:</h3>
-<div class="paragraph">
-<p>openSUSE system:</p>
+<p>And run:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">sudo zypper in docker python python-virtualenv make</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">sudo update-ca-certificates
+sudo systemctl restart docker</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>Debian system:
-Your systems need to have docker and docker.io pkg installed</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">sudo apt install docker.io || sudo apt install docker</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If you are part of the SUSE R&amp;D network, you can access the non-public images. Please read the instructions here <a href="README_SUSE.html">SUSE internal only</a>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="preparing-the-sandbox">Preparing the sandbox:</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">git clone https://github.com/openSUSE/salt-toaster.git
-cd salt-toaster
-virtualenv sandbox
-. sandbox/bin/activate
-pip install -r requirements.txt</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="show-help">Show help:</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">make help</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="list-available-targets">List available targets:</h3>
-<div class="paragraph">
-<p>In order to list the what targets (VERSION and FLAVOR) are available for testing:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">make list_targets</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="running-the-tests">Running the tests</h3>
-<div class="paragraph">
-<p>When running tests we can choose to run:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Saltstack upstream integration testsuite <code>make saltstack.integration</code></p>
-</li>
-<li>
-<p>Saltstack upstream unit testsuite <code>make saltstack.unit</code></p>
-</li>
-<li>
-<p>SUSE custom testsuite <code>make suse.tests</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>When running any of these commands, salt-toaster uses the default values for OS and salt-package version.</p>
-</div>
-<div class="paragraph">
-<p>At the moment, the default VERSION is <code>opensuse151</code> and FLAVOR is <code>devel</code></p>
-</div>
-<div class="paragraph">
-<p>The first step this command will perform is to pull the right container image from the respective Docker registry.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="parameters">Parameters</h3>
-<div class="paragraph">
-<div class="title">VERSION</div>
-<p>Most of the time we want to run the tests against a specific OS.
-We can do so by using the <code>VERSION</code> environmental variable.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">make suse.tests VERSION=opensuse151</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">FLAVOR</div>
-<p>The salt flavor can be specified using the <code>FLAVOR</code> environmental variable.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">make suse.tests FLAVOR=products-testing</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Of course, <code>VERSION</code> and <code>FLAVOR</code> can be combined</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">make suse.tests VERSION=sles15 FLAVOR=products-testing</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">SALT_REPO</div>
-<p>To run the tests against a local salt repository, you need to use <code>FLAVOR=devel</code> and you also need to specify the path to the salt repository with <code>SALT_REPO</code></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">make suse.tests FLAVOR=devel SALT_REPO=/home/store/repositories/salt</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">SALT_TESTS</div>
-<p>You can specify a subset of tests to run using <code>SALT_TESTS</code></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">make suse.tests SALT_TESTS=tests/test_pkg.py
-make saltstack.unit SALT_TESTS=/salt/src/salt-*/tests/unit/modules/zypper_test.py</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">PYTEST_FLAGS</div>
-<p>You can pass extra py.test parameters using <code>PYTEST_FLAGS</code></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">make suse.tests SALT_TESTS=tests/test_pkg.py PYTEST_FLAGS=-x</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">DESTRUCTIVE_TESTS</div>
-<p>Salt tests marked as "destructive" tests are currently disabled by default. If you want to run then, simple set <code>DESTRUCTIVE_TESTS=True</code></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">make saltstack.integration DESTRUCTIVE_TESTS=True</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">EXPENSIVE_TESTS</div>
-<p>Salt tests marked as "expensive" tests are currently disabled by default. If you want to run then, simple set <code>EXPENSIVE_TESTS=True</code></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">make saltstack.integration EXPENSIVE_TESTS=True</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>When running the <code>suse.tests</code>, <code>SALT_TESTS</code> must be a path relative to the current folder (salt-toaster)</p>
-</div>
-<div class="paragraph">
-<p>When running the <code>saltstack.unit</code> or <code>saltstack.integration</code>, <code>SALT_TESTS</code> must be a path inside the docker container pointing to where the salt source code is extracted. Using a pattern like in the example above should always match independent of the salt-package version.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Available public targets (<code>VERSION</code> and <code>FLAVOR</code>):</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">VERSION</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>opensuse423, opensuse150, opensuse151, tumbleweed, centos7</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">FLAVOR</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>devel</p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Available SUSE private (R&amp;D network only) targets (<code>VERSION</code> and <code>FLAVOR</code>):</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">VERSION</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">rhel6, rhel7, sles11sp3, sles11sp4, sles12, sles12sp1, sles12sp3, sles15, sles15sp1</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">FLAVOR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">products, products-testing, products-next, devel</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<div class="title">DOCKER_CPUS and DOCKER_MEM</div>
-<p>With these two parameters you can limit the resouce usage of the spun up Docker container. Examples would be <code>2G</code> or <code>512M</code> for <code>DOCKER_MEM</code> and <code>1</code> or <code>2.5</code> for <code>DOCKER_CPUS</code>. Where the number provided for <code>DOCKER_CPUS</code> would the number of host CPUs the container should able to use.</p>
-</div>
-<div class="paragraph">
-<p>Please take a look at the official <a href="https://docs.docker.com/config/containers/resource_constraints/">Docker documentation</a> for more information about <a href="https://docs.docker.com/config/containers/resource_constraints/#limit-a-containers-access-to-memory">DOCKER_MEM</a> and <a href="https://docs.docker.com/config/containers/resource_constraints/#cpu">DOCKER_CPUS</a></p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="examples">Examples</h2>
-<div class="sectionbody">
-<div class="literalblock">
-<div class="title">Run docker shell in specific local image</div>
-<div class="content">
-<pre>make docker_shell VERSION=sles12sp1 FLAVOR=products</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="title">Run docker shell in repository image based on version and bind rpdb port</div>
-<div class="content">
-<pre>make docker_shell RPDB_PORT="4444" VERSION=sles12sp1 FLAVOR=products</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="title">Run a specific suse test using a local salt repository and sles12sp1</div>
-<div class="content">
-<pre>make -s suse.tests VERSION=sles12sp1 FLAVOR=devel SALT_TESTS="tests/test_pkg.py::test_pkg_info_available"</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="title">Run a subset of upstream unit tests</div>
-<div class="content">
-<pre>make saltstack.unit VERSION=sles12sp1 FLAVOR=products SALT_TESTS=/salt/src/salt-devel/tests/unit/modules/zypper_test.py</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="title">Run all upstream integration tests</div>
-<div class="content">
-<pre>make saltstack.integration VERSION=sles12sp1 FLAVOR=products</pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="advanced-usage">Advanced Usage:</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Please read the <a href="README_ADVANCED.html">ADVANCED README</a></p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-06-27 13:57:25 +0100
+Last updated 2019-06-27 14:00:59 +0100
 </div>
 </div>
 </body>

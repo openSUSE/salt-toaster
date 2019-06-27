@@ -12,7 +12,7 @@ def pytest_generate_tests(metafunc):
         'test_master_shipped_config',
         'test_minion_shipped_config',
     ]
-    if metafunc.function.func_name in functions:
+    if metafunc.function.__name__ in functions:
         images = [metafunc.config.getini('IMAGE')]
         minion_image = metafunc.config.getini('MINION_IMAGE')
         if minion_image:
@@ -20,7 +20,7 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('container', images, indirect=['container'])
     if 'python' in metafunc.fixturenames:
         tags = set(metafunc.config.getini('TAGS'))
-        if 'sles15' in tags or 'sles15sp1' in tags:
+        if 'sles15' in tags or 'sles15sp1' in tags or 'opensuse' in tags:
             metafunc.parametrize("python", ["python3"])
         else:
             metafunc.parametrize("python", ["python"])
@@ -53,7 +53,7 @@ def container(request):
     return obj
 
 
-@pytest.mark.xfailtags('rhel')
+@pytest.mark.xfailtags('rhel', 'devel')
 def test_master_shipped_config(container):
     master_config = container.run('cat /etc/salt/master')
     content = yaml.load(master_config)
@@ -75,5 +75,5 @@ def test_hash_type_is_used(request, master, python):
     master['container'].run("useradd {0} -p '{1}'".format(user, password))
     raw_output = master['container'].run(
         "{0} tests/scripts/wheel_config_values.py".format(python))
-    output = json.loads(raw_output)
+    output = json.loads(str(raw_output.decode()))
     assert output['data']['return']['hash_type'] == "sha384"

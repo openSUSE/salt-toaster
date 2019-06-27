@@ -45,7 +45,7 @@ def minion(setup):
 
 
 @pytest.mark.xfail  # https://bugzilla.suse.com/show_bug.cgi?id=1098072
-@pytest.mark.tags('sles')
+@pytest.mark.tags('sles', 'opensuse')
 def test_zypp_gpg_pkg(master, minion):
     '''
     Fake packages gpg-pubkey* should be filtered out by zypper.
@@ -78,6 +78,7 @@ def test_archive_extracted(master, minion):
     assert retry(partial(_archextract, master, minion))
 
 
+@pytest.mark.skiptags('devel')
 @pytest.mark.tags('rhel')
 def test_yum_plugin_installed(master, minion):
     path = '/etc/yum/pluginconf.d/yumnotify.conf'
@@ -90,8 +91,8 @@ def test_yum_plugin_installed(master, minion):
     assert 'text executable' in out
 
 
-@pytest.mark.xfailtags('rhel', 'sles', 'leap')
-@pytest.mark.tags('sles', 'leap')
+@pytest.mark.xfailtags('rhel', 'sles', 'opensuse')
+@pytest.mark.tags('sles', 'opensuse')
 def test_change_tz(master, minion):
     assert master.salt(minion['id'], "timezone.set_zone UTC")[minion['id']]
     assert master.salt(minion['id'], "timezone.get_zone")[minion['id']] == 'UTC'

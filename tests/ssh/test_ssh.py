@@ -1,6 +1,7 @@
 import pytest
 import hashlib
 import time
+import six
 
 from saltcontainers.factories import ContainerFactory
 
@@ -25,11 +26,11 @@ def pytest_generate_tests(metafunc):
 
     # TODO: Replace this construction with just reading a current version
     version = set(set(metafunc.config.getini('TAGS'))).intersection(set(expectations)).pop()
-    if metafunc.function.func_name in functions and version:
+    if metafunc.function.__name__ in functions and version:
         metafunc.parametrize('expected', [expectations[version]], ids=lambda it: version)
     if 'python' in metafunc.fixturenames:
         tags = set(metafunc.config.getini('TAGS'))
-        if 'sles15' in tags or 'sles15sp1' in tags:
+        if 'sles15' in tags or 'sles15sp1' in tags or 'opensuse' in tags:
             metafunc.parametrize("python", ["python3"])
         else:
             metafunc.parametrize("python", ["python"])
@@ -122,7 +123,7 @@ def test_ssh_pkg_remove_rhel(master, container):
     assert not out.get('test-package', {}).get('new')
 
 
-@pytest.mark.tags('sles', 'leap')
+@pytest.mark.tags('sles', 'opensuse')
 def test_ssh_pkg_remove_sles(master, container):
     '''
     Test pkg.remove on SLES
@@ -146,7 +147,10 @@ def test_ssh_port_forwarding(master, container, python):
     Test SSH port forwarding feature.
     PR: https://github.com/saltstack/salt/pull/38021
     '''
-    msg = hashlib.sha256(str(time.time())).hexdigest()
+    if six.PY3:
+        msg = hashlib.sha256(str(time.time()).encode()).hexdigest()
+    else:
+        msg = hashlib.sha256(str(time.time())).hexdigest()
     nc = "/salt-toaster/tests/scripts/netsend.sh"
     of = "/tmp/socket-8888.txt"
     loc_port = 8888
@@ -157,7 +161,7 @@ def test_ssh_port_forwarding(master, container, python):
         nc=nc, msg=msg, lp=loc_port, rp=rem_port)
     master.salt_ssh(container, params)
 
-    assert master['container'].run("cat {}".format(of)).strip() == msg
+    assert str(master['container'].run("cat {}".format(of)).strip().decode()) == msg
 
 
 @pytest.fixture(scope="module")
@@ -185,4 +189,4 @@ def test_ssh_option(master, sshdcontainer):
         "salt-ssh -l quiet -i --out json --key-deploy --passwd admin123 "
         "--ssh-option='ProxyCommand=\"nc {0} 2222\"' {1} network.ip_addrs"
     ).format(sshdcontainer['ip'], sshdcontainer['config']['name'])
-    return json.loads(master['container'].run(SSH)).get('target') == sshdcontainer['ip']
+    return json.loads(str(master['container'].run(SSH).decode())).get('target') == sshdcontainer['ip']

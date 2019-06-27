@@ -73,18 +73,36 @@ def get_expectations(tags, oem=False):
             'productline': '',
             'release': ''
         },
-        'leap': {
+        'opensuse423': {
             'name': 'openSUSE',
-            'version': '42.1',
+            'version': '42.3',
             'productline': 'Leap',
             'release': '0'
-        }
+        },
+        'opensuse150': {
+            'name': 'openSUSE',
+            'version': '15.0',
+            'productline': 'Leap',
+            'release': '0'
+        },
+        'opensuse151': {
+            'name': 'openSUSE',
+            'version': '15.1',
+            'productline': 'Leap',
+            'release': '0'
+        },
+        'tumbleweed': {
+            'name': 'openSUSE',
+            'version': None, # Version changes on each snapshot
+            'productline': 'openSUSE',
+            'release': '0'
+        },
     }
 
     tag = set(tags).intersection(set(PARAMS)).pop()
 
     message = 'The config with this tags: {0} is not tested'.format(tags)
-    assert not tags.isdisjoint({'sles', 'rhel', 'leap', 'ubuntu'}), message
+    assert not tags.isdisjoint({'sles', 'rhel', 'opensuse', 'ubuntu'}), message
     assert not set(PARAMS[tag]).symmetric_difference(
         {'name', 'release', 'version', 'productline'}
     )
@@ -119,6 +137,7 @@ def oem(request, minion):
 def test_pkg_list_products(minion, oem, expected):
     [output] = minion.salt_call('pkg.list_products')
     assert output['name'] == expected['name']
-    assert output['version'] == expected['version']
+    if 'Tumbleweed' not in output['summary']:
+        assert output['version'] == expected['version']
     assert output['productline'] == expected['productline']
     assert output['release'] == expected['release']

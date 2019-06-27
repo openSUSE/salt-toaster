@@ -1,5 +1,5 @@
 import pytest
-from common import GRAINS_EXPECTATIONS
+from .common import GRAINS_EXPECTATIONS
 
 
 pytestmark = pytest.mark.usefixtures("master")
@@ -19,7 +19,7 @@ def pytest_generate_tests(metafunc):
     expectations = GRAINS_EXPECTATIONS
     tags = set(metafunc.config.getini('TAGS'))
     tag = set(tags).intersection(set(expectations)).pop()
-    if metafunc.function.func_name in functions and tag:
+    if metafunc.function.__name__ in functions and tag:
         metafunc.parametrize(
             'expected', [expectations[tag]], ids=lambda it: tag)
 
@@ -65,7 +65,7 @@ def test_get_osrelease_info(minion, expected):
     key = 'osrelease_info'
     assert minion.salt_call('grains.get', 'osrelease_info') == expected[key]
 
-@pytest.mark.skiptags('products-next', 'ubuntu')
+@pytest.mark.skiptags('products-next', 'ubuntu', 'devel')
 def test_salt_version(minion):
-    rpm_version = minion['container'].run('rpm -q salt --queryformat "%{VERSION}"')
+    rpm_version = str(minion['container'].run('rpm -q salt --queryformat "%{VERSION}"').decode())
     assert minion.salt_call('grains.get', 'saltversion') == rpm_version

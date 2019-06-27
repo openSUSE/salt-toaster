@@ -80,7 +80,7 @@ def test_pkg_modrepo_modify(request, minion, test_repo):
     }
 
 
-@pytest.mark.tags('sles')
+@pytest.mark.tags('sles', 'opensuse')
 def test_zypper_refresh_repo_with_gpgkey(request, master, minion, test_repo):
     name, path = test_repo
     minion.salt_call(
@@ -95,7 +95,7 @@ def test_zypper_refresh_repo_with_gpgkey(request, master, minion, test_repo):
     # do not use pkg.mod_repo next
     # assert `zypper refresh` doesn't ask for gpg confirmation anymore
     res = minion['container'].run('zypper refresh')
-    assert "Repository '{0}' is up to date.".format(name) in res
+    assert "Repository '{0}' is up to date.".format(name) in str(res.decode())
 
 
 @pytest.mark.xfailtags('rhel')
@@ -122,7 +122,7 @@ def test_pkg_refresh_db(minion):
     assert retry(partial(test, minion))
 
 
-@pytest.mark.skiptags('leap')
+@pytest.mark.skiptags('opensuse')
 @pytest.mark.xfailtags('rhel')
 def test_pkg_list_patterns(minion):
     res = minion.salt_call('pkg.list_patterns')

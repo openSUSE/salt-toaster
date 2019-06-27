@@ -66,6 +66,6 @@ def test_container(request):
 def tests_component(test_container, component, should_be_installed):
     output = test_container.run([component, '--version'])
     if should_be_installed:
-        assert 'executable file not found' not in output
+        assert 'executable file not found' not in str(output.decode())
     else:
-        assert 'executable file not found' in output
+        assert 'executable file not found' in str(output.decode())

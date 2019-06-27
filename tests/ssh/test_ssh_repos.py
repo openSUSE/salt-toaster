@@ -1,7 +1,7 @@
 import pytest
 
 
-@pytest.mark.tags('sles')
+@pytest.mark.tags('sles', 'opensuse')
 def test_pkg_owner(setup):
     '''
     Test pkg.owner
@@ -9,7 +9,7 @@ def test_pkg_owner(setup):
     #assert master.salt_ssh("pkg.owner /etc/zypp") == 'libzypp'
 
 
-@pytest.mark.tags('sles')
+@pytest.mark.tags('sles', 'opensuse')
 def test_pkg_list_products(master, container):
     '''
     List test products
@@ -23,16 +23,30 @@ def test_pkg_list_products(master, container):
             assert prod['isbase']
             assert prod['installed']
             break
+        elif prod['productline'] == 'openSUSE': # Tumbleweed
+            assert prod['productline'] == 'openSUSE'
+            assert prod['name'] == 'openSUSE'
+            assert 'openSUSE' in prod['vendor']
+            assert prod['isbase']
+            assert prod['installed']
+            break
+        elif prod['productline'] == 'Leap':
+            assert prod['productline'] == 'Leap'
+            assert prod['name'] == 'openSUSE'
+            assert 'openSUSE' in prod['vendor']
+            assert prod['isbase']
+            assert prod['installed']
+            break
         else:
             raise Exception("Product not found")
 
 
-@pytest.mark.tags('sles', 'leap')
+@pytest.mark.tags('sles', 'opensuse')
 def test_pkg_search(master, container):
     assert 'test-package-zypper' in master.salt_ssh(container, "pkg.search test-package")
 
 
-@pytest.mark.tags('sles', 'leap')
+@pytest.mark.tags('sles', 'opensuse')
 def test_pkg_repo_sles(master, container):
     assert master.salt_ssh(container, 'pkg.list_repos')['testpackages']['enabled']
 
@@ -48,7 +62,7 @@ def test_pkg_repo_rhel(master, container):
 
 @pytest.mark.tags('rhel')
 def test_pkg_mod_repo_rhel(master, container):
-    repo = master.salt_ssh(container, 'pkg.list_repos').keys()[0]
+    repo = list(master.salt_ssh(container, 'pkg.list_repos').keys())[0]
 
     res = master.salt_ssh(container, 'pkg.mod_repo {} enabled=0'.format(repo))
     assert not res[res.keys()[0]][repo]['enabled']
@@ -57,7 +71,7 @@ def test_pkg_mod_repo_rhel(master, container):
     assert res[res.keys()[0]][repo]['enabled']
 
 
-@pytest.mark.tags('sles', 'leap')
+@pytest.mark.tags('sles', 'opensuse')
 def test_pkg_mod_repo_sles(master, container):
     assert not master.salt_ssh(container, 'pkg.mod_repo testpackages enabled=false')['enabled']
     assert master.salt_ssh(container, 'pkg.mod_repo testpackages enabled=true')['enabled']
@@ -65,12 +79,12 @@ def test_pkg_mod_repo_sles(master, container):
 
 @pytest.mark.tags('rhel')
 def test_pkg_del_repo_rhel(master, container):
-    repo = master.salt_ssh(container, 'pkg.list_repos').keys()[0]
+    repo = list(master.salt_ssh(container, 'pkg.list_repos').keys())[0]
     out = master.salt_ssh(container, 'pkg.del_repo {0}'.format(repo))
     assert '{0} has been removed'.format(repo) in out
 
 
-@pytest.mark.tags('sles', 'leap')
+@pytest.mark.tags('sles', 'opensuse')
 def test_pkg_del_repo_sles(master, container):
     msg = "Repository 'testpackages' has been removed."
     out = master.salt_ssh(container, 'pkg.del_repo testpackages')

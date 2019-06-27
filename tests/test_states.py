@@ -73,7 +73,7 @@ def test_pkg_installed_downloadonly(setup):
 
 
 @pytest.mark.xfail
-@pytest.mark.tags('sles')
+@pytest.mark.tags('sles', 'opensuse')
 def test_patches_installed_downloadonly_sles(setup):
     config, initconfig = setup
     master = config['masters'][0]
@@ -108,7 +108,7 @@ def test_patches_installed_downloadonly_rhel(setup):
 
 def test_pipes(setup, master):
     res = master['container'].run('salt-call --local --output json --file-root=/etc/salt/sls state.apply pipes')
-    assert json.loads(res)["local"]["cmd_|-reboot_|-echo 'shutdown'_|-run"]['changes'] == {}
+    assert json.loads(str(res.decode()))["local"]["cmd_|-reboot_|-echo 'shutdown'_|-run"]['changes'] == {}
 
 
 @pytest.mark.skip("skip it until the patch will be in the package")

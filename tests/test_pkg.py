@@ -15,7 +15,7 @@ def _pkg_list_updates(minion):
         return False
 
 
-@pytest.mark.xfailtags('rhel', 'leap')
+@pytest.mark.xfailtags('rhel', 'opensuse')
 def test_pkg_list_updates(minion):
     res = minion.salt_call('pkg.list_updates', 'test-package')
     assert retry(partial(_pkg_list_updates, minion))
@@ -39,7 +39,7 @@ def _pkg_info_available_dos(func):
     return True
 
 
-@pytest.mark.xfailtags('rhel', 'leap')
+@pytest.mark.xfailtags('rhel', 'opensuse')
 def test_pkg_info_available(minion):
     assert retry(partial(_pkg_info_available, minion), definition_of_success=_pkg_info_available_dos)
 
@@ -60,7 +60,7 @@ def test_pkg_info_installed_epoch(request, minion):
     assert res['test-package']['epoch'] == "42"
 
 
-@pytest.mark.tags('sles')
+@pytest.mark.tags('sles', 'opensuse')
 def test_grains_items_sles(minion):
     res = minion.salt_call('grains.items', 'test-package')
     assert res['os_family'] == "Suse"
