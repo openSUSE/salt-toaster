@@ -237,3 +237,9 @@ Please take a look at the official https://docs.docker.com/config/containers/res
 == Advanced Usage:
 
 Please read the link:README_ADVANCED{ext-relative}[ADVANCED README]
+
+== Demo:
+
+++++
+<a href="https://asciinema.org/a/ueg4BkJ96Nf6ewoq5QXaavpPa" target="_blank"><img src="https://asciinema.org/a/ueg4BkJ96Nf6ewoq5QXaavpPa.svg" /></a>
+++++
