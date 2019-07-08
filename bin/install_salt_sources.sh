@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 
 if [ "$FLAVOR" != "devel" ]
@@ -9,5 +10,8 @@ if [ "$FLAVOR" != "devel" ]
             then
                 /root/bin/install_salt.sh
                 bin/sles_unpack_salt.sh
+        elif [[ "$VERSION" =~ ^ubuntu ]]
+            then
+                bin/ubuntu_unpack_salt.sh
         fi
 fi
