@@ -20,6 +20,8 @@ ifneq (,$(findstring sles,$(FLAVOR)))
 	FLAVOR = $(SUSE_DEFAULT_FLAVOR)
 else ifneq (,$(findstring rhel,$(FLAVOR)))
 	FLAVOR = $(SUSE_DEFAULT_FLAVOR)
+else ifneq (,$(findstring ubuntu,$(FLAVOR)))
+	FLAVOR = $(SUSE_DEFAULT_FLAVOR)
 else ifndef FLAVOR
 	FLAVOR = $(DEFAULT_FLAVOR)
 endif
@@ -27,6 +29,8 @@ endif
 ifneq (,$(findstring sles,$(VERSION)))
 	DOCKER_REGISTRY = $(SUSE_DEFAULT_REGISTRY)
 else ifneq (,$(findstring rhel,$(VERSION)))
+	DOCKER_REGISTRY = $(SUSE_DEFAULT_REGISTRY)
+else ifneq (,$(findstring ubuntu,$(VERSION)))
 	DOCKER_REGISTRY = $(SUSE_DEFAULT_REGISTRY)
 else ifndef DOCKER_REGISTRY
 	DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
