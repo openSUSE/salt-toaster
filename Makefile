@@ -36,6 +36,13 @@ else ifndef DOCKER_REGISTRY
 	DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
 endif
 
+# Ubuntu devel images are stored on DockerHub
+ifneq (,$(findstring ubuntu,$(VERSION)))
+ifneq (,$(findstring devel,$(FLAVOR)))
+    DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
+endif
+endif
+
 ifeq ("$(FLAVOR)", "devel")
 ifdef SALT_REPO
 $(eval DOCKER_VOLUMES:=$(DOCKER_VOLUMES) -v $(SALT_REPO):$(SALT_REPO_MOUNTPOINT))
