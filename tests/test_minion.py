@@ -31,11 +31,12 @@ def test_pkg_list(minion):
     assert minion.salt_call("pkg.list_pkgs")
 
 
-@pytest.mark.skiptags('rhel')
+@pytest.mark.skiptags('rhel', 'ubuntu')
 def test_pkg_owner(minion):
     assert minion.salt_call('pkg.owner', '/etc/zypp') == 'libzypp'
 
 
+@pytest.mark.skiptags('ubuntu')
 @pytest.mark.xfailtags('rhel', 'sles11sp3', 'sles11sp4')
 def test_pkg_modrepo_create(request, minion, test_repo):
     name, path = test_repo
@@ -54,6 +55,7 @@ def test_pkg_modrepo_create(request, minion, test_repo):
     }
 
 
+@pytest.mark.skiptags('ubuntu')
 @pytest.mark.xfailtags('rhel', 'sles11sp3', 'sles11sp4')
 def test_pkg_modrepo_modify(request, minion, test_repo):
     name, path = test_repo
@@ -98,6 +100,7 @@ def test_zypper_refresh_repo_with_gpgkey(request, master, minion, test_repo):
     assert "Repository '{0}' is up to date.".format(name) in str(res.decode())
 
 
+@pytest.mark.skiptags('ubuntu')
 @pytest.mark.xfailtags('rhel')
 def test_pkg_del_repo(minion):
     repo_name = 'repotest-2'
@@ -111,6 +114,7 @@ def test_pkg_del_repo(minion):
     assert res[repo_name] is True
 
 
+@pytest.mark.skiptags('ubuntu')
 @pytest.mark.xfailtags('rhel')
 def test_pkg_refresh_db(minion):
     def test(minion):
@@ -122,13 +126,14 @@ def test_pkg_refresh_db(minion):
     assert retry(partial(test, minion))
 
 
-@pytest.mark.skiptags('opensuse')
+@pytest.mark.skiptags('opensuse', 'ubuntu')
 @pytest.mark.xfailtags('rhel')
 def test_pkg_list_patterns(minion):
     res = minion.salt_call('pkg.list_patterns')
     assert res['base']['installed'] is False
 
 
+@pytest.mark.skiptags('ubuntu')
 @pytest.mark.xfailtags('rhel')
 def test_pkg_search(minion):
     res = minion.salt_call('pkg.search', 'test-package')
@@ -145,6 +150,7 @@ def test_pkg_download(minion):
     assert res['test-package']['repository-alias'] in ['salt', 'testpackages']
 
 
+@pytest.mark.skiptags('ubuntu')
 def test_pkg_remove(request, minion):
     minion.salt_call('pkg.install', 'test-package')
     res = minion.salt_call('pkg.remove', 'test-package')

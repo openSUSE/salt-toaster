@@ -15,6 +15,7 @@ def _pkg_list_updates(minion):
         return False
 
 
+@pytest.mark.skiptags('ubuntu')
 @pytest.mark.xfailtags('rhel', 'opensuse')
 def test_pkg_list_updates(minion):
     res = minion.salt_call('pkg.list_updates', 'test-package')
@@ -39,6 +40,7 @@ def _pkg_info_available_dos(func):
     return True
 
 
+@pytest.mark.skiptags('ubuntu')
 @pytest.mark.xfailtags('rhel', 'opensuse')
 def test_pkg_info_available(minion):
     assert retry(partial(_pkg_info_available, minion), definition_of_success=_pkg_info_available_dos)
@@ -52,6 +54,7 @@ def test_pkg_info_installed(request, minion):
     assert res['test-package']['vendor'] == "obs://build.opensuse.org/systemsmanagement"
 
 
+@pytest.mark.skiptags('ubuntu')
 def test_pkg_info_installed_epoch(request, minion):
     minion.salt_call('pkg.install', 'test-package')
     request.addfinalizer(
@@ -110,6 +113,7 @@ def test_pkg_info_build_date(minion, timezone):
     assert int(timestamp) == int(res['test-package']['build_date_time_t'])
 
 
+@pytest.mark.skiptags('ubuntu')
 def test_pkg_install_downloadonly(request, minion):
     list_pkgs_pre = minion.salt_call('pkg.list_downloaded')
     res = minion.salt_call('pkg.install', 'test-package downloadonly=True')

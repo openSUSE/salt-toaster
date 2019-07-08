@@ -25,7 +25,7 @@ def module_config(request):
         ]
     }
 
-
+@pytest.mark.skiptags('ubuntu')
 def test_pkg_latest_version(setup):
     config, initconfig = setup
     master = config['masters'][0]
@@ -43,6 +43,7 @@ def test_pkg_latest_version(setup):
     assert retry(partial(test, master, minion))
 
 
+@pytest.mark.skiptags('ubuntu')
 def test_pkg_latest_version_already_installed(setup):
     config, initconfig = setup
     master = config['masters'][0]
@@ -60,6 +61,7 @@ def test_pkg_latest_version_already_installed(setup):
     assert retry(partial(test, master, minion))
 
 
+@pytest.mark.skiptags('ubuntu')
 def test_pkg_installed_downloadonly(setup):
     config, initconfig = setup
     master = config['masters'][0]
@@ -111,6 +113,7 @@ def test_pipes(setup, master):
     assert json.loads(str(res.decode()))["local"]["cmd_|-reboot_|-echo 'shutdown'_|-run"]['changes'] == {}
 
 
+@pytest.mark.skiptags('ubuntu')
 @pytest.mark.skip("skip it until the patch will be in the package")
 def test_file_managed_bsc1098394(setup, master, minion):
     master['container']['config']['client'].copy_to(

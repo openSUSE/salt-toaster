@@ -86,6 +86,7 @@ def test_ssh_cmdrun(master, container):
     assert master.salt_ssh(container, "cmd.run 'uname'") == 'Linux'
 
 
+@pytest.mark.skiptags('ubuntu')
 def test_ssh_pkg_info(master, container):
     '''
     Test pkg.info_instaled on RHEL series
@@ -102,6 +103,7 @@ def test_ssh_sysdoc(master, container):
     assert 'cmd.run' in master.salt_ssh(container, "sys.doc")
 
 
+@pytest.mark.skiptags('ubuntu')
 def test_ssh_pkg_install(master, container):
     '''
     Test pkg.install
@@ -142,6 +144,7 @@ def test_master_tops_support(master, container):
     assert 'custom_top' in master.salt_ssh(container, "state.show_top").get('base')
 
 
+@pytest.mark.skiptags('ubuntu')
 def test_ssh_port_forwarding(master, container, python):
     '''
     Test SSH port forwarding feature.
