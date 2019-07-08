@@ -46,6 +46,7 @@ def test_pkg_info_available(minion):
     assert retry(partial(_pkg_info_available, minion), definition_of_success=_pkg_info_available_dos)
 
 
+@pytest.mark.skiptags('ubuntu')
 def test_pkg_info_installed(request, minion):
     minion.salt_call('pkg.install', 'test-package')
     request.addfinalizer(
