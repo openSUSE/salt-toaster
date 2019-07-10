@@ -196,7 +196,7 @@ When running the `saltstack.unit` or `saltstack.integration`, `SALT_TESTS` must 
 [cols="1,1a"]
 .Available public targets (`VERSION` and `FLAVOR`):
 |===
-| VERSION | opensuse423, opensuse150, opensuse151, tumbleweed, centos7
+| VERSION | opensuse423, opensuse150, opensuse151, tumbleweed, centos7, ubuntu1604, ubuntu1804
 | FLAVOR  | devel
 |===
 
