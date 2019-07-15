@@ -289,6 +289,12 @@ KNOWN_ISSUES_UNIT = {
         'sles15': [
             'utils/test_args.py::ArgsTestCase::test_argspec_report', # Bad tests, fixed at https://github.com/saltstack/salt/pull/52852
         ],
+        'ubuntu1604': [
+            'utils/test_args.py::ArgsTestCase::test_argspec_report', # Bad tests, fixed at https://github.com/saltstack/salt/pull/52852
+        ],
+        'ubuntu1804': [
+            'utils/test_args.py::ArgsTestCase::test_argspec_report', # Bad tests, fixed at https://github.com/saltstack/salt/pull/52852
+        ],
     }
 }
 
