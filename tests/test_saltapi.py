@@ -1,10 +1,13 @@
+import os
 import pytest
 import time
 import requests
+from faker import Faker
 from functools import partial
 
 @pytest.fixture(scope='module')
 def module_config(request):
+    fake = Faker()
     return {
         "masters": [
             {
