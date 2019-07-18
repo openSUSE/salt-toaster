@@ -11,13 +11,13 @@ PROXY_PORT = 8000
 @pytest.fixture(scope="module")
 def minion_id():
     fake = Faker()
-    return u'{0}_{1}'.format(fake.word(), fake.word())  # pylint: disable=no-member
+    return u'{0}_{1}_{2}'.format(fake.word(), fake.word(), os.environ.get('ST_JOB_ID', ''))  # pylint: disable=no-member
 
 
 @pytest.fixture(scope="module")
 def proxy_server(request, salt_root, docker_client):
     fake = Faker()
-    name = u'proxy_server_{0}_{1}'.format(fake.word(), fake.word())  # pylint: disable=no-member
+    name = u'proxy_server_{0}_{1}_{2}'.format(fake.word(), fake.word(), os.environ.get('ST_JOB_ID', ''))  # pylint: disable=no-member
     command = 'python -m tests.scripts.proxy_server {0}'.format(PROXY_PORT)
     obj = ContainerFactory(
         config__image=request.config.getini('IMAGE'),

@@ -1,6 +1,7 @@
 import pytest
 import tarfile
 import py.path
+from faker import Faker
 from saltcontainers.factories import ContainerFactory
 
 
@@ -24,7 +25,9 @@ def upload(container, source, destination, tmpdir_factory):
 
 @pytest.fixture(scope="module")
 def container(request, docker_client, tmpdir_factory):
+    fake = Faker()
     obj = ContainerFactory(
+        config__name='proxy_container_{0}_{1}_{2}'.format(fake.word(), fake.word(), os.environ.get('ST_JOB_ID', '')),  # pylint: disable=no-member
         config__docker_client=docker_client,
         config__image=request.config.getini('IMAGE'),
         config__environment={

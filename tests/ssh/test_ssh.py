@@ -3,6 +3,7 @@ import hashlib
 import time
 import six
 
+from faker import Faker
 from saltcontainers.factories import ContainerFactory
 
 from tests.common import GRAINS_EXPECTATIONS
@@ -169,7 +170,9 @@ def test_ssh_port_forwarding(master, container, python):
 
 @pytest.fixture(scope="module")
 def sshdcontainer(request, salt_root):
+    fake = Faker()
     obj = ContainerFactory(
+        config__name='ssdcontainer_{0}_{1}_{2}'.format(fake.word(), fake.word(), os.environ.get('ST_JOB_ID', '')),  # pylint: disable=no-member
         config__image=request.config.getini('MINION_IMAGE') or request.config.getini('IMAGE'),
         config__salt_config=None,
         ssh_config={'user': 'root', 'password': 'admin123', 'port': 22})

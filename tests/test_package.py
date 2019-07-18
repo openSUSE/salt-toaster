@@ -1,6 +1,7 @@
 import yaml
 import json
 import crypt
+from faker import Faker
 from functools import partial
 from config import WHEEL_CONFIG
 import pytest
@@ -48,7 +49,12 @@ def module_config(request):
 
 @pytest.fixture(scope="module")
 def container(request):
-    obj = ContainerFactory(config__image=request.param, config__salt_config=None)
+    fake = Faker()
+    obj = ContainerFactory(
+        config__name='container_{0}_{1}_{2}'.format(fake.word(), fake.word(), os.environ.get('ST_JOB_ID', '')),  # pylint: disable=no-member
+        config__image=request.param,
+        config__salt_config=None
+    )
     request.addfinalizer(obj.remove)
     return obj
 
