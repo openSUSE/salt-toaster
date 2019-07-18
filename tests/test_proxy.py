@@ -40,6 +40,7 @@ def proxy_server(request, salt_root, docker_client):
 
 @pytest.fixture(scope='module')
 def module_config(request, minion_id, proxy_server):
+    fake = Faker()
     proxy_url = 'http://{0}:{1}'.format(proxy_server['ip'], PROXY_PORT)
     return {"masters": [{
         "config": {
@@ -51,7 +52,12 @@ def module_config(request, minion_id, proxy_server):
             }
         },
         "minions": [
-            {"config": {"container__config__salt_config__id": minion_id}}
+            {
+                "config": {
+                    "container__config__name": 'minion_{0}_{1}_{2}'.format(fake.word(), fake.word(), os.environ.get('ST_JOB_ID', '')),  # pylint: disable=no-member
+                    "container__config__salt_config__id": minion_id
+                }
+            }
         ]
     }]}
 

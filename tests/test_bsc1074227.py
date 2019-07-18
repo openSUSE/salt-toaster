@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import pytest
 import os
+from faker import Faker
 
 
 @pytest.fixture(scope='module')
 def module_config(request):
+    fake = Faker()
     return {
         'masters': [
             {
@@ -25,7 +27,13 @@ def module_config(request):
                         "tests/sls/unicode/cocös.txt",
                     ]
                 },
-                'minions': [{'config': {}}]
+                'minions': [
+                    {
+                        'config': {
+                            "container__config__name": 'minion_{0}_{1}_{2}'.format(fake.word(), fake.word(), os.environ.get('ST_JOB_ID', '')),  # pylint: disable=no-member
+                        }
+                    }
+                ]
             }
         ]
     }

@@ -31,7 +31,13 @@ def module_config(request):
                         },
                     },
                 },
-                "minions": [{"config": {}}]
+                "minions": [
+                    {
+                        'config': {
+                            "container__config__name": 'minion_{0}_{1}_{2}'.format(fake.word(), fake.word(), os.environ.get('ST_JOB_ID', '')),  # pylint: disable=no-member
+                        }
+                    }
+                ]
             }
         ]
     }

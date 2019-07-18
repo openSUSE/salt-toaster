@@ -1,9 +1,11 @@
 import cProfile
 import json
+import os
 import pstats
 import pytest
 import logging
 import re
+from faker import Faker
 from docker import Client
 
 try:
@@ -78,12 +80,14 @@ def tagschecker(request):
 
 @pytest.fixture(scope='module')
 def module_config(request):
+    fake = Faker()
     return {
         "masters": [
             {
                 "minions": [
                     {
                         "config": {
+                            "container__config__name": 'minion_{0}_{1}_{2}'.format(fake.word(), fake.word(), os.environ.get('ST_JOB_ID', '')),  # pylint: disable=no-member
                             "container__config__image": (
                                 request.config.getini('MINION_IMAGE') or
                                 request.config.getini('IMAGE')

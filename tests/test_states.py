@@ -1,12 +1,14 @@
 import pytest
 import json
 import os
+from faker import Faker
 from functools import partial
 from utils import retry
 
 
 @pytest.fixture(scope='module')
 def module_config(request):
+    fake = Faker()
     return {
         'masters': [
             {
@@ -20,7 +22,18 @@ def module_config(request):
                         'tests/sls/bsc1098394.sls',
                     ]
                 },
-                'minions': [{'config': {}}, {'config': {}}]
+                'minions': [
+                    {
+                        'config': {
+                            "container__config__name": 'minion_{0}_{1}_{2}'.format(fake.word(), fake.word(), os.environ.get('ST_JOB_ID', '')),  # pylint: disable=no-member
+                        }
+                    },
+                    {
+                        'config': {
+                            "container__config__name": 'minion_{0}_{1}_{2}'.format(fake.word(), fake.word(), os.environ.get('ST_JOB_ID', '')),  # pylint: disable=no-member
+                        }
+                    }
+                ]
             }
         ]
     }
