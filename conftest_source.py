@@ -65,6 +65,7 @@ KNOWN_ISSUES_INTEGRATION = {
             '*/shell/test_call.py::CallTest::test_issue_15074_output_file_append',
             '*/shell/test_call.py::CallTest::test_issue_2731_masterless',
             '*/modules/ssh.py',
+            '*/proxy/test_shell.py',  # proxy minion is not starting
         ],
         'rhel6': [
             # Avoid error due:
