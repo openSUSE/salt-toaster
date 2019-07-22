@@ -51,6 +51,9 @@ KNOWN_ISSUES_INTEGRATION = {
             # This makes a request to github.com
             '*/modules/ssh.py',
 
+            # CRON is not installed on toaster images and cron tests are not designed for SUSE.
+            '*/states/test_cron.py',
+
             # NEED INVESTIGATION
             '*rest_tornado/test_app.py::TestSaltAPIHandler::test_multi_local_async_post',
             '*rest_tornado/test_app.py::TestSaltAPIHandler::test_multi_local_async_post_multitoken',
