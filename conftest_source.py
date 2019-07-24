@@ -185,11 +185,11 @@ KNOWN_ISSUES_INTEGRATION = {
             'modules/test_pkg.py::PkgModuleTest::test_mod_del_repo_multiline_values', # this test should not be executed on SUSE systems
         ],
         'ubuntu1604': [
-            'shell/test_enabled.py::EnabledTest::test_shell_disabled', # https://github.com/saltstack/salt/issues/52898
+            'shell/test_enabled.py::EnabledTest::test_shell_default_enabled', # https://github.com/saltstack/salt/issues/52898
             'shell/test_enabled.py::EnabledTest::test_template_shell', # https://github.com/saltstack/salt/issues/52898
         ],
         'ubuntu1804': [
-            'shell/test_enabled.py::EnabledTest::test_shell_disabled', # https://github.com/saltstack/salt/issues/52898
+            'shell/test_enabled.py::EnabledTest::test_shell_default_enabled', # https://github.com/saltstack/salt/issues/52898
             'shell/test_enabled.py::EnabledTest::test_template_shell', # https://github.com/saltstack/salt/issues/52898
         ],
     }
