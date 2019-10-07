@@ -201,6 +201,7 @@ KNOWN_ISSUES_UNIT = {
         'common': [
             'zypp_plugins_test.py', # BogusIO missing in zypp_plugin
             'netapi/rest_tornado/test_handlers.py',
+            'netapi/test_rest_tornado.py',
             'returners/smtp_return_test.py',
             'transport/zeromq_test.py',  # Prevent pytests hang after tests
             'conf_test.py::ConfTest::test_conf_master_sample_is_commented', # we have uncommented custom config
