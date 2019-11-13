@@ -13,7 +13,7 @@ DESTRUCTIVE_TESTS     = False
 EXPENSIVE_TESTS       = False
 
 ifndef ST_JOB_ID
-	export ST_JOB_ID = "local-test-run"
+	export ST_JOB_ID = local-test-run
 endif
 
 ifndef VERSION
