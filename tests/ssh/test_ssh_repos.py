@@ -65,7 +65,7 @@ def test_pkg_mod_repo_rhel(master, container):
     repo = list(master.salt_ssh(container, 'pkg.list_repos').keys())[0]
 
     res = master.salt_ssh(container, 'pkg.mod_repo {} enabled=0'.format(repo))
-    assert not res[res.keys()[0]][repo]['enabled']
+    assert not res[list(res.keys())[0]][repo]['enabled']
 
     res = master.salt_ssh(container, 'pkg.mod_repo {} enabled=1'.format(repo))
     assert res[res.keys()[0]][repo]['enabled']
