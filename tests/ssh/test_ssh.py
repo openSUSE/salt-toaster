@@ -98,6 +98,7 @@ def test_ssh_pkg_info(master, container):
         "pkg.info_installed test-package").get('test-package', {}).get('install_date')
 
 
+@pytest.mark.xfailtags('rhel')
 def test_ssh_sysdoc(master, container):
     '''
     Test sys.doc remote execution.
