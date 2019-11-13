@@ -68,7 +68,7 @@ def test_pkg_mod_repo_rhel(master, container):
     assert not res[list(res.keys())[0]][repo]['enabled']
 
     res = master.salt_ssh(container, 'pkg.mod_repo {} enabled=1'.format(repo))
-    assert res[res.keys()[0]][repo]['enabled']
+    assert res[list(res.keys())[0]][repo]['enabled']
 
 
 @pytest.mark.tags('sles', 'opensuse')
