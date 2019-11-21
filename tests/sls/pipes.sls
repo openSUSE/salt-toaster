@@ -1,5 +1,5 @@
-{% set pattern = grains['saltversion'] %}
-{% set installed = salt['cmd.shell']('rpm -q --last salt | head -1 | cut -f1 -d " "') | replace('salt-', '') %}
+{% set pattern = "^pattern$" %}
+{% set installed = salt['cmd.shell']('echo my new-pattern is great | head -1 | cut -f2 -d " "') | replace('new-', '') %}
 
 reboot:
   cmd.run:
