@@ -75,9 +75,6 @@ KNOWN_ISSUES_INTEGRATION = {
             # [Errno 1] _ssl.c:492: error:1409442E:SSL routines:SSL3_READ_BYTES:tlsv1 alert protocol version
             '*/modules/gem.py',
         ],
-        'sles15sp2': [
-            '*/test_tcp.py::AESReqTestCases::test_badload', # Leaks memory on SLE15SP2
-        ],
         # disable 2017.7.1 on python 2.6
         'rhel6/products-next': ['*'],
         'sles11sp3/products-next': ['*'],
@@ -247,7 +244,10 @@ KNOWN_ISSUES_UNIT = {
             'utils/cache_mods/cache_mod.py',
             'test_zypp_plugins.py',
             'modules/test_yumpkg.py',
-        ]
+        ],
+        'sles15sp2': [
+            '*/transport/test_tcp.py::AESReqTestCases::test_badload', # Leaks memory on SLE15SP2
+        ],
     },
     'xfail_list': {
         'common': [
