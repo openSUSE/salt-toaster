@@ -97,6 +97,14 @@ GRAINS_EXPECTATIONS = {
         'osrelease': '15.1',
         'osrelease_info': [15, 1],
     },
+    'sles15sp2': {
+        'os': 'SUSE',
+        'oscodename': 'SUSE Linux Enterprise Server 15 SP2',
+        'os_family': 'Suse',
+        'osfullname': 'SLES',
+        'osrelease': '15.2',
+        'osrelease_info': [15, 2],
+    },
     'opensuse423': {
         'os': 'SUSE',
         'oscodename': 'openSUSE Leap 42.3',
