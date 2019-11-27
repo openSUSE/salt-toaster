@@ -246,7 +246,8 @@ KNOWN_ISSUES_UNIT = {
             'modules/test_yumpkg.py',
         ],
         'sles15sp2': [
-            'transport/test_tcp.py::AESReqTestCases::test_badload', # Leaks memory on SLE15SP2
+            'transport/test_zeromq.py', # Leaks memory on SLE15SP2
+            'transport/test_tcp.py',
         ],
     },
     'xfail_list': {
