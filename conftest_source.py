@@ -69,6 +69,9 @@ KNOWN_ISSUES_INTEGRATION = {
             '*/shell/test_call.py::CallTest::test_issue_2731_masterless',
             '*/modules/ssh.py',
             '*/proxy/test_shell.py',  # proxy minion is not starting
+
+            # M2Crypto switch: ModuleNotFoundError: No module named 'Crypto'
+            'cloud/clouds/test_digitalocean.py',
         ],
         'rhel6': [
             # Avoid error due:
