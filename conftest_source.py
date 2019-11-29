@@ -296,6 +296,10 @@ KNOWN_ISSUES_UNIT = {
             '*test_local_cache.py::Local_CacheTest::test_not_clean_new_jobs',
             '*test_jinja.py::TestCustomExtensions::test_http_query',
             '*test_conf.py::ConfTest::test_conf_master_sample_is_commented',
+
+            # After switch to M2Crypto
+            'modules/test_x509.py::X509TestCase::test_create_crl', # No OpenSSL available
+            'modules/test_x509.py::X509TestCase::test_revoke_certificate_with_crl', # No OpenSSL available
         ],
         'sles12sp1': [
             'cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
