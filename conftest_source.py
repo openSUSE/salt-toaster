@@ -70,8 +70,8 @@ KNOWN_ISSUES_INTEGRATION = {
             '*/modules/ssh.py',
             '*/proxy/test_shell.py',  # proxy minion is not starting
 
-            # M2Crypto switch: ModuleNotFoundError: No module named 'Crypto'
-            'cloud/clouds/test_digitalocean.py',
+            # After switch to M2Crypto
+            'cloud/clouds/test_digitalocean.py', # ModuleNotFoundError: No module named 'Crypto'
         ],
         'rhel6': [
             # Avoid error due:
