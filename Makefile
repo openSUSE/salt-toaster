@@ -130,8 +130,10 @@ list_targets: title
 	@echo "  SUSE SLE12SP4           VERSION: sles12sp4   - FLAVOR: products, products-testing, products-next, devel"
 	@echo "  SUSE SLE15              VERSION: sles15      - FLAVOR: products, products-testing, products-next, devel"
 	@echo "  SUSE SLE15SP1           VERSION: sles15sp1   - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE15SP2           VERSION: sles15sp2   - FLAVOR: products-next, devel"
 	@echo "  RedHat RHEL6            VERSION: rhel6       - FLAVOR: products-old, products-old-testing, devel"
 	@echo "  RedHat RHEL7            VERSION: rhel7       - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  RedHat RHEL8            VERSION: rhel8       - FLAVOR: products, products-testing, products-next, devel"
 	@echo "  Ubuntu 16.04            VERSION: ubuntu1604  - FLAVOR: products, products-testing, products-next, devel"
 	@echo "  Ubuntu 18.04            VERSION: ubuntu1804  - FLAVOR: products, products-testing, products-next, devel"
 	@echo
