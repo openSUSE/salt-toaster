@@ -12,7 +12,11 @@ echo '%_topdir /usr/src/packages' > ~/.rpmmacros
 echo '%_tmppath %{_topdir}/tmp' >> ~/.rpmmacros
 rm -f salt-*.src.rpm
 yum clean expire-cache
+if [ -f /usr/bin/yumdownloader ]; then
 yumdownloader --source salt
+else
+dnf download --source salt
+fi
 rpm -ivh salt-*.src.rpm
 rm -f salt-*.src.rpm
 rpmbuild -bp /usr/src/packages/SPECS/salt.spec
