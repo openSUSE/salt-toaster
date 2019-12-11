@@ -33,6 +33,14 @@ GRAINS_EXPECTATIONS = {
         'osrelease': '7.2',
         'osrelease_info': [7, 2],
     },
+    'rhel8': {
+        'os': 'RedHat',
+        'oscodename': 'Ootpa',
+        'os_family': 'RedHat',
+        'osfullname': 'Red Hat Enterprise Linux Server',
+        'osrelease': '8.0',
+        'osrelease_info': [8, 0],
+    },
     'sles11sp3': {
         'os': 'SUSE',
         'oscodename': 'SUSE Linux Enterprise Server 11 SP3',

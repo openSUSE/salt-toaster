@@ -32,7 +32,7 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('expected', [expectations[version]], ids=lambda it: version)
     if 'python' in metafunc.fixturenames:
         tags = set(metafunc.config.getini('TAGS'))
-        if 'sles15' in tags or 'sles15sp1' in tags or 'opensuse' in tags:
+        if 'sles15' in tags or 'sles15sp1' in tags or 'sles15sp2' in tags or 'rhel8' in tags or 'opensuse' in tags:
             metafunc.parametrize("python", ["python3"])
         else:
             metafunc.parametrize("python", ["python"])
