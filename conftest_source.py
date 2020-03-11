@@ -13,6 +13,7 @@ def pytest_addoption(parser):
 KNOWN_ISSUES_INTEGRATION = {
     'ignore_list': {
         'common': [
+            'tests/integration/externalapi/test_venafiapi.py',
             'test_state.py::OrchEventTest::test_parallel_orchestrations',
             'test_state.py::StateModuleTest::test_requisites_onfail_any',
             'files/file/base/*',           # should no be included
