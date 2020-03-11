@@ -203,6 +203,7 @@ KNOWN_ISSUES_INTEGRATION = {
 KNOWN_ISSUES_UNIT = {
     'ignore_list': {
         'common': [
+            'modules/test_boto3_elasticsearch.py',
             'zypp_plugins_test.py', # BogusIO missing in zypp_plugin
             'netapi/rest_tornado/test_handlers.py',
             'netapi/test_rest_tornado.py',
