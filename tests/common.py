@@ -89,6 +89,14 @@ GRAINS_EXPECTATIONS = {
         'osrelease': '12.3',
         'osrelease_info': [12, 3],
     },
+    'sles12sp4': {
+        'os': 'SUSE',
+        'oscodename': 'SUSE Linux Enterprise Server 12 SP4',
+        'os_family': 'Suse',
+        'osfullname': 'SLES',
+        'osrelease': '12.4',
+        'osrelease_info': [12, 4],
+    },
     'sles15': {
         'os': 'SUSE',
         'oscodename': 'SUSE Linux Enterprise Server 15',

@@ -55,6 +55,12 @@ def get_expectations(tags, oem=False):
             'productline': 'sles',
             'release': 'OEM' if oem else '0'
         },
+        'sles12sp4': {
+            'name': 'SLES',
+            'version': '12.4',
+            'productline': 'sles',
+            'release': 'OEM' if oem else '0'
+        },
         'sles15': {
             'name': 'SLES',
             'version': '15',
