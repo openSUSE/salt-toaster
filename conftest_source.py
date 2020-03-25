@@ -235,6 +235,22 @@ KNOWN_ISSUES_UNIT = {
             'states/test_boto_vpc.py',
             'states/test_augeas.py::AugeasTestCase::test_change_no_context_with_full_path_fail',
 
+            # Not running tests for cheetah, mako and genshi templating
+            'utils/test_templates.py::RenderTestCase::test_render_cheetah_evaluate',
+            'utils/test_templates.py::RenderTestCase::test_render_cheetah_evaluate_text',
+            'utils/test_templates.py::RenderTestCase::test_render_cheetah_evaluate_xml',
+            'utils/test_templates.py::RenderTestCase::test_render_cheetah_sanity',
+            'utils/test_templates.py::RenderTestCase::test_render_cheetah_variable',
+            'utils/test_templates.py::RenderTestCase::test_render_genshi_evaluate',
+            'utils/test_templates.py::RenderTestCase::test_render_genshi_evaluate_condition',
+            'utils/test_templates.py::RenderTestCase::test_render_genshi_sanity',
+            'utils/test_templates.py::RenderTestCase::test_render_genshi_variable',
+            'utils/test_templates.py::RenderTestCase::test_render_genshi_variable_replace',
+            'utils/test_templates.py::RenderTestCase::test_render_mako_evaluate',
+            'utils/test_templates.py::RenderTestCase::test_render_mako_evaluate_multi',
+            'utils/test_templates.py::RenderTestCase::test_render_mako_sanity',
+            'utils/test_templates.py::RenderTestCase::test_render_mako_variable',
+
             # This produces a bad file descriptor error at the end of the testsuite, even if the tests passes
             'utils/test_thin.py::SSHThinTestCase::test_gen_thin_compression_fallback_py3',
         ],
