@@ -277,6 +277,7 @@ KNOWN_ISSUES_UNIT = {
             # fixed in saltstack/develop
             # https://github.com/saltstack/salt/commit/7427e192baeccfee69b4887fe0c630a1afb38730#diff-3b5d15bc59b82fc8d4b15f819babf4faR70
             'test_core.py::CoreGrainsTestCase::test_parse_etc_os_release',
+            'test_core.py::CoreGrainsTestCase::test_fqdns_socket_error',
             'test_x509.py::X509TestCase::test_private_func__parse_subject',
             'test_zypper.py::ZypperTestCase::test_list_pkgs_with_attr',
             'test_zfs.py::ZfsUtilsTestCase::test_property_data_zpool',
