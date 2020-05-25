@@ -257,10 +257,12 @@ KNOWN_ISSUES_UNIT = {
         'sles11sp4': [
             # SSLError: [Errno 1] _ssl.c:492: error:1409442E:SSL routines:SSL3_READ_BYTES:tlsv1 alert protocol version
             'modules/random_org_test.py',
+            'states/test_saltutil.py',
         ],
         'rhel6': [
             # SSLError: [Errno 1] _ssl.c:492: error:1409442E:SSL routines:SSL3_READ_BYTES:tlsv1 alert protocol version
             'modules/random_org_test.py',
+            'states/test_saltutil.py',
         ],
         'sles15': [
             'utils/cache_mods/cache_mod.py',
