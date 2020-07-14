@@ -76,6 +76,13 @@ openSUSE system:
 sudo zypper in docker python python-virtualenv make
 ----
 
+openSUSE system with Python3:
+
+[source,bash]
+----
+sudo zypper in docker python3 python3-virtualenv make
+----
+
 Debian system:
 Your systems need to have docker and docker.io pkg installed
 
