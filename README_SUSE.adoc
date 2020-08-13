@@ -41,3 +41,10 @@ And run:
 sudo update-ca-certificates
 sudo systemctl restart docker
 ----
+
+At least for Tumbleweed it might be enough to copy the certificate to `/etc/docker/certs.d/registry.mgr.suse.de/` and then run:
+
+[source,bash]
+----
+sudo systemctl restart docker
+----
