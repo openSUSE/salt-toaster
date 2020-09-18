@@ -392,6 +392,8 @@ def pytest_configure(config):
     tests_path = '{0}/salt-*/tests'.format(os.environ.get('ROOT_MOUNTPOINT'))
     os.sys.path.extend(glob.glob(tests_path))
 
+def pytest_collection_modifyitems(session, config, items):
+    items = items.reverse()
 
 @pytest.fixture(scope="session")
 def test_daemon(add_options, request):
