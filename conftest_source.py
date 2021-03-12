@@ -327,6 +327,7 @@ KNOWN_ISSUES_UNIT = {
             'transport/test_ipc.py::IPCMessagePubSubCase::test_multi_client_reading',
 
             # Needs investigation. Setting them to xfail to have a "new green start" on March 12th
+            # https://github.com/SUSE/spacewalk/issues/14263
             'utils/test_jinja.py::TestCustomExtensions::test_json_query',
             'utils/test_data.py::DataTestCase::test_json_query',
             'states/test_syslog_ng.py::SyslogNGTestCase::test_started_state_generate_valid_cli_command',
