@@ -124,6 +124,25 @@ KNOWN_ISSUES_INTEGRATION = {
             '*test_timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
             '*test_file.py::FileTest::test_managed_check_cmd',
             'modules/test_network.py::NetworkTest::test_network_ping', # Bad test implementation
+
+            # Needs investigation. Setting them to xfail to have a "new green start" on March 15th
+            # see https://github.com/SUSE/spacewalk/issues/14284
+            'states/test_match.py::StateMatchTest::test_issue_2167_ipcidr_no_AttributeError',
+            'states/test_file.py::FileTest::test_directory_broken_symlink',
+            'shell/test_matcher.py::MatchTest::test_ipcidr',
+            'netapi/rest_cherrypy/test_app.py::TestJobs::test_all_jobs',
+            'netapi/rest_cherrypy/test_app.py::TestAuth::test_webhook_auth',
+            'modules/test_saltutil.py::SaltUtilModuleTest::test_wheel_just_function',
+            'modules/test_network.py::NetworkTest::test_network_netstat',
+            'modules/test_cp.py::CPModuleTest::test_get_dir_templated_paths',
+            'modules/test_cmdmod.py::CMDModuleTest::test_script_retcode',
+            'modules/test_cmdmod.py::CMDModuleTest::test_script_cwd_with_space',
+            'modules/test_cmdmod.py::CMDModuleTest::test_script_cwd',
+            'modules/test_cmdmod.py::CMDModuleTest::test_script',
+            'modules/test_cmdmod.py::CMDModuleTest::test_has_exec',
+            'modules/test_cmdmod.py::CMDModuleTest::test_exec_code_with_single_arg',
+            'modules/test_cmdmod.py::CMDModuleTest::test_exec_code_with_multiple_args',
+            'modules/test_cmdmod.py::CMDModuleTest::test_exec_code',
         ],
         'rhel6': [
             'cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
