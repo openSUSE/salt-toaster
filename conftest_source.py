@@ -383,6 +383,7 @@ KNOWN_ISSUES_UNIT = {
             'cli/test_support.py::ProfileIntegrityTestCase::test_users_template_profile',
             'cli/test_support.py::ProfileIntegrityTestCase::test_non_template_profiles_parseable',
             'cli/test_support.py::ProfileIntegrityTestCase::test_jobs_trace_template_profile',
+            'transport/test_zeromq.py::PubServerChannel::test_issue_36469_tcp',
         ],
         'ubuntu1804': [
             'utils/test_args.py::ArgsTestCase::test_argspec_report', # Bad tests, fixed at https://github.com/saltstack/salt/pull/52852
