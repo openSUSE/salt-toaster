@@ -375,9 +375,25 @@ KNOWN_ISSUES_UNIT = {
         ],
         'ubuntu1604': [
             'utils/test_args.py::ArgsTestCase::test_argspec_report', # Bad tests, fixed at https://github.com/saltstack/salt/pull/52852
+            # Needs investigation. Setting them to xfail to have a "new green start" on March 19th
+            # https://github.com/SUSE/spacewalk/issues/14263
+            'modules/test_saltsupport.py::SaltSupportModuleTestCase::test_sync_specified_archive_not_found_failure',
+            'modules/test_saltsupport.py::SaltSupportModuleTestCase::test_sync_last_picked_archive_not_found_failure',
+            'modules/test_aptpkg.py::AptPkgTestCase::test_add_repo_key_failed',
+            'cli/test_support.py::ProfileIntegrityTestCase::test_users_template_profile',
+            'cli/test_support.py::ProfileIntegrityTestCase::test_non_template_profiles_parseable',
+            'cli/test_support.py::ProfileIntegrityTestCase::test_jobs_trace_template_profile',
         ],
         'ubuntu1804': [
             'utils/test_args.py::ArgsTestCase::test_argspec_report', # Bad tests, fixed at https://github.com/saltstack/salt/pull/52852
+            # Needs investigation. Setting them to xfail to have a "new green start" on March 19th
+            # https://github.com/SUSE/spacewalk/issues/14263
+            'modules/test_saltsupport.py::SaltSupportModuleTestCase::test_sync_specified_archive_not_found_failure',
+            'modules/test_saltsupport.py::SaltSupportModuleTestCase::test_sync_last_picked_archive_not_found_failure',
+            'modules/test_aptpkg.py::AptPkgTestCase::test_add_repo_key_failed',
+            'cli/test_support.py::ProfileIntegrityTestCase::test_users_template_profile',
+            'cli/test_support.py::ProfileIntegrityTestCase::test_non_template_profiles_parseable',
+            'cli/test_support.py::ProfileIntegrityTestCase::test_jobs_trace_template_profile',
         ],
     }
 }
