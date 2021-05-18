@@ -162,9 +162,7 @@ endif
 endif
 	$(EXEC)
 
-ifeq ("$(VERSION)", "sles15")
-saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/sles15.cfg
-else ifeq ("$(VERSION)", "sles11sp4")
+ifeq ("$(VERSION)", "sles11sp4")
 saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/sles11sp4.cfg
 else ifeq ("$(VERSION)", "rhel6")
 saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/rhel6.cfg
@@ -187,9 +185,7 @@ endif
 endif
 	$(EXEC)
 
-ifeq ("$(VERSION)", "sles15")
-saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/sles15.cfg
-else ifeq ("$(VERSION)", "sles11sp4")
+ifeq ("$(VERSION)", "sles11sp4")
 saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/sles11sp4.cfg
 else ifeq ("$(VERSION)", "rhel6")
 saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/rhel6.cfg
