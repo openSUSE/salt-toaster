@@ -7,7 +7,8 @@ SUSE_DEFAULT_FLAVOR   = products
 TOASTER_MOUNTPOINT    = /salt-toaster
 ROOT_MOUNTPOINT       = /salt/src
 SALT_REPO_MOUNTPOINT  = $(ROOT_MOUNTPOINT)/salt-devel
-SALT_TESTS            = $(ROOT_MOUNTPOINT)/salt-*/tests
+SALT_OLDTESTS         = tests
+SALT_PYTESTS          = tests/pytests
 DOCKER_VOLUMES        = -v "$(CURDIR)/:$(TOASTER_MOUNTPOINT)"
 DESTRUCTIVE_TESTS     = False
 EXPENSIVE_TESTS       = False
@@ -66,7 +67,8 @@ ifdef DOCKER_CPUS
 endif
 
 EXPORTS += \
-	-e "SALT_TESTS=$(SALT_TESTS)" \
+	-e "SALT_OLDTESTS=$(SALT_OLDTESTS)" \
+	-e "SALT_PYTESTS=$(SALT_PYTESTS)" \
 	-e "VERSION=$(VERSION)" \
 	-e "FLAVOR=$(FLAVOR)" \
 	-e "DOCKER_IMAGE=$(DOCKER_IMAGE)" \
@@ -143,8 +145,10 @@ ifndef NOPULL
 	docker pull $(DOCKER_IMAGE)
 endif
 
-PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS) $(PYTEST_FLAGS)
-CMD=pytest $(PYTEST_ARGS) --junitxml results.xml
+NOX_PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_OLDTESTS) $(SALT_PYTESTS) $(PYTEST_FLAGS)
+GOTO_SALT_ROOT=cd $(ROOT_MOUNTPOINT)/salt-*
+PATCH_REQUIREMENTS=sed -i 's/attrs==19.1.0/attrs==19.2.0/' requirements/static/ci/py3.6/linux.txt && echo /root/wheels/saltrepoinspect-1.1.tar.gz >> requirements/static/ci/py3.6/linux.txt
+CMD=$(GOTO_SALT_ROOT) && mv ../conftest.py . && $(PATCH_REQUIREMENTS) && nox --session 'pytest-3(coverage=False)' -- $(NOX_PYTEST_ARGS) --junitxml results.xml
 EXEC=docker run $(EXPORTS) -t -e "CMD=$(CMD)" --label=$(ST_JOB_ID)  --rm $(DOCKER_VOLUMES) $(DOCKER_RES_LIMITS) $(DOCKER_IMAGE) tests
 
 ifndef RPDB_PORT
@@ -163,13 +167,14 @@ endif
 	$(EXEC)
 
 ifeq ("$(VERSION)", "sles11sp4")
-saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/sles11sp4.cfg
+saltstack.unit : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.unit/sles11sp4.cfg
 else ifeq ("$(VERSION)", "rhel6")
-saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/rhel6.cfg
+saltstack.unit : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.unit/rhel6.cfg
 else
-saltstack.unit : PYTEST_CFG=./configs/saltstack.unit/common.cfg
+saltstack.unit : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.unit/common.cfg
 endif
-saltstack.unit : SALT_TESTS:=$(SALT_TESTS)/unit
+saltstack.unit : SALT_OLDTESTS:=$(SALT_OLDTESTS)/unit
+saltstack.unit : SALT_PYTESTS:=$(SALT_PYTESTS)/unit
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
 saltstack.unit : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
@@ -186,13 +191,14 @@ endif
 	$(EXEC)
 
 ifeq ("$(VERSION)", "sles11sp4")
-saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/sles11sp4.cfg
+saltstack.integration : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.integration/sles11sp4.cfg
 else ifeq ("$(VERSION)", "rhel6")
-saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/rhel6.cfg
+saltstack.integration : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.integration/rhel6.cfg
 else
-saltstack.integration : PYTEST_CFG=./configs/saltstack.integration/common.cfg
+saltstack.integration : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.integration/common.cfg
 endif
-saltstack.integration : SALT_TESTS:=$(SALT_TESTS)/integration
+saltstack.integration : SALT_OLDTESTS:=$(SALT_OLDTESTS)/integration
+saltstack.integration : SALT_PYTESTS:=$(SALT_PYTESTS)/integration
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
 saltstack.integration : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
@@ -210,6 +216,8 @@ endif
 
 suse.tests : PYTEST_CFG=./configs/suse.tests/$(VERSION)/$(FLAVOR).cfg
 suse.tests : SALT_TESTS=./tests
+suse.tests : PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS) $(PYTEST_FLAGS)
+suse.tests : CMD=pytest $(PYTEST_ARGS) --junitxml results.xml
 suse.tests : EXEC=sandbox/bin/$(CMD)
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
