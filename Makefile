@@ -8,10 +8,12 @@ TOASTER_MOUNTPOINT    = /salt-toaster
 ROOT_MOUNTPOINT       = /salt/src
 SALT_REPO_MOUNTPOINT  = $(ROOT_MOUNTPOINT)/salt-devel
 SALT_OLDTESTS         = tests
+NO_NOX_SALT_TESTS     = $(ROOT_MOUNTPOINT)/salt-*/tests
 SALT_PYTESTS          = tests/pytests
 DOCKER_VOLUMES        = -v "$(CURDIR)/:$(TOASTER_MOUNTPOINT)"
 DESTRUCTIVE_TESTS     = False
 EXPENSIVE_TESTS       = False
+NOX                   = True
 
 ifndef ST_JOB_ID
 	export ST_JOB_ID = local-test-run
@@ -66,8 +68,19 @@ ifdef DOCKER_CPUS
 	DOCKER_RES_LIMITS := $(DOCKER_RES_LIMITS) --cpus="$(DOCKER_CPUS)"
 endif
 
+ifeq ("$(FLAVOR)", "products-old")
+NOX = False
+else ifeq ("$(FLAVOR)", "products-old-testing")
+NOX = False
+else ifeq ("$(FLAVOR)", "products-3000")
+NOX = False
+else ifeq ("$(FLAVOR)", "products-3000-testing")
+NOX = False
+endif
+
 EXPORTS += \
 	-e "SALT_OLDTESTS=$(SALT_OLDTESTS)" \
+	-e "NO_NOX_SALT_TESTS=$(NO_NOX_SALT_TESTS)" \
 	-e "SALT_PYTESTS=$(SALT_PYTESTS)" \
 	-e "VERSION=$(VERSION)" \
 	-e "FLAVOR=$(FLAVOR)" \
@@ -145,10 +158,26 @@ ifndef NOPULL
 	docker pull $(DOCKER_IMAGE)
 endif
 
+LEGACY_PYTEST_ARGS=-c $(PYTEST_CFG) $(NO_NOX_SALT_TESTS) $(PYTEST_FLAGS)
+LEGACY_PYTEST_CMD=pytest $(LEGACY_PYTEST_ARGS) --junitxml results.xml
+
+# New Toaster with pytest in nox
 NOX_PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_OLDTESTS) $(SALT_PYTESTS) $(PYTEST_FLAGS)
+ifneq (,$(findstring 3000,$(FLAVOR)))
+REQUIREMENTS_FILE=requirements/static/py3.6/linux.txt
+else
+REQUIREMENTS_FILE=requirements/static/ci/py3.6/linux.txt
+endif
 GOTO_SALT_ROOT=cd $(ROOT_MOUNTPOINT)/salt-*
-PATCH_REQUIREMENTS=sed -i 's/attrs==19.1.0/attrs==19.2.0/' requirements/static/ci/py3.6/linux.txt && echo /root/wheels/saltrepoinspect-1.1.tar.gz >> requirements/static/ci/py3.6/linux.txt
-CMD=$(GOTO_SALT_ROOT) && mv ../conftest.py . && $(PATCH_REQUIREMENTS) && nox --session 'pytest-3(coverage=False)' -- $(NOX_PYTEST_ARGS) --junitxml results.xml
+PATCH_REQUIREMENTS=sed -i 's/attrs==19.1.0/attrs==19.2.0/' $(REQUIREMENTS_FILE) && echo /root/wheels/saltrepoinspect-1.1.tar.gz >> $(REQUIREMENTS_FILE)
+NOX_CMD=$(GOTO_SALT_ROOT) && mv ../conftest.py . && $(PATCH_REQUIREMENTS) && nox --session 'pytest-3(coverage=False)' -- $(NOX_PYTEST_ARGS) --junitxml results.xml
+
+ifeq ("$(NOX)", "True")
+CMD=$(NOX_CMD)
+else
+CMD=$(LEGACY_PYTEST_CMD)
+endif
+
 EXEC=docker run $(EXPORTS) -t -e "CMD=$(CMD)" --label=$(ST_JOB_ID)  --rm $(DOCKER_VOLUMES) $(DOCKER_RES_LIMITS) $(DOCKER_IMAGE) tests
 
 ifndef RPDB_PORT
@@ -175,6 +204,7 @@ saltstack.unit : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.unit/common.
 endif
 saltstack.unit : SALT_OLDTESTS:=$(SALT_OLDTESTS)/unit
 saltstack.unit : SALT_PYTESTS:=$(SALT_PYTESTS)/unit
+saltstack.unit : NO_NOX_SALT_TESTS:=$(NO_NOX_SALT_TESTS)/unit
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
 saltstack.unit : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
@@ -199,6 +229,7 @@ saltstack.integration : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.integ
 endif
 saltstack.integration : SALT_OLDTESTS:=$(SALT_OLDTESTS)/integration
 saltstack.integration : SALT_PYTESTS:=$(SALT_PYTESTS)/integration
+saltstack.integration : NO_NOX_SALT_TESTS:=$(NO_NOX_SALT_TESTS)/integration
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
 saltstack.integration : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
