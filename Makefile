@@ -208,7 +208,7 @@ saltstack.unit : NO_NOX_SALT_TESTS:=$(NO_NOX_SALT_TESTS)/unit
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
 saltstack.unit : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
-saltstack.unit : CMD:=timeout 180m $(CMD)
+saltstack.unit : CMD:=timeout 180m sh -c \"$(CMD)\"
 endif
 endif
 saltstack.unit :: title pull_image
