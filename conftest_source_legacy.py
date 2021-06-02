@@ -431,14 +431,14 @@ def get_list(config, name):
     tests_type = config.getini('tests_type')
     assert name in ['ignore_list', 'xfail_list']
     result = (
-        (KNOWN_ISSUES[tests_type][name].get('common') or []) +
-        (KNOWN_ISSUES[tests_type][name].get(flavor) or []) +
-        (KNOWN_ISSUES[tests_type][name].get(version) or []) +
-        (KNOWN_ISSUES[tests_type][name].get(
-            '{0}/{1}'.format(version, flavor)) or []) +
-        (KNOWN_ISSUES[tests_type][name].get(
-            '{0}/{1}'.format(version, config.salt_version)) or []) +
-        (KNOWN_ISSUES[tests_type][name].get(config.salt_version) or [])
+        KNOWN_ISSUES[tests_type][name].get('common', []) +
+        KNOWN_ISSUES[tests_type][name].get(flavor, []) +
+        KNOWN_ISSUES[tests_type][name].get(version, []) +
+        KNOWN_ISSUES[tests_type][name].get(
+            '{0}/{1}'.format(version, flavor), []) +
+        KNOWN_ISSUES[tests_type][name].get(
+            '{0}/{1}'.format(version, config.salt_version), []) +
+        KNOWN_ISSUES[tests_type][name].get(config.salt_version, [])
     )
     return ['*%s*' % it for it in result]
 
