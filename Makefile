@@ -233,7 +233,7 @@ saltstack.integration : NO_NOX_SALT_TESTS:=$(NO_NOX_SALT_TESTS)/integration
 ifneq ("$(FLAVOR)", "devel")
 ifdef JENKINS_HOME
 saltstack.integration : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
-saltstack.integration : CMD:=timeout 180m $(CMD)
+saltstack.integration : CMD:=timeout 180m sh -c \"$(CMD)\"
 endif
 endif
 saltstack.integration :: title pull_image
