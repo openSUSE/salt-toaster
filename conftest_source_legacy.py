@@ -272,6 +272,8 @@ KNOWN_ISSUES_UNIT = {
 
             # This produces a bad file descriptor error at the end of the testsuite, even if the tests passes
             'utils/test_thin.py::SSHThinTestCase::test_gen_thin_compression_fallback_py3',
+            'transport/test_zeromq.py', # Leaks memory on SLE15SP2
+            'transport/test_tcp.py',
         ],
         'sles11sp4': [
             # SSLError: [Errno 1] _ssl.c:492: error:1409442E:SSL routines:SSL3_READ_BYTES:tlsv1 alert protocol version
@@ -287,10 +289,6 @@ KNOWN_ISSUES_UNIT = {
             'utils/cache_mods/cache_mod.py',
             'test_zypp_plugins.py',
             'modules/test_yumpkg.py',
-        ],
-        'sles15sp2': [
-            'transport/test_zeromq.py', # Leaks memory on SLE15SP2
-            'transport/test_tcp.py',
         ],
     },
     'xfail_list': {
