@@ -201,7 +201,11 @@ saltstack.unit : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.unit/sles11s
 else ifeq ("$(VERSION)", "rhel6")
 saltstack.unit : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.unit/rhel6.cfg
 else
+ifeq ("$(NOX)", "True")
 saltstack.unit : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.unit/common.cfg
+else
+saltstack.unit : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.unit/common_legacy.cfg
+endif
 endif
 saltstack.unit : SALT_OLDTESTS:=$(SALT_OLDTESTS)/unit
 saltstack.unit : SALT_PYTESTS:=$(SALT_PYTESTS)/unit
