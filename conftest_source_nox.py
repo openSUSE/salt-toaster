@@ -255,6 +255,7 @@ def pytest_configure(config):
 
     # "Flag" the slotTest decorator if we're skipping slow tests or not
     os.environ["SLOW_TESTS"] = str(config.getoption("--run-slow"))
+
     # Toaster specific
     config.salt_version = get_salt_version(
         os.environ.get('VERSION'), os.environ.get('FLAVOR'))
@@ -1630,6 +1631,7 @@ KNOWN_ISSUES_UNIT = {
             'modules/test_yumpkg.py',
         ],
     },
+
     'xfail_list': {
         'common': [
             # fixed in saltstack/develop
@@ -1824,6 +1826,6 @@ def pytest_ignore_collect(path, config):
 def pytest_itemcollected(item):
     matcher = partial(fnmatch, item.nodeid)
     if any(map(matcher, item.config.xfail_list)):
-        item.addExpectedFailure(item.parent, None)
+        item.add_marker(pytest.mark.xfail, "Xfailed by toaster")
     elif any(map(matcher, item.config.ignore_list)):
-        item.addSkip(item.parent, None)
+        item.add_marker(pytest.mark.skip, "Ignore by toaster")
