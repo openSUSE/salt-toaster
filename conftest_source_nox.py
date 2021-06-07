@@ -1785,6 +1785,10 @@ KNOWN_ISSUES_UNIT = {
             'transport/test_zeromq.py::ClearReqTestCases::test_basic',
             'transport/test_zeromq.py::ClearReqTestCases::test_normalization',
         ],
+        # ip_addrs() needs to be mocked for deterministic tests
+        "opensuse151": ['pytests/unit/utils/test_minions.py'],
+        "opensuse152": ['pytests/unit/utils/test_minions.py'],
+        "opensuse153": ['pytests/unit/utils/test_minions.py'],
     }
 }
 
