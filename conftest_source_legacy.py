@@ -223,7 +223,6 @@ KNOWN_ISSUES_UNIT = {
     'ignore_list': {
         'common': [
             'test_engines.py', # Make pytest to stuck for long time after tests are executed
-            'modules/test_boto3_elasticsearch.py',
             'zypp_plugins_test.py', # BogusIO missing in zypp_plugin
             'netapi/rest_tornado/test_handlers.py',
             'netapi/test_rest_tornado.py',
@@ -235,10 +234,6 @@ KNOWN_ISSUES_UNIT = {
             '*rsync_test.py::*',
             'test_module_names.py',
             'modules/darwin_sysctl_test.py',
-            'states/boto_cloudwatch_event_test.py',
-            'modules/boto_vpc_test.py',
-            'states/boto_vpc_test.py',
-            'utils/boto_test.py',
             'modules/win_ip_test.py::WinShadowTestCase::test_set_static_ip', # takes too long to execute
             'states/blockdev_test.py::BlockdevTestCase::test_formatted', # takes too long to execute
             'cloud/clouds/dimensiondata_test.py',
@@ -250,9 +245,12 @@ KNOWN_ISSUES_UNIT = {
             'test_pip.py::PipStateTest::test_install_requirements_parsing',
             '*/modules/test_useradd.py',
             'utils/cache_mods/cache_mod.py',
-            'modules/test_boto_vpc.py',
-            'states/test_boto_vpc.py',
             'states/test_augeas.py::AugeasTestCase::test_change_no_context_with_full_path_fail',
+            # boto tests take forever and many of them fail
+            'modules/test_boto3_*.py',
+            'modules/test_boto_*.py',
+            'states/test_boto_*.py',
+            'utils/boto_test.py',
 
             # Not running tests for cheetah, mako and genshi templating
             'utils/test_templates.py::RenderTestCase::test_render_cheetah_evaluate',
@@ -311,15 +309,6 @@ KNOWN_ISSUES_UNIT = {
             'beacons/glxinfo.py::GLXInfoBeaconTestCase::test_no_user',
             'beacons/glxinfo.py::GLXInfoBeaconTestCase::test_non_dict_config',
 
-            # Boto failing tests
-            'modules/boto_apigateway_test.py::BotoApiGatewayTestCaseBase::runTest',
-            'modules/boto_cloudwatch_event_test.py::BotoCloudWatchEventTestCaseBase::runTest',
-            'modules/boto_cognitoidentity_test.py::BotoCognitoIdentityTestCaseBase::runTest',
-            'modules/boto_elasticsearch_domain_test.py::BotoElasticsearchDomainTestCaseBase::runTest',
-            'states/boto_apigateway_test.py::BotoApiGatewayStateTestCaseBase::runTest',
-            'states/boto_cognitoidentity_test.py::BotoCognitoIdentityStateTestCaseBase::runTest',
-            'states/boto_elasticsearch_domain_test.py::BotoElasticsearchDomainStateTestCaseBase::runTest',
-
             'modules/inspect_collector_test.py::InspectorCollectorTestCase::test_file_tree',
             '*CoreGrainsTestCase::test_linux_memdata',
             'EtcdModTestCase',
@@ -366,6 +355,7 @@ KNOWN_ISSUES_UNIT = {
             'modules/test_keystone.py::KeystoneTestCase::test_role_get',
             'modules/test_dpkg_lowpkg.py::DpkgTestCase::test_info',
             'modules/test_cron.py::PsTestCase::test_list_tab',
+            'modules/test_aptpkg.py::AptPkgTestCase::test_add_repo_key_failed',
             'modules/test_aptpkg.py::AptPkgTestCase::test_info_installed_attr_without_status',
             'grains/test_core.py::CoreGrainsTestCase::test_fqdn_return',
             'grains/test_core.py::CoreGrainsTestCase::test_fqdn4_empty',
@@ -377,6 +367,8 @@ KNOWN_ISSUES_UNIT = {
             'cli/test_batch_async.py::AsyncBatchTestCase::test_batch_close_safe',
             'cli/test_batch_async.py::AsyncBatchTestCase::test_batch__del__',
             'beacons/test_cert_info.py::CertInfoBeaconTestCase::test_cert_information',
+            'modules/test_saltsupport.py::SaltSupportModuleTestCase::test_sync_specified_archive_not_found_failure',
+            'modules/test_saltsupport.py::SaltSupportModuleTestCase::test_sync_last_picked_archive_not_found_failure',
         ],
         'sles12sp1': [
             'cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
@@ -394,9 +386,6 @@ KNOWN_ISSUES_UNIT = {
             'utils/test_args.py::ArgsTestCase::test_argspec_report', # Bad tests, fixed at https://github.com/saltstack/salt/pull/52852
             # Needs investigation. Setting them to xfail to have a "new green start" on March 19th
             # https://github.com/SUSE/spacewalk/issues/14263
-            'modules/test_saltsupport.py::SaltSupportModuleTestCase::test_sync_specified_archive_not_found_failure',
-            'modules/test_saltsupport.py::SaltSupportModuleTestCase::test_sync_last_picked_archive_not_found_failure',
-            'modules/test_aptpkg.py::AptPkgTestCase::test_add_repo_key_failed',
             'cli/test_support.py::ProfileIntegrityTestCase::test_users_template_profile',
             'cli/test_support.py::ProfileIntegrityTestCase::test_non_template_profiles_parseable',
             'cli/test_support.py::ProfileIntegrityTestCase::test_jobs_trace_template_profile',
@@ -408,10 +397,21 @@ KNOWN_ISSUES_UNIT = {
             # https://github.com/SUSE/spacewalk/issues/14263
             'modules/test_saltsupport.py::SaltSupportModuleTestCase::test_sync_specified_archive_not_found_failure',
             'modules/test_saltsupport.py::SaltSupportModuleTestCase::test_sync_last_picked_archive_not_found_failure',
-            'modules/test_aptpkg.py::AptPkgTestCase::test_add_repo_key_failed',
             'cli/test_support.py::ProfileIntegrityTestCase::test_users_template_profile',
             'cli/test_support.py::ProfileIntegrityTestCase::test_non_template_profiles_parseable',
             'cli/test_support.py::ProfileIntegrityTestCase::test_jobs_trace_template_profile',
+        ],
+        'opensuse151': [
+            'states/test_zcbuildout.py::BuildoutTestCase::*',
+            'modules/test_zcbuildout.py::BuildoutTestCase::*',
+            'modules/test_zcbuildout.py::BuildoutOnlineTestCase::*',
+            'states/test_pip_state.py::PipStateInstallationErrorTest::test_importable_installation_error',
+        ],
+        'opensuse152': [
+            'states/test_zcbuildout.py::BuildoutTestCase::*',
+            'modules/test_zcbuildout.py::BuildoutTestCase::*',
+            'modules/test_zcbuildout.py::BuildoutOnlineTestCase::*',
+            'states/test_pip_state.py::PipStateInstallationErrorTest::test_importable_installation_error',
         ],
     }
 }
