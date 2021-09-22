@@ -1762,6 +1762,7 @@ KNOWN_ISSUES_UNIT = {
             'modules/test_zcbuildout.py::BuildoutTestCase::test_get_buildout_ver',
             'modules/test_zfs.py::ZfsTestCase::test_bookmark_success',
             'modules/test_aptpkg.py::AptPkgTestCase::test_expand_repo_def',
+            'transport/test_ipc.py::IPCMessagePubSubCase::test_async_reading_streamclosederror',
         ],
         'sles12sp1': [
             'cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
