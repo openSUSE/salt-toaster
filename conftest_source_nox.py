@@ -1473,6 +1473,10 @@ KNOWN_ISSUES_INTEGRATION = {
             'modules/test_cmdmod.py::CMDModuleTest::test_exec_code_with_single_arg',
             'modules/test_cmdmod.py::CMDModuleTest::test_exec_code_with_multiple_args',
             'modules/test_cmdmod.py::CMDModuleTest::test_exec_code',
+
+            # Failing in 3003.3
+            'modules/test_pip.py::PipModuleTest::test_pip_install_multiple_editables',
+            'states/test_pip_state.py::PipStateTest::test_issue_2028_pip_installed_state',
         ],
         'rhel6': [
             'cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
@@ -1614,6 +1618,9 @@ KNOWN_ISSUES_UNIT = {
             'pytests/unit/utils/test_thin.py',
             'transport/test_zeromq.py', # Leaks memory on SLE15SP2
             'transport/test_tcp.py',
+
+            # Errors in 3003.3
+            'cloud/test_map.py'
         ],
         'sles11sp4': [
             # SSLError: [Errno 1] _ssl.c:492: error:1409442E:SSL routines:SSL3_READ_BYTES:tlsv1 alert protocol version
@@ -1742,6 +1749,19 @@ KNOWN_ISSUES_UNIT = {
             'utils/test_vmware.py::GetServiceInstanceTestCase::test_no_cached_service_instance_same_host_on_proxy',
             'utils/test_vmware.py::GetServiceInstanceTestCase::test_uncached_service_instance',
             'pytests/unit/modules/test_ansiblegate.py::test_ansible_module_call',
+
+            # Failing on 3003.3
+            'beacons/test_telegram_bot_msg.py::TelegramBotMsgBeaconTestCase::test_call_no_updates',
+            'beacons/test_telegram_bot_msg.py::TelegramBotMsgBeaconTestCase::test_call_telegram_return_no_updates_for_user',
+            'beacons/test_telegram_bot_msg.py::TelegramBotMsgBeaconTestCase::test_call_telegram_returning_updates',
+            'modules/test_junos.py::Test_Junos_Module::test_get_table_api_error',
+            'modules/test_junos.py::Test_Junos_Module::test_get_table_connect_closed_error',
+            'modules/test_junos.py::Test_Junos_Module::test_get_table_inventory',
+            'modules/test_junos.py::Test_Junos_Module::test_get_table_no_path_inventory',
+            'modules/test_zcbuildout.py::BuildoutTestCase::test_get_bootstrap_url',
+            'modules/test_zcbuildout.py::BuildoutTestCase::test_get_buildout_ver',
+            'modules/test_zfs.py::ZfsTestCase::test_bookmark_success',
+            'modules/test_aptpkg.py::AptPkgTestCase::test_expand_repo_def',
         ],
         'sles12sp1': [
             'cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
