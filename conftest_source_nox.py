@@ -1764,7 +1764,6 @@ KNOWN_ISSUES_UNIT = {
             'modules/test_zcbuildout.py::BuildoutTestCase::test_get_buildout_ver',
             'modules/test_zfs.py::ZfsTestCase::test_bookmark_success',
             'modules/test_aptpkg.py::AptPkgTestCase::test_expand_repo_def',
-            'transport/test_ipc.py::IPCMessagePubSubCase::test_async_reading_streamclosederror',
             'modules/test_cmdmod.py::test_run_cwd_in_combination_with_runas', # Fails on docker container
             'states/test_pkgrepo.py::test_migrated_wrong_method',
         ],
