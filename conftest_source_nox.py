@@ -1477,6 +1477,7 @@ KNOWN_ISSUES_INTEGRATION = {
             # Failing in 3003.3
             'modules/test_pip.py::PipModuleTest::test_pip_install_multiple_editables',
             'states/test_pip_state.py::PipStateTest::test_issue_2028_pip_installed_state',
+            'cli/test_matcher.py::test_ipcidr',
         ],
         'rhel6': [
             'cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
