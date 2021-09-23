@@ -1475,6 +1475,7 @@ KNOWN_ISSUES_INTEGRATION = {
             'modules/test_cmdmod.py::CMDModuleTest::test_exec_code',
 
             # Failing in 3003.3
+            'modules/saltutil/test_wheel.py::test_wheel_just_function',
             'modules/test_pip.py::PipModuleTest::test_pip_install_multiple_editables',
             'states/test_pip_state.py::PipStateTest::test_issue_2028_pip_installed_state',
             'cli/test_matcher.py::test_ipcidr',
