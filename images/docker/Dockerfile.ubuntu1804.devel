@@ -1,0 +1,50 @@
+# Container used to run Salt Toaster testsuite
+#
+# NAME                  toaster-ubuntu1804-devel
+# VERSION               0
+
+
+
+FROM registry.mgr.suse.de/ubuntu:18.04
+MAINTAINER Pablo Suárez Hernández: "psuarezhernandez@suse.de"
+
+
+ENV LC_ALL en_US.UTF-8
+COPY Makefile /root/Makefile
+COPY get-pip.py /root/get-pip.py
+COPY wheels/ /root/wheels/
+COPY docker-requirements.txt /root/
+COPY docker-requirements-common.txt /root/
+COPY py26-docker-requirements.txt /root/
+
+
+
+ARG CACHE_DATE=nocache
+
+RUN echo "deb [trusted=yes] http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/testing:/debian/xUbuntu_18.04 ./" >> /etc/apt/sources.list.d/salt.list
+RUN echo "deb-src [trusted=yes] http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/testing:/debian/xUbuntu_18.04 ./" >> /etc/apt/sources.list.d/salt.list
+RUN echo "deb [trusted=yes] http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/debian/xUbuntu_18.04 ./" >> /etc/apt/sources.list.d/tests.list
+RUN echo "deb-src [trusted=yes] http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/debian/xUbuntu_18.04 ./" >> /etc/apt/sources.list.d/tests.list
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update
+RUN apt-get install -q -y vim gnupg2 iproute2 dnsutils
+RUN apt-get -q -y install salt-master salt-minion salt-ssh
+
+
+RUN python /root/get-pip.py --no-index /root/wheels/pip-9.0.3-py2.py3-none-any.whl /root/wheels/setuptools-33.1.1-py2.py3-none-any.whl -f /root/wheels/
+
+
+RUN apt-get install -q -y python3-pip python3-cherrypy3
+RUN apt-get install -q -y python3-dev make openssh-server rsync locales
+RUN locale-gen --purge en_US.UTF-8
+RUN pip3 --trusted-host pypi.python.org install --upgrade pytest==4.6.5 pytest-timeout mock timelib boto six kubernetes==2.0.0 apache-libcloud pyyaml==3.11 unittest2 pytest-salt
+
+
+
+RUN pip3 install --no-index --upgrade --force -f /root/wheels /root/wheels/psutil-5.4.5.tar.gz  # overwrite old psutil using pip
+RUN pip3 install --no-index --force -f /root/wheels /root/wheels/saltrepoinspect-1.0.tar.gz
+# TODO: the following packages should be added as dependencies to the salt package
+RUN apt-get install -q -y python3-apt python3-dateutil python3-jinja2 python3-msgpack python3-pkg-resources python3-requests python3-tornado python3-yaml python3-systemd python3-psutil python3-zmq python3-crypto
+
+ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
+CMD ["default"]

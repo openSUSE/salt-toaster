@@ -1,0 +1,73 @@
+# Container used to run salt tests focusing on SUSE Manager use cases
+#
+# NAME                  toaster-opensuse153-devel
+# VERSION               0
+
+
+
+FROM registry.mgr.suse.de/opensuse153
+LABEL org.opencontainers.image.authors="Mihai Dinca <mdinca@suse.com>"
+
+
+ENV LC_ALL en_US.UTF-8
+COPY Makefile /root/Makefile
+COPY get-pip.py /root/get-pip.py
+COPY wheels/ /root/wheels/
+COPY docker-requirements.txt /root/
+COPY docker-requirements-rhel8.txt /root/
+COPY docker-requirements-common.txt /root/
+COPY py26-docker-requirements.txt /root/
+COPY bin/lastchangelog /root/bin/lastchangelog
+
+
+
+COPY bin/install_salt.sh /root/bin/install_salt.sh
+ARG CACHE_DATE=nocache
+COPY vendors.conf /etc/zypp/vendors.d/vendors.conf
+
+RUN zypper -n ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/SLE_15_3/ "testpackages"
+
+RUN zypper -n in python3
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/devel/SLE_15_3/ "salt"
+RUN zypper mr -p 1 salt
+
+
+RUN python3 /root/get-pip.py --no-index /root/wheels/pip-9.0.3-py2.py3-none-any.whl /root/wheels/setuptools-33.1.1-py2.py3-none-any.whl -f /root/wheels/
+
+
+RUN zypper --non-interactive --gpg-auto-import-keys ref
+RUN zypper -n in python3-xml python3-pip python3-CherryPy
+RUN zypper -n in --no-recommends python3-devel make bind-utils gcc-c++ openssh rsync
+RUN zypper -n in -y --force-resolution patch rpmbuild
+RUN useradd -ms /bin/bash nobody
+
+
+
+RUN /root/bin/prepare_devel.sh
+
+ADD salt.archive /salt/src/salt-devel
+RUN pip install -e /salt/src/salt-devel
+
+
+RUN zypper -n rm container-suseconnect
+RUN zypper -n in netcat-openbsd timezone # spacewalk-oscap openscap-content vim vim-data
+RUN pip install -U --no-deps --no-index -f /root/wheels /root/wheels/salt-testing-2018.1.16.tar.gz
+
+
+RUN zypper -n in python3-pyOpenSSL
+
+RUN zypper --non-interactive install libcurl-devel libopenssl-devel
+
+
+
+RUN pip install --no-index /root/wheels/pytest_salt-2018.2.2-py2.py3-none-any.whl -f /root/wheels/
+
+# RUN pip install moto
+
+RUN pip install --no-index --upgrade --force -f /root/wheels /root/wheels/psutil-5.4.5.tar.gz  # overwrite old psutil using pip
+RUN pip install --no-index --force -f /root/wheels /root/wheels/saltrepoinspect-1.0.tar.gz
+
+RUN pip --trusted-host pypi.python.org install nox
+RUN pip --trusted-host pypi.python.org install --upgrade pytest==3.8.0 pytest-helpers-namespace pytest-timeout mock timelib boto kubernetes==2.0.0 apache-libcloud unittest2 pytest-salt==2019.12.7
+ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
+CMD ["default"]

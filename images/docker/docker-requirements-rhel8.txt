@@ -1,0 +1,10 @@
+mock
+boto
+six
+apache-libcloud
+unittest2
+python-dateutil==2.6.1
+/root/wheels/salt-testing-2018.1.16.tar.gz
+pytest-timeout
+pytest
+py

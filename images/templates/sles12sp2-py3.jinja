@@ -1,0 +1,25 @@
+{% extends "sles.jinja" %}
+
+{%- block baserepos -%}
+RUN zypper ar -f http://download.suse.de/ibs/SUSE:/SLE-12:/GA/standard/ "sles12"
+RUN zypper ar -f http://download.suse.de/ibs/SUSE:/SLE-12-SP2:/GA/standard/ "sles12sp2"
+RUN zypper ar -f http://download.suse.de/ibs/SUSE:/SLE-12-SP2:/Update/standard/ "sles12sp2-update"
+{% endblock baserepos %}
+
+{%- block testpackages %}
+RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/SLE_12_SP2/ "testpackages"
+{% endblock testpackages -%}
+
+{%- block salt %}
+RUN zypper ar -f http://download.suse.de/ibs/home:/mdinca:/branches:/Devel:/Galaxy:/Manager:/Head:/Other/SLE_12_SP2/ "salt"
+RUN zypper mr -p 1 salt
+{% endblock salt %}
+
+{%- block preinstall -%}
+RUN zypper --non-interactive --gpg-auto-import-keys ref
+RUN zypper -n in python3-xml python3-pip
+RUN zypper -n in --no-recommends python3-devel make bind-utils gcc-c++ openssh rsync
+RUN zypper -n in patch rpmbuild
+RUN pip --trusted-host pypi.python.org install pytest==3.1.1 pytest-timeout mock==1.0.0 timelib boto six kubernetes==2.0.0 apache-libcloud pyyaml==3.11 unittest2 pytest-salt==2019.12.7
+
+{% endblock preinstall -%}

@@ -1,0 +1,10 @@
+*.pyc
+salt.archive
+.envrc
+.direnv/*
+
+# virtualenv
+sandbox/*
+
+# IDEs
+.idea

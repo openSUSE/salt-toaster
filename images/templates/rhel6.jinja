@@ -1,0 +1,8 @@
+{% extends "rhel.jinja" %}
+
+{%- block description %}
+# list rhel6 tags
+# curl -L https://registry.hub.docker.com/v1/repositories/rhel6/tags --http1.0 | python -m json.tool
+FROM registry.mgr.suse.de/rhel6:6.8-124
+LABEL org.opencontainers.image.authors="Mihai Dinca <mdinca@suse.com>
+{% endblock description -%}

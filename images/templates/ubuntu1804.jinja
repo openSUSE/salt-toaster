@@ -1,0 +1,11 @@
+{% extends "ubuntu.jinja" %}
+
+{%- block description %}
+FROM registry.mgr.suse.de/ubuntu:18.04
+LABEL org.opencontainers.image.authors="Pablo Suarez Hernandez <psuarezhernandez@suse.com>
+{% endblock description %}
+
+{% block salt %}
+{{ super() }}
+RUN apt-get install -q -y python3-distutils
+{% endblock salt %}

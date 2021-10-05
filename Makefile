@@ -1,6 +1,7 @@
 DEFAULT_REGISTRY      = salttoaster
 DEFAULT_VERSION       = opensuse151
 DEFAULT_FLAVOR        = devel
+DEFAULT_VENV          = sandbox
 SUSE_DEFAULT_REGISTRY = registry.mgr.suse.de
 SUSE_DEFAULT_VERSION  = sles12sp3
 SUSE_DEFAULT_FLAVOR   = products
@@ -78,6 +79,14 @@ else ifeq ("$(FLAVOR)", "products-3000-testing")
 NOX = False
 endif
 
+ifndef DOCKER_FILE
+	DOCKER_FILE = Dockerfile.$(VERSION).$(FLAVOR)
+endif
+
+ifndef VENV
+	VENV = $(DEFAULT_VENV)
+endif
+
 EXPORTS += \
 	-e "SALT_OLDTESTS=$(SALT_OLDTESTS)" \
 	-e "NO_NOX_SALT_TESTS=$(NO_NOX_SALT_TESTS)" \
@@ -124,6 +133,9 @@ help: title
 	@echo "  saltstack.integration   Run Salt integration tests"
 	@echo "  saltstack.unit          Run Salt unit tests"
 	@echo "  suse.tests              Run SUSE custom integration tests"
+	@echo "  build                   Build the docker images and set the entrypoint to one of the predefined ones."
+	@echo "  build_image             Build the docker images and set the entrypoint to BASH."
+	@echo "  archive-salt            Pack salt into a tarball and archive it"
 	@echo ""
 
 default: help
@@ -275,3 +287,28 @@ ifndef SALT_REPO
 endif
 endif
 	$(EXEC)
+
+archive-salt:
+ifeq ("$(FLAVOR)", "devel")
+ifdef SALT_REPO
+	tar -X .tarexclude -czf images/docker/salt.archive -C $(SALT_REPO) .
+endif
+endif
+
+
+build::
+	@echo "Building images"
+ifeq ("$(FLAVOR)", "devel")
+	$(eval BUILD_OPTS:=--nopull)
+endif
+ifeq ("$(NOPULL)", "true")
+	$(eval BUILD_OPTS:=--nopull)
+endif
+	DOCKER_IMAGE=$(DOCKER_IMAGE) DOCKER_FILE=$(DOCKER_FILE) $(VENV)/bin/python images/build.py $(BUILD_OPTS)
+	rm -f images/docker/salt.archive
+
+
+build_image : CMD=""
+build_image :: archive-salt build
+	$(EXEC)
+

@@ -1,0 +1,23 @@
+{% extends "rhel.jinja" %}
+
+{%- block description %}
+# list rhel7 tags
+# curl -L https://registry.hub.docker.com/v1/repositories/rhel7/tags --http1.0 | python -m json.tool
+FROM registry.mgr.suse.de/rhel7:7.2-104
+LABEL org.opencontainers.image.authors="Mihai Dinca <mdinca@suse.com>
+{% endblock description -%}
+
+{%- block baserepos -%}
+{{ super() }}
+{% if flavor in ["products-next", "products-next-testing", "devel"] %}
+RUN yum-config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/next:/res7-dependencies/RHEL_7/
+RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/next:/res7-dependencies/RHEL_7/repodata/repomd.xml.key
+{% endif %}
+{% endblock baserepos %}
+
+{% block postpip %}
+{{ super() }}
+{% if flavor in ["products-next", "products-next-testing", "devel"] %}
+RUN yum -y --nogpgcheck install python-setuptools python-singledispatch
+{% endif %}
+{% endblock postpip %}

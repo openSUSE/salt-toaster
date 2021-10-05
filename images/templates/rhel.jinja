@@ -1,0 +1,114 @@
+{% extends "base.jinja" %}
+
+{% if major == '8' %}
+{% set pkgmgr = 'dnf' %}
+{%- else -%}
+{% set pkgmgr = 'yum' %}
+{% endif %}
+
+{%- block description %}{% endblock description -%}
+
+{%- block baserepos %}
+RUN rpm -e subscription-manager
+
+
+####### Install missing dependencies from centos{{ major }} ########
+{% if major == '8' %}
+RUN dnf config-manager --add-repo http://ftp.fau.de/centos/8/BaseOS/x86_64/os/
+RUN dnf config-manager --add-repo http://ftp.fau.de/centos/8/AppStream/x86_64/os/
+RUN dnf config-manager --add-repo http://ftp.fau.de/centos/8/extras/x86_64/os/
+{%- else -%}
+RUN yum-config-manager --add-repo http://ftp.fau.de/centos/{{ major }}/os/x86_64/
+RUN yum-config-manager --add-repo http://ftp.fau.de/centos/{{ major }}/updates/x86_64/
+RUN yum-config-manager --add-repo http://ftp.fau.de/centos/{{ major }}/extras/x86_64/
+{% if major == '6' %}
+RUN rpm --import http://vault.centos.org/centos/{{ major }}/os/x86_64/RPM-GPG-KEY-CentOS-{{ major }}
+{% else %}
+RUN rpm --import http://ftp.fau.de/centos/{{ major }}/os/x86_64/RPM-GPG-KEY-CentOS-{{ major }}
+{% endif %}
+{% endif %}
+{% endblock baserepos -%}
+
+{%- block testpackages %}
+{% if major == '8' %}
+RUN dnf config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/CentOS_{{ major }}/
+RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/CentOS_{{ major }}/repodata/repomd.xml.key
+RUN dnf config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/testing:/res8-dependencies/CentOS_{{ major }}/
+RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/testing:/res8-dependencies/CentOS_{{ major }}/repodata/repomd.xml.key
+{%- else -%}
+RUN yum-config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/RHEL_{{ major }}/
+RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/RHEL_{{ major }}/repodata/repomd.xml.key
+{% endif %}
+{% endblock testpackages %}
+
+{%- block salt %}
+{%- set obs_base_url = "http://download.opensuse.org/repositories/systemsmanagement:/saltstack" -%}
+{% if major == '8' %}
+RUN dnf config-manager --add-repo {{ salt_repo_url }}
+{%- else -%}
+RUN yum-config-manager --add-repo {{ salt_repo_url }}
+{% endif %}
+RUN rpm --import {{ salt_repo_url }}/repodata/repomd.xml.key
+{% endblock salt %}
+
+{% block preinstall %}
+RUN {{ pkgmgr }} -y --nogpgcheck clean all
+{% if major == '8' %}
+RUN {{ pkgmgr }} -y --nogpgcheck install which make gcc-c++ rpm-build tar iproute bind-utils net-tools libcurl-devel openssl-devel
+{%- else -%}
+RUN {{ pkgmgr }} -y --nogpgcheck install which make gcc-c++ rpm-build quilt tar iproute bind-utils net-tools
+{% endif %}
+RUN {{ pkgmgr }} -y --nogpgcheck install test-package
+{% endblock preinstall -%}
+
+{%- block install -%}
+{% if major == '8' %}
+RUN {{ pkgmgr }} -y --nogpgcheck install openssh-clients nc tzdata vim glibc-langpack-en
+RUN localedef -i en_US -f UTF-8 en_US.UTF-8 | true
+{%- else -%}
+RUN {{ pkgmgr }} -y --nogpgcheck install openssh-clients openssh-server nc tzdata python-urllib3 vim vim-data
+{% endif %}
+{% if major == '6' %}
+RUN pip install --no-index -f /root/wheels/ -r /root/py26-docker-requirements.txt
+{%- else -%}
+{% if major == '8' %}
+RUN pip install --no-index -f /root/wheels/ -r /root/docker-requirements-rhel8.txt
+{%- else -%}
+RUN pip install --no-index -f /root/wheels/ -r /root/docker-requirements.txt
+{% endif %}
+{% endif %}
+RUN rpm -e --quiet python-salt-testing || true
+RUN pip uninstall -y salttesting || true
+RUN {{ pkgmgr }} -y --nogpgcheck install git
+RUN pip install -U --no-deps git+https://github.com/saltstack/salt-testing.git
+
+{%- if flavor == "devel" %}
+RUN /root/bin/prepare_devel.sh
+{% else %}
+{% if major == '8' %}
+RUN {{ pkgmgr }} -y --nogpgcheck install salt-master salt-minion salt-proxy salt-ssh
+{%- else -%}
+RUN {{ pkgmgr }} -y --nogpgcheck install salt-master salt-minion salt-proxy salt-ssh python-markupsafe
+{% endif %}
+{% endif -%}
+{% endblock install %}
+
+{%- block postinstall %}
+# RUN {{ pkgmgr }} -y --nogpgcheck install oscap openscap-content
+{% endblock postinstall %}
+
+{% block postpip %}
+{% if major in ["6", "7"] %}
+RUN pip --trusted-host pypi.python.org install rsa==3.4.2
+{% endif -%}
+{% if flavor in ["products", "products-testing", "products-next", "products-next-testing", "devel"] %}
+RUN pip --trusted-host pypi.python.org install pytest==4.6.5 pytest-helpers-namespace pytest-timeout mock timelib boto kubernetes==2.0.0 apache-libcloud unittest2 pytest-salt==2020.1.27 gitpython jmespath
+{% else %}
+RUN pip --trusted-host pypi.python.org install pytest==4.6.5 pytest-helpers-namespace pytest-timeout mock timelib boto kubernetes==2.0.0 apache-libcloud unittest2 pytest-salt==2019.12.7 gitpython
+{% endif %}
+{% endblock postpip %}
+
+{%- block entrypoint %}
+ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
+CMD ["default"]
+{% endblock entrypoint %}
