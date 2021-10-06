@@ -66,3 +66,7 @@ develop.zip
 
 # Sandbox
 sandbox/
+
+# IDEs
+.idea
+.vscode

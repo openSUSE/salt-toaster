@@ -1,0 +1,23 @@
+name: Linting Salt-Toaster
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v1
+      - name: Install requirements
+        run: pip install -r requirements.txt --exists-action w --upgrade
+      - name: Install additional requirements
+        run: pip install pytest pylint pytest-factoryboy salt
+      - name: Linting salt-toaster
+        run: pylint --errors-only tests/ utils.py config.py
