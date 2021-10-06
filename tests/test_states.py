@@ -96,7 +96,7 @@ def test_patches_installed_downloadonly_sles(setup):
     patches = master['fixture'].salt(minion['id'],
         'cmd.run "zypper --quiet patches | cut -d\'|\' -f2 | cut -d\' \' -f2"'
         )[minion['id']].encode('utf-8').split(os.linesep)
-    patches = {"patches": filter(lambda x: "SUSE-SLE-SERVER" in x, patches)[:2]}
+    patches = {"patches": list(filter(lambda x: "SUSE-SLE-SERVER" in x, patches))[:2]}
     list_pkgs_pre = master['fixture'].salt(minion['id'], 'pkg.list_pkgs')
     resp = master['fixture'].salt(minion['id'], 'state.apply patches-downloaded pillar=\'{0}\''.format(patches))
     list_pkgs_post = master['fixture'].salt(minion['id'], 'pkg.list_pkgs')
@@ -113,7 +113,7 @@ def test_patches_installed_downloadonly_rhel(setup):
     patches = master['fixture'].salt(minion['id'],
         'cmd.run "yum info-sec | grep \'Update ID\' | cut -d\' \' -f6"'
         )[minion['id']].encode('utf-8').split(os.linesep)
-    patches = {"patches": filter(lambda x: "RHBA" in x, patches)[:2]}
+    patches = {"patches": list(filter(lambda x: "RHBA" in x, patches))[:2]}
     list_pkgs_pre = master['fixture'].salt(minion['id'], 'pkg.list_pkgs')
     resp = master['fixture'].salt(minion['id'], 'state.apply patches-downloaded pillar=\'{0}\''.format(patches))
     list_pkgs_post = master['fixture'].salt(minion['id'], 'pkg.list_pkgs')
