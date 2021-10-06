@@ -1,20 +1,17 @@
 #!/usr/bin/env python
 import sys
 import json
-import BaseHTTPServer
-import SocketServer
+from http.server import SimpleHTTPRequestHandler, HTTPServer
 
 
-class CustomHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class CustomHandler(SimpleHTTPRequestHandler):
     """ """
     def do_GET(self, *args, **kwargs):
         self.send_response(200)
-        self.send_header('Content-type','text/html')
+        self.send_header('Content-type', 'text/html')
         self.end_headers()
-        self.wfile.write(
-            json.dumps(dict(ret=True))
-        )
+        self.wfile.write(bytes(json.dumps(dict(ret=True))))
 
 
-Server = SocketServer.TCPServer(("", int(sys.argv[1])), CustomHandler)
+Server = HTTPServer(("", int(sys.argv[1])), CustomHandler)
 Server.serve_forever()
