@@ -142,6 +142,7 @@ list_targets: title
 	@echo "Available public targets:"
 	@echo "  openSUSE Leap 15.0      DISTRO: opensuse150 - FLAVOR: devel"
 	@echo "  openSUSE Leap 15.1      DISTRO: opensuse151 - FLAVOR: devel"
+	@echo "  openSUSE Leap 15.2      DISTRO: opensuse152 - FLAVOR: devel"
 	@echo "  openSUSE Tumbleweed     DISTRO: tumbleweed  - FLAVOR: devel"
 	@echo "  CentOS 7                DISTRO: centos7     - FLAVOR: devel"
 	@echo "  Ubuntu 16.04            DISTRO: ubuntu1604  - FLAVOR: devel"
