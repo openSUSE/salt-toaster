@@ -1,5 +1,5 @@
 DEFAULT_REGISTRY      = salttoaster
-DEFAULT_VERSION       = opensuse151
+DEFAULT_DISTRO       = opensuse151
 DEFAULT_FLAVOR        = devel
 SUSE_DEFAULT_REGISTRY = registry.mgr.suse.de
 SUSE_DEFAULT_VERSION  = sles12sp3
@@ -19,8 +19,8 @@ ifndef ST_JOB_ID
 	export ST_JOB_ID = local-test-run
 endif
 
-ifndef VERSION
-	VERSION = $(DEFAULT_VERSION)
+ifndef DISTRO
+	DISTRO = $(DEFAULT_DISTRO)
 endif
 
 ifneq (,$(findstring sles,$(FLAVOR)))
@@ -33,18 +33,18 @@ else ifndef FLAVOR
 	FLAVOR = $(DEFAULT_FLAVOR)
 endif
 
-ifneq (,$(findstring sles,$(VERSION)))
+ifneq (,$(findstring sles,$(DISTRO)))
 	DOCKER_REGISTRY = $(SUSE_DEFAULT_REGISTRY)
-else ifneq (,$(findstring rhel,$(VERSION)))
+else ifneq (,$(findstring rhel,$(DISTRO)))
 	DOCKER_REGISTRY = $(SUSE_DEFAULT_REGISTRY)
-else ifneq (,$(findstring ubuntu,$(VERSION)))
+else ifneq (,$(findstring ubuntu,$(DISTRO)))
 	DOCKER_REGISTRY = $(SUSE_DEFAULT_REGISTRY)
 else ifndef DOCKER_REGISTRY
 	DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
 endif
 
 # Ubuntu devel images are stored on DockerHub
-ifneq (,$(findstring ubuntu,$(VERSION)))
+ifneq (,$(findstring ubuntu,$(DISTRO)))
 ifneq (,$(findstring devel,$(FLAVOR)))
     DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
 endif
@@ -57,7 +57,7 @@ endif
 endif
 
 ifndef DOCKER_IMAGE
-	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)-$(FLAVOR)
+	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(DISTRO)-$(FLAVOR)
 endif
 
 ifdef DOCKER_MEM
@@ -79,7 +79,7 @@ NOX = False
 endif
 
 ifndef DOCKER_FILE
-	DOCKER_FILE = Dockerfile.$(VERSION).$(FLAVOR)
+	DOCKER_FILE = Dockerfile.$(DISTRO).$(FLAVOR)
 endif
 
 EXPORTS += \
@@ -87,7 +87,7 @@ EXPORTS += \
 	-e "NO_NOX_SALT_TESTS=$(NO_NOX_SALT_TESTS)" \
 	-e "SALT_PYTESTS=$(SALT_PYTESTS)" \
 	-e "NOX=$(NOX)" \
-	-e "VERSION=$(VERSION)" \
+	-e "DISTRO=$(DISTRO)" \
 	-e "FLAVOR=$(FLAVOR)" \
 	-e "DOCKER_IMAGE=$(DOCKER_IMAGE)" \
 	-e "MINION_VERSION=$(MINION_VERSION)" \
@@ -140,25 +140,25 @@ set_env:
 
 list_targets: title
 	@echo "Available public targets:"
-	@echo "  openSUSE Leap 15.0      VERSION: opensuse150 - FLAVOR: devel"
-	@echo "  openSUSE Leap 15.1      VERSION: opensuse151 - FLAVOR: devel"
-	@echo "  openSUSE Tumbleweed     VERSION: tumbleweed  - FLAVOR: devel"
-	@echo "  CentOS 7                VERSION: centos7     - FLAVOR: devel"
-	@echo "  Ubuntu 16.04            VERSION: ubuntu1604  - FLAVOR: devel"
-	@echo "  Ubuntu 18.04            VERSION: ubuntu1804  - FLAVOR: devel"
+	@echo "  openSUSE Leap 15.0      DISTRO: opensuse150 - FLAVOR: devel"
+	@echo "  openSUSE Leap 15.1      DISTRO: opensuse151 - FLAVOR: devel"
+	@echo "  openSUSE Tumbleweed     DISTRO: tumbleweed  - FLAVOR: devel"
+	@echo "  CentOS 7                DISTRO: centos7     - FLAVOR: devel"
+	@echo "  Ubuntu 16.04            DISTRO: ubuntu1604  - FLAVOR: devel"
+	@echo "  Ubuntu 18.04            DISTRO: ubuntu1804  - FLAVOR: devel"
 	@echo
 	@echo "SUSE internal use only:"
-	@echo "  SUSE SLE11SP4           VERSION: sles11sp4   - FLAVOR: products-old, products-old-testing, devel"
-	@echo "  SUSE SLE12SP3           VERSION: sles12sp3   - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  SUSE SLE12SP4           VERSION: sles12sp4   - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  SUSE SLE15              VERSION: sles15      - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  SUSE SLE15SP1           VERSION: sles15sp1   - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  SUSE SLE15SP2           VERSION: sles15sp2   - FLAVOR: products-next, devel"
-	@echo "  RedHat RHEL6            VERSION: rhel6       - FLAVOR: products-old, products-old-testing, devel"
-	@echo "  RedHat RHEL7            VERSION: rhel7       - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  RedHat RHEL8            VERSION: rhel8       - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  Ubuntu 16.04            VERSION: ubuntu1604  - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  Ubuntu 18.04            VERSION: ubuntu1804  - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE11SP4           DISTRO: sles11sp4   - FLAVOR: products-old, products-old-testing, devel"
+	@echo "  SUSE SLE12SP3           DISTRO: sles12sp3   - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE12SP4           DISTRO: sles12sp4   - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE15              DISTRO: sles15      - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE15SP1           DISTRO: sles15sp1   - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE15SP2           DISTRO: sles15sp2   - FLAVOR: products-next, devel"
+	@echo "  RedHat RHEL6            DISTRO: rhel6       - FLAVOR: products-old, products-old-testing, devel"
+	@echo "  RedHat RHEL7            DISTRO: rhel7       - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  RedHat RHEL8            DISTRO: rhel8       - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  Ubuntu 16.04            DISTRO: ubuntu1604  - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  Ubuntu 18.04            DISTRO: ubuntu1804  - FLAVOR: products, products-testing, products-next, devel"
 	@echo
 
 pull_image:
@@ -203,9 +203,9 @@ endif
 endif
 	$(EXEC)
 
-ifeq ("$(VERSION)", "sles11sp4")
+ifeq ("$(DISTRO)", "sles11sp4")
 saltstack.unit : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.unit/sles11sp4.cfg
-else ifeq ("$(VERSION)", "rhel6")
+else ifeq ("$(DISTRO)", "rhel6")
 saltstack.unit : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.unit/rhel6.cfg
 else
 ifeq ("$(NOX)", "True")
@@ -232,9 +232,9 @@ endif
 endif
 	$(EXEC)
 
-ifeq ("$(VERSION)", "sles11sp4")
+ifeq ("$(DISTRO)", "sles11sp4")
 saltstack.integration : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.integration/sles11sp4.cfg
-else ifeq ("$(VERSION)", "rhel6")
+else ifeq ("$(DISTRO)", "rhel6")
 saltstack.integration : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.integration/rhel6.cfg
 else
 ifeq ("$(NOX)", "True")
@@ -261,7 +261,7 @@ endif
 endif
 	$(EXEC)
 
-suse.tests : PYTEST_CFG=./configs/suse.tests/$(VERSION)/$(FLAVOR).cfg
+suse.tests : PYTEST_CFG=./configs/suse.tests/$(DISTRO)/$(FLAVOR).cfg
 suse.tests : SALT_TESTS=./tests
 suse.tests : PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS) $(PYTEST_FLAGS)
 suse.tests : CMD=pytest $(PYTEST_ARGS) --junitxml results.xml
@@ -273,7 +273,7 @@ suse.tests : EXEC:=timeout 180m $(EXEC)
 endif
 endif
 
-suse.tests : EXEC:=VERSION=$(VERSION) FLAVOR=$(FLAVOR) $(EXEC)
+suse.tests : EXEC:=DISTRO=$(DISTRO) FLAVOR=$(FLAVOR) $(EXEC)
 suse.tests : title pull_image
 ifeq ("$(FLAVOR)", "devel")
 ifndef SALT_REPO

@@ -7,7 +7,7 @@ endif
 
 install_salt_sources:
 	@echo "Installing salt sources"
-	VERSION=$(VERSION) bin/install_salt_sources.sh > /salt-toaster/install_salt_sources.log
+	DISTRO=$(DISTRO) bin/install_salt_sources.sh > /salt-toaster/install_salt_sources.log
 
 fixtures:
 	ln -s $(CONFTEST_SOURCE)  $(ROOT_MOUNTPOINT)/conftest.py
@@ -29,7 +29,7 @@ default: setup
 changelog:
 	$(PYTHON_CMD) /root/bin/lastchangelog salt 3
 
-ifneq (,$(findstring ubuntu,$(VERSION)))
+ifneq (,$(findstring ubuntu,$(DISTRO)))
 tests: default
 else ifneq (,$(findstring devel,$(FLAVOR)))
 tests: default

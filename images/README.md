@@ -36,11 +36,8 @@ This allows testing Salt from a local repository.
 
 Example (run in `salt-toaster` folder):
 ``` sh
-make docker_shell VERSION=sles12sp2 FLAVOR=devel SALT_REPO=/home/store/repositories/salt NOPULL=true
+make docker_shell DISTRO=sles12sp2 FLAVOR=devel SALT_REPO=/home/store/repositories/salt NOPULL=true
 ```
-In the future, `VERSION` will also be renamed to `DISTRO`. This is not the case
-yet, hence the discrepancy between this project and `salt-toaster`.
-
 
 ## Generate docker files
 

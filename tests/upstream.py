@@ -35,7 +35,7 @@ def container(request, docker_client, tmpdir_factory):
             'ROOT_MOUNTPOINT': '/salt/src',
             'TOASTER_MOUNTPOINT': '/salt-toaster',
             'SALT_TESTS': '/salt/src/salt-2015.8.7/tests',
-            'VERSION': 'sles12sp1',
+            'DISTRO': 'sles12sp1',
         },
         config__salt_config=None,
         config__host_config=None

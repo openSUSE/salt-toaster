@@ -106,7 +106,7 @@ make help
 
 === List available targets:
 
-In order to list the what targets (VERSION and FLAVOR) are available for testing:
+In order to list the what targets (DISTRO and FLAVOR) are available for testing:
 
 [source,bash]
 ----
@@ -123,18 +123,18 @@ When running tests we can choose to run:
 
 When running any of these commands, salt-toaster uses the default values for OS and salt-package version.
 
-At the moment, the default VERSION is `opensuse151` and FLAVOR is `devel`
+At the moment, the default DISTRO is `opensuse151` and FLAVOR is `devel`
 
 The first step this command will perform is to pull the right container image from the respective Docker registry.
 
 === Parameters
 
-.VERSION
+.DISTRO
 Most of the time we want to run the tests against a specific OS.
-We can do so by using the `VERSION` environmental variable.
+We can do so by using the `DISTRO` environmental variable.
 
 ----
-make suse.tests VERSION=opensuse151
+make suse.tests DISTRO=opensuse151
 ----
 
 .FLAVOR
@@ -144,10 +144,10 @@ The salt flavor can be specified using the `FLAVOR` environmental variable.
 make suse.tests FLAVOR=products-testing
 ----
 
-Of course, `VERSION` and `FLAVOR` can be combined
+Of course, `DISTRO` and `FLAVOR` can be combined
 
 ----
-make suse.tests VERSION=sles15 FLAVOR=products-testing
+make suse.tests DISTRO=sles15 FLAVOR=products-testing
 ----
 
 .SALT_REPO
@@ -194,15 +194,15 @@ When running the `saltstack.unit` or `saltstack.integration`, `SALT_TESTS` must 
 ====
 
 [cols="1,1a"]
-.Available public targets (`VERSION` and `FLAVOR`):
+.Available public targets (`DISTRO` and `FLAVOR`):
 |===
-| VERSION | opensuse423, opensuse150, opensuse151, tumbleweed, centos7, ubuntu1604, ubuntu1804
+| DISTRO | opensuse423, opensuse150, opensuse151, tumbleweed, centos7, ubuntu1604, ubuntu1804
 | FLAVOR  | devel
 |===
 
-.Available SUSE private (R&D network only) targets (`VERSION` and `FLAVOR`):
+.Available SUSE private (R&D network only) targets (`DISTRO` and `FLAVOR`):
 |===
-| VERSION | rhel6, rhel7, sles11sp3, sles11sp4, sles12, sles12sp1, sles12sp3, sles15, sles15sp1
+| DISTRO | rhel6, rhel7, sles11sp3, sles11sp4, sles12, sles12sp1, sles12sp3, sles15, sles15sp1
 | FLAVOR  | products, products-testing, products-next, devel
 |===
 
@@ -216,23 +216,23 @@ Please take a look at the official https://docs.docker.com/config/containers/res
 
 .Run docker shell in specific local image
 
-    make docker_shell VERSION=sles12sp1 FLAVOR=products
+    make docker_shell DISTRO=sles12sp1 FLAVOR=products
 
 .Run docker shell in repository image based on version and bind rpdb port
 
-    make docker_shell RPDB_PORT="4444" VERSION=sles12sp1 FLAVOR=products
+    make docker_shell RPDB_PORT="4444" DISTRO=sles12sp1 FLAVOR=products
 
 .Run a specific suse test using a local salt repository and sles12sp1
 
-    make -s suse.tests VERSION=sles12sp1 FLAVOR=devel SALT_TESTS="tests/test_pkg.py::test_pkg_info_available"
+    make -s suse.tests DISTRO=sles12sp1 FLAVOR=devel SALT_TESTS="tests/test_pkg.py::test_pkg_info_available"
 
 .Run a subset of upstream unit tests
 
-    make saltstack.unit VERSION=sles12sp1 FLAVOR=products SALT_TESTS=/salt/src/salt-*/tests/unit/modules/zypper_test.py
+    make saltstack.unit DISTRO=sles12sp1 FLAVOR=products SALT_TESTS=/salt/src/salt-*/tests/unit/modules/zypper_test.py
 
 .Run all upstream integration tests
 
-    make saltstack.integration VERSION=sles12sp1 FLAVOR=products
+    make saltstack.integration DISTRO=sles12sp1 FLAVOR=products
 
 == Advanced Usage:
 
