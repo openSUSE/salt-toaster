@@ -1,0 +1,2 @@
+# Required to not accidently commit generated dockerfiles to the git tree
+*.dockerfile

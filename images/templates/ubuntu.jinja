@@ -29,8 +29,8 @@ RUN pip3 --trusted-host pypi.python.org install --upgrade pytest==3.6.1 pytest-t
 {% endblock preinstall -%}
 
 {% block pip %}
-RUN pip3 install --no-index --upgrade --force -f /root/wheels /root/wheels/psutil-5.4.5.tar.gz  # overwrite old psutil using pip
-RUN pip3 install --no-index --force -f /root/wheels /root/wheels/saltrepoinspect-1.0.tar.gz
+RUN pip3 install --no-index --upgrade --force psutil==5.4.5  # overwrite old psutil using pip
+RUN pip3 install --no-index --force https://github.com/dincamihai/saltrepoinspect/archive/refs/tags/v1.1.tar.gz
 RUN pip3 install --upgrade pytest-tempdir
 RUN pip3 install nox
 {% endblock pip %}

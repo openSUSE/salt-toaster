@@ -4,12 +4,11 @@
 # VERSION               0
 {% from 'macros.jinja' import pkg_install with context %}
 
-{% block description %}{% endblock description %}
+{% block description -%}{%- endblock description %}
+LABEL org.opencontainers.image.authors="Salt-Maintainers <salt-maintainers@suse.de>"
 
 ENV LC_ALL en_US.UTF-8
 COPY Makefile /root/Makefile
-COPY get-pip.py /root/get-pip.py
-COPY wheels/ /root/wheels/
 COPY docker-requirements.txt /root/
 COPY docker-requirements-rhel8.txt /root/
 COPY docker-requirements-common.txt /root/
@@ -58,21 +57,13 @@ RUN yum -y --nogpgcheck install python python-devel
 {% endif %}
 {% endif %}
 
-{% if major == '11' %}
-RUN {{ python_exec }} /root/get-pip.py --no-index /root/wheels/pip-9.0.3-py2.py3-none-any.whl /root/wheels/setuptools-20.2.2-py2.py3-none-any.whl -f /root/wheels/
-{% elif major == '12' %}
-RUN {{ python_exec }} /root/get-pip.py --no-index /root/wheels/pip-9.0.3-py2.py3-none-any.whl /root/wheels/setuptools-20.2.2-py2.py3-none-any.whl -f /root/wheels/
-{%- else -%}
-RUN {{ python_exec }} /root/get-pip.py --no-index /root/wheels/pip-9.0.3-py2.py3-none-any.whl /root/wheels/setuptools-33.1.1-py2.py3-none-any.whl -f /root/wheels/
-{% endif %}
-
 {% block preinstall %}{% endblock preinstall %}
 {% block install %}{% endblock install %}
 {%- block postinstall %}{% endblock postinstall %}
 {% block pip %}
 {%- if flavor in ["products-next-testing", "products-next", "products-testing", "products", "devel"] %}
-{% if major != '6' %}
-RUN pip install --no-index /root/wheels/pytest_salt-2018.2.2-py2.py3-none-any.whl -f /root/wheels/
+{% if major != '6' -%}
+RUN pip install --no-index pytest-salt==2018.2.2
 {%- endif %}
 {%- endif %}
 {%- if flavor in ["products", "products-testing"] %}
@@ -80,23 +71,23 @@ RUN pip install --no-index /root/wheels/pytest_salt-2018.2.2-py2.py3-none-any.wh
 RUN zypper --non-interactive in py26-compat-salt py26-compat-tornado py26-compat-msgpack-python
 {%- endif %}
 {%- endif %}
-{% if salt_version == "2017.7.1" %}
+{% if salt_version == "2017.7.1" -%}
 {{ pkg_install("sudo") }}
 RUN pip install git+https://github.com/eisensheng/pytest-catchlog.git@develop#egg=pytest_catchlog==1.2.2-dev
 {% else %}
 # RUN pip install moto
-{% endif -%}
-{% if major == '6' %}
+{%- endif -%}
+{% if major == '6' -%}
 RUN pip install setuptools==30.1.0
 {%- endif %}
-RUN pip install --no-index --upgrade --force -f /root/wheels /root/wheels/psutil-5.4.5.tar.gz  # overwrite old psutil using pip
-RUN pip install --no-index --force -f /root/wheels /root/wheels/saltrepoinspect-1.0.tar.gz
-{% if major == '7' or major == '15' %}
-RUN pip install --no-index --force -f /root/wheels pytest-catchlog --ignore-installed six
-{% endif %}
-{%- if flavor in ["products", "products-testing", "products-next", "products-next-testing", "devel"] %}
+RUN pip install --no-index --upgrade --force psutil==5.4.5  # overwrite old psutil using pip
+RUN pip install --no-index --force https://github.com/dincamihai/saltrepoinspect/archive/refs/tags/v1.1.tar.gz
+{% if major == '7' or major == '15' -%}
+RUN pip install --no-index --force pytest-catchlog --ignore-installed six
+{%- endif %}
+{%- if flavor in ["products", "products-testing", "products-next", "products-next-testing", "devel"] -%}
 RUN pip --trusted-host pypi.python.org install nox
-{% endif -%}
+{%- endif -%}
 {% endblock pip %}
 {%- block postpip -%}{%- endblock postpip -%}
 {%- block entrypoint %}{% endblock entrypoint %}

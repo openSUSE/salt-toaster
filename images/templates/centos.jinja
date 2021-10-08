@@ -1,20 +1,21 @@
 {% extends "base.jinja" %}
 
-{%- block description %}{% endblock description -%}
+{%- block description %}
+FROM {{ parent_image }}
+{% endblock description -%}
 
 {%- block baserepos %}
 RUN rpm -e subscription-manager
-
 
 ####### Install missing dependencies from centos{{ major }} ########
 RUN yum-config-manager --add-repo http://ftp.fau.de/centos/{{ major }}/os/x86_64/
 RUN yum-config-manager --add-repo http://ftp.fau.de/centos/{{ major }}/updates/x86_64/
 RUN yum-config-manager --add-repo http://ftp.fau.de/centos/{{ major }}/extras/x86_64/
-{% if major == '6' %}
+{% if major == '6' -%}
 RUN rpm --import http://vault.centos.org/centos/{{ major }}/os/x86_64/RPM-GPG-KEY-CentOS-{{ major }}
 {% else %}
 RUN rpm --import http://ftp.fau.de/centos/{{ major }}/os/x86_64/RPM-GPG-KEY-CentOS-{{ major }}
-{% endif %}
+{%- endif %}
 {% endblock baserepos -%}
 
 {%- block testpackages %}
@@ -37,9 +38,9 @@ RUN yum -y --nogpgcheck install test-package-0.0-5.4.noarch
 {%- block install -%}
 RUN yum -y --nogpgcheck install openssh-clients openssh-server nc tzdata python-urllib3 vim vim-data libcurl-devel libopenssl-devel
 {% if major == '6' %}
-RUN pip install --no-index -f /root/wheels/ -r /root/py26-docker-requirements.txt
+RUN pip install --no-index -r /root/py26-docker-requirements.txt
 {%- else -%}
-RUN pip install --no-index -f /root/wheels/ -r /root/docker-requirements.txt
+RUN pip install --no-index -r /root/docker-requirements.txt
 {% endif %}
 RUN rpm -e --quiet python-salt-testing || true
 RUN pip uninstall -y salttesting || true

@@ -132,12 +132,6 @@ BASE_FLAVOR=products-testing python generate.py --distro sles15 --flavor devel
 
 ## Building New Images
 
-### Downloading the wheel packages
-
-``` sh
-pip wheel --wheel-dir=./docker/wheels -r docker/docker-requirements.txt
-```
-
 ### Docker Build
 
 `make` is used to invoke a Python script that triggers the "`docker build`".

@@ -1,9 +1,8 @@
 {% extends "base.jinja" %}
 
-{%- block description %}
+{%- block description -%}
 FROM {{ parent_image }}
-LABEL org.opencontainers.image.authors="Mihai Dinca <mdinca@suse.com>"
-{% endblock description %}
+{%- endblock description %}
 
 {%- block copy %}
 COPY bin/install_salt.sh /root/bin/install_salt.sh
@@ -33,7 +32,7 @@ RUN zypper -n mr -p 1 salt
 {% block preinstall %}
 RUN zypper --non-interactive --gpg-auto-import-keys ref
 RUN zypper -n in rpm-build
-{% from 'macros' import add_packages with context %}
+{% from 'macros.jinja' import add_packages with context %}
 {{ add_packages(major) }}
 {% endblock preinstall %}
 
@@ -43,7 +42,6 @@ RUN /root/bin/prepare_devel.sh
 
 ADD salt.archive /salt/src/salt-devel
 RUN pip install -e /salt/src/salt-devel
-
 {% else %}
 RUN /root/bin/install_salt.sh
 {% endif -%}
@@ -56,7 +54,7 @@ RUN zypper -n in netcat-openbsd timezone # spacewalk-oscap openscap-content vim 
 RUN rpm -e --quiet python-salt-testing || true
 RUN pip uninstall -y salttesting || true
 {% endif -%}
-RUN pip install -U --no-deps --no-index -f /root/wheels /root/wheels/salt-testing-2018.1.16.tar.gz
+RUN pip install -U --no-deps --no-index salt-testing==2018.1.16
 
 {% if major == "12" %}
 RUN zypper -n in python2-pyOpenSSL

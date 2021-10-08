@@ -2,14 +2,12 @@
 # make sure the package repository is up to date
 RUN zypper --non-interactive --gpg-auto-import-keys ref
 RUN zypper -n in --no-recommends make bind-utils gcc-c++ openssh rsync
-{% if major == '11' %}
+{% if major == '11' -%}
 RUN zypper -n in tar patch
-{% endif %}
-{% if major == '11' %}
-RUN pip install --no-index -f /root/wheels/ -r /root/py26-docker-requirements.txt
+RUN pip install --no-index -r /root/py26-docker-requirements.txt
 {%- else -%}
-RUN pip install --no-index -f /root/wheels/ -r /root/docker-requirements.txt
-{% endif %}
+RUN pip install --no-index -r /root/docker-requirements.txt
+{%- endif %}
 {% endmacro %}
 
 {% macro pkg_install(name) -%}

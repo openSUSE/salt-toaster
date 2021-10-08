@@ -4,7 +4,6 @@
 # list rhel7 tags
 # curl -L https://registry.hub.docker.com/v1/repositories/rhel7/tags --http1.0 | python -m json.tool
 FROM registry.mgr.suse.de/rhel7:7.2-104
-LABEL org.opencontainers.image.authors="Mihai Dinca <mdinca@suse.com>
 {% endblock description -%}
 
 {%- block baserepos -%}
