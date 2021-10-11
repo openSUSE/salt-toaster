@@ -1,6 +1,8 @@
 {% extends "base.jinja" %}
 
-{%- block description %}{% endblock description -%}
+{%- block description %}
+FROM {{ parent_image }}
+{% endblock description -%}
 
 {%- block salt %}
 RUN apt-get update
