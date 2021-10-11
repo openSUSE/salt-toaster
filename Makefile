@@ -79,7 +79,7 @@ NOX = False
 endif
 
 ifndef DOCKER_FILE
-	DOCKER_FILE = Dockerfile.$(DISTRO).$(FLAVOR)
+	DOCKER_FILE = $(DISTRO).$(FLAVOR).dockerfile
 endif
 
 EXPORTS += \
@@ -140,26 +140,26 @@ set_env:
 
 list_targets: title
 	@echo "Available public targets:"
-	@echo "  openSUSE Leap 15.0      DISTRO: opensuse150 - FLAVOR: devel"
-	@echo "  openSUSE Leap 15.1      DISTRO: opensuse151 - FLAVOR: devel"
-	@echo "  openSUSE Leap 15.2      DISTRO: opensuse152 - FLAVOR: devel"
-	@echo "  openSUSE Tumbleweed     DISTRO: tumbleweed  - FLAVOR: devel"
-	@echo "  CentOS 7                DISTRO: centos7     - FLAVOR: devel"
-	@echo "  Ubuntu 16.04            DISTRO: ubuntu1604  - FLAVOR: devel"
-	@echo "  Ubuntu 18.04            DISTRO: ubuntu1804  - FLAVOR: devel"
+	@echo "  openSUSE Leap 15.1      DISTRO: leap15.1     - FLAVOR: devel"
+	@echo "  openSUSE Leap 15.2      DISTRO: leap15.2     - FLAVOR: devel"
+	@echo "  openSUSE Leap 15.3      DISTRO: leap15.3     - FLAVOR: devel"
+	@echo "  openSUSE Tumbleweed     DISTRO: tumbleweed   - FLAVOR: devel"
+	@echo "  CentOS 7                DISTRO: centos7      - FLAVOR: devel"
+	@echo "  Ubuntu 16.04            DISTRO: ubuntu16.04  - FLAVOR: devel"
+	@echo "  Ubuntu 18.04            DISTRO: ubuntu18.04  - FLAVOR: devel"
 	@echo
 	@echo "SUSE internal use only:"
-	@echo "  SUSE SLE11SP4           DISTRO: sles11sp4   - FLAVOR: products-old, products-old-testing, devel"
-	@echo "  SUSE SLE12SP3           DISTRO: sles12sp3   - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  SUSE SLE12SP4           DISTRO: sles12sp4   - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  SUSE SLE15              DISTRO: sles15      - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  SUSE SLE15SP1           DISTRO: sles15sp1   - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  SUSE SLE15SP2           DISTRO: sles15sp2   - FLAVOR: products-next, devel"
-	@echo "  RedHat RHEL6            DISTRO: rhel6       - FLAVOR: products-old, products-old-testing, devel"
-	@echo "  RedHat RHEL7            DISTRO: rhel7       - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  RedHat RHEL8            DISTRO: rhel8       - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  Ubuntu 16.04            DISTRO: ubuntu1604  - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  Ubuntu 18.04            DISTRO: ubuntu1804  - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE11SP4           DISTRO: sles11sp4    - FLAVOR: products-old, products-old-testing, devel"
+	@echo "  SUSE SLE12SP3           DISTRO: sles12sp3    - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE12SP4           DISTRO: sles12sp4    - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE15              DISTRO: sles15       - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE15SP1           DISTRO: sles15sp1    - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE15SP2           DISTRO: sles15sp2    - FLAVOR: products-next, devel"
+	@echo "  RedHat RHEL6            DISTRO: rhel6        - FLAVOR: products-old, products-old-testing, devel"
+	@echo "  RedHat RHEL7            DISTRO: rhel7        - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  RedHat RHEL8            DISTRO: rhel8        - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  Ubuntu 16.04            DISTRO: ubuntu16.04  - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  Ubuntu 18.04            DISTRO: ubuntu18.04  - FLAVOR: products, products-testing, products-next, devel"
 	@echo
 
 pull_image:
@@ -294,9 +294,6 @@ endif
 
 build::
 	@echo "Building images"
-ifeq ("$(FLAVOR)", "devel")
-	$(eval BUILD_OPTS:=--nopull)
-endif
 ifeq ("$(NOPULL)", "true")
 	$(eval BUILD_OPTS:=--nopull)
 endif

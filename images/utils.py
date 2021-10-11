@@ -35,19 +35,16 @@ def parse_distro(distro_str) -> Distro:
         re.VERBOSE,
     ).groups()
 
-    # We use names like opensuse152 for openSUSE Leap 15.2
-    if name == "opensuse":
-        minor = major[-1]
-
     # allow version comparisons for openSUSE Tumbleweed
     if name == "tumbleweed":
         major = "2000"
 
     return Distro(name, major, separator, minor)
 
+
 def parse_version(version):
     """Deprecated. Use parse_distro instead."""
-    exp = '(?P<vendor>sles|rhel|centos|ubuntu|opensuse|tumbleweed)(?:(?P<major>\d{1,2})(?:(?P<sp>sp)*(?P<minor>\d+))?)?'
+    exp = '(?P<vendor>sles|rhel|centos|ubuntu|leap|tumbleweed)(?:(?P<major>\d{1,2})(?:(?P<sp>sp)*(?P<minor>\d+))?)?'
     return re.match(exp, version).groups()
 
 
@@ -155,11 +152,17 @@ def get_docker_params(distro_str, flavor):
     repo_name = get_repo_name(distro_str, flavor)
     salt_repo_name = get_salt_repo_name(distro_str, flavor)
     salt_repo_url_flavor = get_salt_repo_url_flavor(flavor)
-    parent_image = 'registry.mgr.suse.de/{0}'.format(distro_str)
+    image_registry = os.environ.get('IMAGE_REGISTRY', 'registry.mgr.suse.de')
     if distro.name == 'ubuntu':
-        parent_image = '{0}:{1}.{2}'.format(distro.name, distro.major, distro.minor)
+        parent_image = '{0}/{1}:{2}.{3}'.format(image_registry, distro.name, distro.major, distro.minor)
+    elif distro.name == 'leap':
+        parent_image = '{0}/opensuse/{1}:{2}.{3}'.format(image_registry, distro.name, distro.major, distro.minor)
     elif distro.name == 'tumbleweed':
         parent_image = 'opensuse/tumbleweed'
+    elif distro.name == 'centos':
+        parent_image = '{0}/{1}:{2}'.format(image_registry, distro.name, distro.major)
+    else:
+        parent_image = '{0}/{1}:{2}.{3}'.format(image_registry, distro.name, distro.major, distro.minor)
     salt_repo_url = get_salt_repo_url(distro_str, flavor)
     salt_version = get_salt_version(distro_str, flavor)
 
@@ -218,18 +221,19 @@ def generate_dockerfile(version, flavor):
         'sles15': 'sles15',
         'sles15sp1': 'sles15sp1',
         'sles15sp2': 'sles15sp2',
-        'opensuse423': 'opensuse',
-        'opensuse150': 'opensuse',
-        'opensuse151': 'opensuse',
+        'leap15.1': 'opensuse',
+        'leap15.2': 'opensuse',
+        'leap15.3': 'opensuse',
         'tumbleweed': 'tumbleweed',
         'ubuntu1604': 'ubuntu1604',
         'ubuntu1804': 'ubuntu1804',
+        'ubuntu2004': 'ubuntu1804',
     }
     parameters = get_docker_params(version, flavor)
     template_name = "{0}.jinja".format(TEMPLATES_OVERRIDES.get(version, parameters['vendor']))
     template = env.get_template(template_name)
     content = template.render(**parameters)
-    fpath = Path('docker') / 'Dockerfile.{}.{}'.format(version, flavor)
+    fpath = Path('docker') / '{}.{}.dockerfile'.format(version, flavor)
     print("Generating {0} using salt-{1}".format(fpath, parameters['salt_version']))
     with open(fpath, 'w') as f:
         f.write(content)

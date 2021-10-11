@@ -21,9 +21,9 @@ DISTROS = {
     "ubuntu1804",
     "ubuntu2004",
     "centos7",
-    "opensuse151",
-    "opensuse152",
-    "opensuse153",
+    "leap15.1",
+    "leap15.2",
+    "leap15.3",
     "tumbleweed",
 }
 
@@ -37,10 +37,7 @@ FLAVORS = {
     "devel",
 }
 
-INCLUDE: Set[DFC] = {
-    DFC("sles11sp4", "products-old"),
-    DFC("sles11sp4", "products-old-testing"),
-}
+INCLUDE: Set[DFC] = set()
 
 EXCLUSIONS: Set[DFC] = {
     DFC(
