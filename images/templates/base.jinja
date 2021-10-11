@@ -81,7 +81,6 @@ RUN pip install git+https://github.com/eisensheng/pytest-catchlog.git@develop#eg
 RUN pip install setuptools==30.1.0
 {%- endif %}
 RUN pip install --no-index --upgrade --force psutil==5.4.5  # overwrite old psutil using pip
-RUN pip install --no-index --force https://github.com/dincamihai/saltrepoinspect/archive/refs/tags/v1.1.tar.gz
 {% if major == '7' or major == '15' -%}
 RUN pip install --no-index --force pytest-catchlog --ignore-installed six
 {%- endif %}
