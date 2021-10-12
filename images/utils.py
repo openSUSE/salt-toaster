@@ -16,6 +16,8 @@ except ImportError:
 
 Distro = namedtuple("Distro", ["name", "major", "version_separator", "minor"])
 
+OPENSUSE_TUMBLEWEED_MAJOR = "2000"
+
 
 def parse_distro(distro_str) -> Distro:
     """Use a regular expression to parse a distro_str into its components."""
@@ -32,7 +34,7 @@ def parse_distro(distro_str) -> Distro:
 
     # allow version comparisons for openSUSE Tumbleweed
     if name == "tumbleweed":
-        major = "2000"
+        major = OPENSUSE_TUMBLEWEED_MAJOR
 
     return Distro(name, major, separator, minor)
 
@@ -95,15 +97,22 @@ def get_repo_name(distro):
 
 def get_salt_repo_name(distro):
     vendor, version_major, separator, version_minor = parse_distro(distro)
-    repo_name = get_repo_name(distro)
-    salt_repo_name = 'SLE_{0}'.format(repo_name).upper()
     if vendor == 'rhel':
-        salt_repo_name = '{0}_{1}'.format(vendor, repo_name)
+        return 'RHEL_{0}'.format(version_major)
+    elif vendor == 'centos':
+        return 'CentOS_{0}'.format(version_major)
+    elif vendor == 'fedora':
+        return 'Fedora_{0}'.format(version_major)
+    elif vendor == 'sles':
+        return 'SLE_{0}_SP{1}'.format(version_major, version_minor)
+    elif vendor == 'leap':
+        return 'openSUSE_Leap_{0}.{1}'.format(version_major, version_minor)
+    elif vendor == 'tumbleweed':
+        return 'openSUSE_Tumbleweed'
+    elif vendor == 'ubuntu':
+        return 'xUbuntu_{0}.{1}'.format(version_major, version_minor)
 
-    if distro in ['sles11sp3', 'sles11sp4']:
-        salt_repo_name = 'SLE_11_SP4'
-
-    return salt_repo_name
+    raise Exception('No vendor matched the list of known vendors! %s', vendor)
 
 
 def get_salt_repo_url_flavor(flavor):
@@ -125,7 +134,7 @@ def get_salt_repo_url(distro, flavor):
         "http://{0}/repositories/systemsmanagement:/saltstack:/{1}/{2}/".format(
             os.environ.get("MIRROR", "download.opensuse.org"),
             salt_repo_url_flavor,
-            salt_repo_name.upper()
+            salt_repo_name
         )
     )
     return salt_repo_url

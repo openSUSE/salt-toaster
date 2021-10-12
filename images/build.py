@@ -20,9 +20,9 @@ def main():
 
         if not re.search(r'.+\[[. ]*$', content):
             if not isinstance(content, str):
-                print(content.encode('utf8'))
+                print(content.encode('utf8'), end='')
             else:
-                print(content)
+                print(content, end='')
             content = ''
 
 

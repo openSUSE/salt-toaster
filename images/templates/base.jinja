@@ -84,9 +84,9 @@ RUN pip install --no-index --upgrade --force psutil==5.4.5  # overwrite old psut
 {% if major == '7' or major == '15' -%}
 RUN pip install --no-index --force pytest-catchlog --ignore-installed six
 {%- endif %}
-{%- if flavor in ["products", "products-testing", "products-next", "products-next-testing", "devel"] -%}
+{% if flavor in ["products", "products-testing", "products-next", "products-next-testing", "devel"] -%}
 RUN pip --trusted-host pypi.python.org install nox
-{%- endif -%}
+{%- endif %}
 {% endblock pip %}
 {%- block postpip -%}{%- endblock postpip -%}
 {%- block entrypoint %}{% endblock entrypoint %}

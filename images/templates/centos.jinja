@@ -5,8 +5,6 @@ FROM {{ parent_image }}
 {% endblock description -%}
 
 {%- block baserepos %}
-RUN rpm -e subscription-manager
-
 ####### Install missing dependencies from centos{{ major }} ########
 RUN yum-config-manager --add-repo http://ftp.fau.de/centos/{{ major }}/os/x86_64/
 RUN yum-config-manager --add-repo http://ftp.fau.de/centos/{{ major }}/updates/x86_64/
@@ -26,7 +24,7 @@ RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/sa
 {%- block salt %}
 {%- set obs_base_url = "http://download.opensuse.org/repositories/systemsmanagement:/saltstack" -%}
 RUN yum-config-manager --add-repo {{ salt_repo_url }}
-RUN rpm --import {{ salt_repo_url }}/repodata/repomd.xml.key
+RUN rpm --import {{ salt_repo_url }}repodata/repomd.xml.key
 {% endblock salt %}
 
 {% block preinstall %}
