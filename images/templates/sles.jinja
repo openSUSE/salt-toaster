@@ -1,13 +1,5 @@
 {% extends "base.jinja" %}
 
-{%- block description -%}
-FROM {{ parent_image }}
-{%- endblock description %}
-
-{%- block copy %}
-COPY bin/install_salt.sh /root/bin/install_salt.sh
-{% endblock copy -%}
-
 {%- block baserepos -%}
 # Use your credentials for the 'nu.novell' domain within the URL, in case required
 RUN zypper -n ar -f http://nu.novell.com/SUSE/Products/SLE-SERVER/{{ novel_repo_name }}/x86_64/product/ "SLES {{ repo_label }} Pool"
@@ -32,30 +24,44 @@ RUN zypper -n mr -p 1 salt
 
 {% block preinstall %}
 RUN zypper --non-interactive --gpg-auto-import-keys ref
-RUN zypper -n in rpm-build
+RUN zypper -nq in curl vim vim-data rpm-build python3-pip
+RUN zypper -n in --no-recommends python python-devel python-xml
+{%- if major|int > 12 %}
+RUN zypper -n in --no-recommends python3 python3-devel python3-xml
+{%- endif %}
+
 {% from 'macros.jinja' import add_packages with context %}
 {{ add_packages(major) }}
 {% endblock preinstall %}
 
 {%- block install %}
 {%- if flavor == "devel" %}
-RUN /root/bin/prepare_devel.sh
+RUN zypper -n in swig gcc-c++ libopenssl-devel
+# RUN zypper -n in --oldpackage test-package=42:0.0
+RUN zypper -n in git curl awk vim
+RUN zypper -n up zypper libzypp
+RUN zypper -n in python3-pytest python3-PyYAML python3-Jinja2 python3-pyzmq python3-M2Crypto python3-mock python3-apache-libcloud python3-six python3-dateutil
+RUN mkdir -p /etc/salt
+RUN touch /etc/salt/master
+RUN touch /etc/salt/minion
 
-ADD salt.archive /salt/src/salt-devel
-RUN pip install -e /salt/src/salt-devel
+#ADD salt.archive /salt/src/salt-devel
+#RUN pip install -e /salt/src/salt-devel
 {% else %}
-RUN /root/bin/install_salt.sh
+RUN zypper --non-interactive in salt-master salt-minion salt-proxy salt-ssh
+# RUN zypper --non-interactive in --oldpackage test-package=42:0.0
+RUN zypper --non-interactive in git curl
+RUN zypper --non-interactive up zypper libzypp
 {% endif -%}
 {% endblock install %}
 
 {%- block postinstall %}
+{% if vendor == "sles" %}
+{# We need this if because we use this template as a base for openSUSE based images. #}
 RUN zypper -n rm container-suseconnect
-RUN zypper -n in netcat-openbsd timezone # spacewalk-oscap openscap-content vim vim-data
-{% if major == "11" %}
-RUN rpm -e --quiet python-salt-testing || true
-RUN pip uninstall -y salttesting || true
-{% endif -%}
-RUN pip install -U --no-deps --no-index salt-testing==2018.1.16
+{% endif %}
+RUN zypper -n in netcat-openbsd timezone # spacewalk-oscap openscap-content
+RUN pip install -U --no-deps SaltTesting==2018.1.16
 
 {% if major == "12" %}
 RUN zypper -n in python2-pyOpenSSL
@@ -67,6 +73,14 @@ RUN zypper --non-interactive install libcurl-devel libopenssl-devel
 {% endif %}
 {%- endblock postinstall %}
 
+{% block pip %}
+{{ super() }}
+{%- if flavor in ["products", "products-testing"] %}
+RUN zypper --non-interactive in py26-compat-salt py26-compat-tornado py26-compat-msgpack-python
+{%- endif %}
+
+{% endblock pip %}
+
 {% block postpip %}
 {% if major == "12" %}
 RUN pip --trusted-host pypi.python.org install rsa==3.4.2
@@ -77,8 +91,3 @@ RUN pip --trusted-host pypi.python.org install pytest==4.6.5 pytest-helpers-name
 RUN pip --trusted-host pypi.python.org install pytest==4.6.5 pytest-helpers-namespace pytest-timeout mock timelib boto kubernetes==2.0.0 apache-libcloud unittest2 pytest-salt==2019.12.7 gitpython
 {% endif %}
 {% endblock postpip %}
-
-{%- block entrypoint %}
-ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
-CMD ["default"]
-{% endblock entrypoint %}

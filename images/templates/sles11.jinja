@@ -18,3 +18,9 @@ RUN zypper -n in python python-xml git
 RUN git config --global user.name "Peter Parker"
 RUN git config --global user.email "pp@dailyplanet.com"
 {% endblock preinstall -%}
+
+{% block postinstall -%}
+RUN rpm -e --quiet python-salt-testing || true
+RUN pip uninstall -y salttesting || true
+{{ super() }}
+{%- endblock postinstall %}

@@ -1,3 +1,2 @@
 -r requirements-common.txt
 git+https://github.com/dincamihai/pytest-salt-containers.git
-git+https://github.com/dincamihai/saltrepoinspect.git

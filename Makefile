@@ -178,7 +178,7 @@ else
 REQUIREMENTS_FILE=requirements/static/ci/py3.6/linux.txt
 endif
 GOTO_SALT_ROOT=cd $(ROOT_MOUNTPOINT)/salt-*
-PATCH_REQUIREMENTS=sed -i 's/attrs==19.1.0/attrs==19.2.0/' $(REQUIREMENTS_FILE) && echo /root/wheels/saltrepoinspect-1.1.tar.gz >> $(REQUIREMENTS_FILE)
+PATCH_REQUIREMENTS=sed -i 's/attrs==19.1.0/attrs==19.2.0/' $(REQUIREMENTS_FILE)
 NOX_CMD=$(GOTO_SALT_ROOT) && mv ../conftest.py . && $(PATCH_REQUIREMENTS) && nox --session 'pytest-3(coverage=False)' -- $(NOX_PYTEST_ARGS) --junitxml results.xml
 
 ifeq ("$(NOX)", "True")
@@ -299,7 +299,7 @@ ifeq ("$(NOPULL)", "true")
 endif
 
 ifndef VENV
-	DOCKER_IMAGE=$(DOCKER_IMAGE) DOCKER_FILE=$(DOCKER_FILE) python images/build.py $(BUILD_OPTS)
+	DOCKER_IMAGE=$(DOCKER_IMAGE) DOCKER_FILE=$(DOCKER_FILE) python3 images/build.py $(BUILD_OPTS)
 else
 	DOCKER_IMAGE=$(DOCKER_IMAGE) DOCKER_FILE=$(DOCKER_FILE) $(VENV)/bin/python images/build.py $(BUILD_OPTS)
 endif

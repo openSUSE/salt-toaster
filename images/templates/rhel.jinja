@@ -6,10 +6,6 @@
 {% set pkgmgr = 'yum' %}
 {% endif %}
 
-{%- block description %}
-FROM {{ parent_image }}
-{% endblock description -%}
-
 {%- block baserepos %}
 RUN rpm -e subscription-manager
 
@@ -53,13 +49,20 @@ RUN rpm --import {{ salt_repo_url }}/repodata/repomd.xml.key
 {% endblock salt %}
 
 {% block preinstall %}
+{% if major == '8' %}
+RUN dnf -y --nogpgcheck install python36 python36-devel
+{%- else -%}
+RUN yum -y --nogpgcheck install python python-devel
+{% endif %}
+
 RUN {{ pkgmgr }} -y --nogpgcheck clean all
+RUN {{ pkgmgr }} -y --nogpgcheck python3-pip
 {% if major == '8' %}
 RUN {{ pkgmgr }} -y --nogpgcheck install which make gcc-c++ rpm-build tar iproute bind-utils net-tools libcurl-devel openssl-devel
 {%- else -%}
 RUN {{ pkgmgr }} -y --nogpgcheck install which make gcc-c++ rpm-build quilt tar iproute bind-utils net-tools
 {% endif %}
-RUN {{ pkgmgr }} -y --nogpgcheck install test-package
+#RUN {{ pkgmgr }} -y --nogpgcheck install test-package
 {% endblock preinstall -%}
 
 {%- block install -%}
@@ -70,21 +73,28 @@ RUN localedef -i en_US -f UTF-8 en_US.UTF-8 | true
 RUN {{ pkgmgr }} -y --nogpgcheck install openssh-clients openssh-server nc tzdata python-urllib3 vim vim-data
 {% endif %}
 {% if major == '6' %}
-RUN pip install --no-index -r /root/py26-docker-requirements.txt
+RUN pip install -r /root/py26-docker-requirements.txt
 {%- else -%}
 {% if major == '8' %}
-RUN pip install --no-index -r /root/docker-requirements-rhel8.txt
+RUN pip install -r /root/docker-requirements-rhel8.txt
 {%- else -%}
-RUN pip install --no-index -r /root/docker-requirements.txt
+RUN pip install -r /root/docker-requirements.txt
 {% endif %}
 {% endif %}
 RUN rpm -e --quiet python-salt-testing || true
 RUN pip uninstall -y salttesting || true
 RUN {{ pkgmgr }} -y --nogpgcheck install git
-RUN pip install -U --no-deps git+https://github.com/saltstack/salt-testing.git
+RUN pip install -U --no-deps SaltTesting
 
 {%- if flavor == "devel" %}
-RUN /root/bin/prepare_devel.sh
+RUN yum -y --nogpgcheck install swig gcc-c++ openssl-devel openssl-libs m2crypto python-cherrypy python-msgpack-python python-tornado python-jinja2 python-futures python-zmq
+#RUN yum -y --nogpgcheck install test-package
+RUN yum -y --nogpgcheck install git curl
+RUN yum -y install nmap-ncat || true
+RUN pip install pytest rpdb
+RUN mkdir -p /etc/salt
+RUN touch /etc/salt/master
+RUN touch /etc/salt/minion
 {% else %}
 {% if major == '8' %}
 RUN {{ pkgmgr }} -y --nogpgcheck install salt-master salt-minion salt-proxy salt-ssh
@@ -108,8 +118,3 @@ RUN pip --trusted-host pypi.python.org install pytest==4.6.5 pytest-helpers-name
 RUN pip --trusted-host pypi.python.org install pytest==4.6.5 pytest-helpers-namespace pytest-timeout mock timelib boto kubernetes==2.0.0 apache-libcloud unittest2 pytest-salt==2019.12.7 gitpython
 {% endif %}
 {% endblock postpip %}
-
-{%- block entrypoint %}
-ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
-CMD ["default"]
-{% endblock entrypoint %}

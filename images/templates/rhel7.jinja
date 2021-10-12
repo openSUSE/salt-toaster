@@ -14,6 +14,11 @@ RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/sa
 {% endif %}
 {% endblock baserepos %}
 
+{% block pip %}
+{{ super() }}
+RUN pip install --force pytest-catchlog --ignore-installed six
+{% endblock pip %}
+
 {% block postpip %}
 {{ super() }}
 {% if flavor in ["products-next", "products-next-testing", "devel"] %}

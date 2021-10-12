@@ -4,7 +4,9 @@
 # VERSION               0
 {% from 'macros.jinja' import pkg_install with context %}
 
-{% block description -%}{%- endblock description %}
+{% block description -%}
+FROM {{ parent_image }}
+{%- endblock description %}
 LABEL org.opencontainers.image.authors="Salt-Maintainers <salt-maintainers@suse.de>"
 
 ENV LC_ALL en_US.UTF-8
@@ -13,80 +15,36 @@ COPY docker-requirements.txt /root/
 COPY docker-requirements-rhel8.txt /root/
 COPY docker-requirements-common.txt /root/
 COPY py26-docker-requirements.txt /root/
+COPY docker-requirements-py27.txt /root/
 COPY bin/lastchangelog /root/bin/lastchangelog
 
-{% if flavor == "devel" %}
-{% if vendor == 'sles' %}
-COPY bin/sles/prepare_devel.sh /root/bin/
-{% elif vendor == 'rhel'-%}
-COPY bin/rhel/prepare_devel.sh /root/bin/
-{% endif -%}
-{% endif -%}
-
-{%- if vendor == 'rhel' and major == '8' -%}
-{% set python_exec = '/usr/libexec/platform-python' %}
-{%- else -%}
-{%- if (vendor == 'sles' and major|int <= 12) or (vendor == 'rhel' and major|int <= 8)-%}
-{% set python_exec = 'python' %}
-{%- else -%}
-{% set python_exec = 'python3' %}
-{%- endif -%}
-{%- endif -%}
-
-{%- block copy %}{% endblock copy -%}
-
+# https://github.com/moby/moby/issues/22832#issuecomment-220314032
 ARG CACHE_DATE=nocache
+
 {% block baserepos %}{% endblock baserepos -%}
 
 {%- block testpackages %}{% endblock testpackages -%}
 
 {%- block salt %}{% endblock salt -%}
 
-{% if vendor == 'sles' %}
-RUN zypper --non-interactive --gpg-auto-import-keys ref
-RUN zypper -nq in curl vim vim-data
-RUN zypper -n in --no-recommends python python-devel python-xml
-{%- if major|int > 12 %}
-RUN zypper -n in --no-recommends python3 python3-devel python3-xml
-{%- endif %}
-{% elif vendor == 'rhel'-%}
-{% if major == '8' %}
-RUN dnf -y --nogpgcheck install python36 python36-devel
-{%- else -%}
-RUN yum -y --nogpgcheck install python python-devel
-{% endif %}
-{% endif %}
-
 {% block preinstall %}{% endblock preinstall %}
+
 {% block install %}{% endblock install %}
+
 {%- block postinstall %}{% endblock postinstall %}
+
 {% block pip %}
-{%- if flavor in ["products-next-testing", "products-next", "products-testing", "products", "devel"] %}
-{% if major != '6' -%}
-RUN pip install --no-index pytest-salt==2018.2.2
-{%- endif %}
-{%- endif %}
-{%- if flavor in ["products", "products-testing"] %}
-{%- if vendor == 'sles' %}
-RUN zypper --non-interactive in py26-compat-salt py26-compat-tornado py26-compat-msgpack-python
-{%- endif %}
-{%- endif %}
-{% if salt_version == "2017.7.1" -%}
-{{ pkg_install("sudo") }}
-RUN pip install git+https://github.com/eisensheng/pytest-catchlog.git@develop#egg=pytest_catchlog==1.2.2-dev
-{% else %}
+# Ignore moto because it requires the full rust chain from source and it isn't available from packaging
 # RUN pip install moto
-{%- endif -%}
-{% if major == '6' -%}
-RUN pip install setuptools==30.1.0
-{%- endif %}
-RUN pip install --no-index --upgrade --force psutil==5.4.5  # overwrite old psutil using pip
-{% if major == '7' or major == '15' -%}
-RUN pip install --no-index --force pytest-catchlog --ignore-installed six
-{%- endif %}
+
 {% if flavor in ["products", "products-testing", "products-next", "products-next-testing", "devel"] -%}
-RUN pip --trusted-host pypi.python.org install nox
+RUN pip install nox
 {%- endif %}
 {% endblock pip %}
+
 {%- block postpip -%}{%- endblock postpip -%}
-{%- block entrypoint %}{% endblock entrypoint %}
+
+{%- block entrypoint %}
+ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
+CMD ["default"]
+{% endblock entrypoint %}
