@@ -15,10 +15,10 @@ def main():
             raise Exception(item['error'])
         buff = item.get('stream', item.get('status', ''))
 
-        if not content or re.search('.+\[[. ]*$', content):
+        if not content or re.search(r'.+\[[. ]*$', content):
             content += buff
 
-        if not re.search('.+\[[. ]*$', content):
+        if not re.search(r'.+\[[. ]*$', content):
             if not isinstance(content, str):
                 print(content.encode('utf8'))
             else:

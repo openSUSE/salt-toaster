@@ -1,23 +1,18 @@
-import os
 import datetime
-from jinja2 import Environment, FileSystemLoader
+import os
+import re
+from collections import namedtuple
 from pathlib import Path
+
+import requests
+from bs4 import BeautifulSoup
+from jinja2 import Environment, FileSystemLoader
 
 try:
     from docker import Client
-except ImportError as ex:
+except ImportError:
     print("Warning: no docker module installed! You will be unable to build Docker images.")
     Client = None
-
-
-# FIXME: Deduplicate with second and third copy of this
-
-
-import re
-import os
-import requests
-from collections import namedtuple
-from bs4 import BeautifulSoup
 
 Distro = namedtuple("Distro", ["name", "major", "version_separator", "minor"])
 
@@ -42,12 +37,6 @@ def parse_distro(distro_str) -> Distro:
     return Distro(name, major, separator, minor)
 
 
-def parse_version(version):
-    """Deprecated. Use parse_distro instead."""
-    exp = '(?P<vendor>sles|rhel|centos|ubuntu|leap|tumbleweed)(?:(?P<major>\d{1,2})(?:(?P<sp>sp)*(?P<minor>\d+))?)?'
-    return re.match(exp, version).groups()
-
-
 def parse_flavor(flavor):
     flavor_major = None
     flavor_major_sec = None
@@ -61,7 +50,7 @@ def parse_flavor(flavor):
     else:
         splitted = flavor.split('-')
     if len(splitted) == 1:
-        flavor_major, flavor_major_sec, flavor_minor = flavor, None, None
+        flavor_major, flavor_major_sec, flavor_minor = splitted[0], None, None
     elif len(splitted) == 2:
         flavor_major, flavor_major_sec, flavor_minor = splitted[0], None, splitted[1]
     elif len(splitted) == 3:
@@ -70,13 +59,13 @@ def parse_flavor(flavor):
     return flavor_major, flavor_major_sec, flavor_minor
 
 
-def get_salt_version(version, flavor):
-    salt_repo_url = get_salt_repo_url(version, flavor)
+def get_salt_version(distro, flavor):
+    salt_repo_url = get_salt_repo_url(distro, flavor)
     resp = requests.get("{0}/x86_64".format(salt_repo_url))
     if not resp.status_code == 200:
         return 'n/a'
     soup = BeautifulSoup(resp.content, 'html.parser')
-    ex = re.compile(r'^salt-(?P<version>[0-9\.]+)-(?P<build>[0-9\.]+).x86_64.rpm$')
+    ex = re.compile(r'^salt-(?P<version>[0-9.]+)-(?P<build>[0-9.]+).x86_64.rpm$')
     salt = soup.find('a', text=ex)
     if not salt:
         return 'n/a'
@@ -84,8 +73,8 @@ def get_salt_version(version, flavor):
     return match.groupdict()['version']
 
 
-def get_repo_parts(version):
-    vendor, version_major, separator, version_minor = parse_version(version)
+def get_repo_parts(distro):
+    vendor, version_major, separator, version_minor = parse_distro(distro)
     repo_parts = [version_major]
     if version_minor:
         if separator:
@@ -95,26 +84,23 @@ def get_repo_parts(version):
     return repo_parts
 
 
-def get_repo_name(version, flavor):
-    vendor, version_major, separator, version_minor = parse_version(version)
-    repo_parts = get_repo_parts(version)
-    if vendor == 'SLES' and version_major == '11':
-        repo_name = 'SLE_11_SP4'
+def get_repo_name(distro):
+    vendor, version_major, separator, version_minor = parse_distro(distro)
+    repo_parts = get_repo_parts(distro)
+
     if vendor == 'tumbleweed':
-        repo_name = 'Factory'
-    else:
-        repo_name = '_'.join(repo_parts)
-    return repo_name
+        return 'Factory'
+    return '_'.join(repo_parts)
 
 
-def get_salt_repo_name(version, flavor):
-    vendor, version_major, separator, version_minor = parse_version(version)
-    repo_name = get_repo_name(version, flavor)
+def get_salt_repo_name(distro):
+    vendor, version_major, separator, version_minor = parse_distro(distro)
+    repo_name = get_repo_name(distro)
     salt_repo_name = 'SLE_{0}'.format(repo_name).upper()
     if vendor == 'rhel':
         salt_repo_name = '{0}_{1}'.format(vendor, repo_name)
 
-    if version in ['sles11sp3', 'sles11sp4']:
+    if distro in ['sles11sp3', 'sles11sp4']:
         salt_repo_name = 'SLE_11_SP4'
 
     return salt_repo_name
@@ -131,10 +117,9 @@ def get_salt_repo_url_flavor(flavor):
     return salt_repo_url_flavor
 
 
-
-def get_salt_repo_url(version, flavor):
+def get_salt_repo_url(distro, flavor):
     salt_repo_url_flavor = get_salt_repo_url_flavor(flavor)
-    salt_repo_name = get_salt_repo_name(version, flavor)
+    salt_repo_name = get_salt_repo_name(distro)
     salt_repo_url = os.environ.get(
         "SALT_REPO_URL",
         "http://{0}/repositories/systemsmanagement:/saltstack:/{1}/{2}/".format(
@@ -146,12 +131,7 @@ def get_salt_repo_url(version, flavor):
     return salt_repo_url
 
 
-def get_docker_params(distro_str, flavor):
-    distro = parse_distro(distro_str)
-    flavor_major, flavor_major_sec, flavor_minor = parse_flavor(flavor)
-    repo_name = get_repo_name(distro_str, flavor)
-    salt_repo_name = get_salt_repo_name(distro_str, flavor)
-    salt_repo_url_flavor = get_salt_repo_url_flavor(flavor)
+def generate_docker_from(distro) -> str:
     image_registry = os.environ.get('IMAGE_REGISTRY', 'registry.mgr.suse.de')
     if distro.name == 'ubuntu':
         parent_image = '{0}/{1}:{2}.{3}'.format(image_registry, distro.name, distro.major, distro.minor)
@@ -163,8 +143,11 @@ def get_docker_params(distro_str, flavor):
         parent_image = '{0}/{1}:{2}'.format(image_registry, distro.name, distro.major)
     else:
         parent_image = '{0}/{1}:{2}.{3}'.format(image_registry, distro.name, distro.major, distro.minor)
-    salt_repo_url = get_salt_repo_url(distro_str, flavor)
-    salt_version = get_salt_version(distro_str, flavor)
+    return parent_image
+
+
+def get_docker_params(distro_str, flavor):
+    distro = parse_distro(distro_str)
 
     return dict(
         vendor=distro.name,
@@ -173,19 +156,13 @@ def get_docker_params(distro_str, flavor):
         version_separator=distro.version_separator,
         flavor=flavor,
         version=distro_str,
-        parent_image=parent_image,
-        flavor_major=flavor_major,
-        flavor_major_sec=flavor_major_sec,
-        flavor_minor=flavor_minor,
-        repo_name=repo_name,
-        salt_repo_url_flavor=salt_repo_url_flavor,
-        salt_repo_name=salt_repo_name,
-        salt_repo_url=salt_repo_url,
-        salt_version=salt_version,
+        parent_image=generate_docker_from(distro),
+        repo_name=get_repo_name(distro_str),
+        salt_repo_url_flavor=get_salt_repo_url_flavor(flavor),
+        salt_repo_name=get_salt_repo_name(distro_str),
+        salt_repo_url=get_salt_repo_url(distro_str, flavor),
+        salt_version=get_salt_version(distro_str, flavor),
     )
-
-
-##############
 
 
 def build_docker_image(nocache=False, pull=True):
