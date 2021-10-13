@@ -196,27 +196,21 @@ def build_docker_image(nocache=False, pull=True):
 
 def generate_dockerfile(version, flavor):
     env = Environment(loader=FileSystemLoader('./templates', followlinks=True))
-    TEMPLATES_OVERRIDES = {
+    distro_template_mapping = {
+        'centos7': 'centos',
         'sles11sp3': 'sles11',
         'sles11sp4': 'sles11',
-        'rhel6': 'rhel6',
-        'rhel7': 'rhel7',
-        'rhel8': 'rhel8',
-        'sles12sp3': 'sles12sp3',
-        'sles12sp4': 'sles12sp4',
-        'sles15': 'sles15',
-        'sles15sp1': 'sles15sp1',
-        'sles15sp2': 'sles15sp2',
+        'sles12sp5': 'sles12sp4',
+        'sles15sp3': 'sles15sp2',
         'leap15.1': 'opensuse',
         'leap15.2': 'opensuse',
         'leap15.3': 'opensuse',
-        'tumbleweed': 'tumbleweed',
-        'ubuntu1604': 'ubuntu1604',
-        'ubuntu1804': 'ubuntu1804',
-        'ubuntu2004': 'ubuntu1804',
+        'ubuntu16.04': 'ubuntu1604',
+        'ubuntu18.04': 'ubuntu1804',
+        'ubuntu20.04': 'ubuntu1804',
     }
     parameters = get_docker_params(version, flavor)
-    template_name = "{0}.jinja".format(TEMPLATES_OVERRIDES.get(version, parameters['vendor']))
+    template_name = "{0}.jinja".format(distro_template_mapping.get(version, version))
     template = env.get_template(template_name)
     content = template.render(**parameters)
     fpath = Path('docker') / '{}.{}.dockerfile'.format(version, flavor)
