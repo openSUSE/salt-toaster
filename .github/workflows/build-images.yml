@@ -1,0 +1,52 @@
+name: Building Docker Images
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  image-build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # We can't build Tumbleweed due to the GH Runners not being updated to a version which has a fix for the
+        # broken glibc 2.34 for docker.
+        # distro: ["leap15.1", "leap15.2", "leap15.3", "tumbleweed", "centos7", "ubuntu16.04", "ubuntu18.04"]
+        distro: ["leap15.1", "leap15.2", "leap15.3", "centos7", "ubuntu16.04", "ubuntu18.04"]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: pip install -r images/requirements.txt
+      - name: Generate the dockerfile
+        working-directory: "images"
+        env:
+          IMAGE_REGISTRY: "docker.io"
+        run: python3 generate.py -d ${{ matrix.distro }} -f devel
+      - name: Build Image
+        env:
+          DISTRO: ${{ matrix.distro }}
+          FLAVOR: devel
+        run: make build
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build lowercase repository owner
+        run: echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+      - name: Tag built image
+        run: |
+          docker tag salttoaster/toaster-${{ matrix.distro }}-devel ghcr.io/${{ env.OWNER_LC }}/salt-toaster-${{ matrix.distro }}-devel:latest
+      - name: Publish built image
+        if: github.ref == 'refs/heads/master'
+        run: |
+          docker push ghcr.io/${{ env.OWNER_LC }}/salt-toaster-${{ matrix.distro }}-devel:latest

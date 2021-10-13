@@ -1,7 +1,6 @@
 DEFAULT_REGISTRY      = salttoaster
 DEFAULT_VERSION       = opensuse151
 DEFAULT_FLAVOR        = devel
-DEFAULT_VENV          = sandbox
 SUSE_DEFAULT_REGISTRY = registry.mgr.suse.de
 SUSE_DEFAULT_VERSION  = sles12sp3
 SUSE_DEFAULT_FLAVOR   = products
@@ -81,10 +80,6 @@ endif
 
 ifndef DOCKER_FILE
 	DOCKER_FILE = Dockerfile.$(VERSION).$(FLAVOR)
-endif
-
-ifndef VENV
-	VENV = $(DEFAULT_VENV)
 endif
 
 EXPORTS += \
@@ -304,7 +299,12 @@ endif
 ifeq ("$(NOPULL)", "true")
 	$(eval BUILD_OPTS:=--nopull)
 endif
+
+ifndef VENV
+	DOCKER_IMAGE=$(DOCKER_IMAGE) DOCKER_FILE=$(DOCKER_FILE) python images/build.py $(BUILD_OPTS)
+else
 	DOCKER_IMAGE=$(DOCKER_IMAGE) DOCKER_FILE=$(DOCKER_FILE) $(VENV)/bin/python images/build.py $(BUILD_OPTS)
+endif
 	rm -f images/docker/salt.archive
 
 

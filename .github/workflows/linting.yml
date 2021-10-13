@@ -18,6 +18,9 @@ jobs:
       - name: Install requirements
         run: pip install -r requirements.txt --exists-action w --upgrade
       - name: Install additional requirements
-        run: pip install pytest pylint pytest-factoryboy salt
+        run: pip install pytest pylint pytest-factoryboy salt beautifulsoup4
       - name: Linting salt-toaster
         run: pylint --errors-only tests/ utils.py config.py
+      - name: Linting salt-toaster image generator
+        working-directory: images
+        run: pylint --errors-only utils.py generate.py build.py docker/bin/lastchangelog
