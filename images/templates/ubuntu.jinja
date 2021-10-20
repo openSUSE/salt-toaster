@@ -27,5 +27,6 @@ RUN pip3 --trusted-host pypi.python.org install --upgrade pytest==3.6.1 pytest-t
 
 {% block pip %}
 RUN pip3 install -U psutil pytest-tempdir
+RUN pip3 install virtualenv==20.0.20  # nox dependency - higher versions produces VerboseLogger error
 RUN pip3 install nox
 {% endblock pip %}
