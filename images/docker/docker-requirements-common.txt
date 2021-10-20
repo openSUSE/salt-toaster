@@ -3,7 +3,7 @@ timelib
 boto
 six
 apache-libcloud
-pyyaml==3.12
+pyyaml==5.4
 unittest2
 ordereddict==1.0
 python-dateutil==2.6.1
