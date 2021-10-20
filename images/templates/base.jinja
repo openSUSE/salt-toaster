@@ -1,0 +1,50 @@
+# Container used to run salt tests focusing on SUSE Manager use cases
+#
+# NAME                  toaster-{{ version }}-{{ flavor }}
+# VERSION               0
+{% from 'macros.jinja' import pkg_install with context %}
+
+{% block description -%}
+FROM {{ parent_image }}
+{%- endblock description %}
+LABEL org.opencontainers.image.authors="Salt-Maintainers <salt-maintainers@suse.de>"
+
+ENV LC_ALL en_US.UTF-8
+COPY Makefile /root/Makefile
+COPY docker-requirements.txt /root/
+COPY docker-requirements-rhel8.txt /root/
+COPY docker-requirements-common.txt /root/
+COPY py26-docker-requirements.txt /root/
+COPY docker-requirements-py27.txt /root/
+COPY bin/lastchangelog /root/bin/lastchangelog
+
+# https://github.com/moby/moby/issues/22832#issuecomment-220314032
+ARG CACHE_DATE=nocache
+
+{% block baserepos %}{% endblock baserepos -%}
+
+{%- block testpackages %}{% endblock testpackages -%}
+
+{%- block salt %}{% endblock salt -%}
+
+{% block preinstall %}{% endblock preinstall %}
+
+{% block install %}{% endblock install %}
+
+{%- block postinstall %}{% endblock postinstall %}
+
+{% block pip %}
+# Ignore moto because it requires the full rust chain from source and it isn't available from packaging
+# RUN pip install moto
+
+{% if flavor in ["products", "products-testing", "products-next", "products-next-testing", "devel"] -%}
+RUN pip install nox
+{%- endif %}
+{% endblock pip %}
+
+{%- block postpip -%}{%- endblock postpip -%}
+
+{%- block entrypoint %}
+ENTRYPOINT ["make", "-f", "/root/Makefile", "-C", "/salt-toaster"]
+CMD ["default"]
+{% endblock entrypoint %}

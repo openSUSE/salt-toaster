@@ -1,0 +1,20 @@
+{% extends "sles.jinja" %}
+
+{%- block baserepos -%}
+COPY vendors.conf /etc/zypp/vendors.d/vendors.conf
+RUN zypper ar -f http://download.suse.de/ibs/SUSE:/SLE-15:/GA/standard/ "sles15ga"
+RUN zypper ar -f http://download.suse.de/ibs/SUSE:/SLE-15:/Update/standard/ "sles15updates"
+RUN zypper ar -f http://download.suse.de/ibs/SUSE:/SLE-15-SP1:/GA/standard/ "sles15sp1ga"
+RUN zypper ar -f http://download.suse.de/ibs/SUSE:/SLE-15-SP1:/Update/standard/ "sles15sp1updates"
+RUN zypper ar -f http://download.suse.de/ibs/SUSE:/SLE-15-SP2:/GA/standard/ "sles15sp2ga"
+
+{% endblock baserepos %}
+
+{%- block preinstall -%}
+RUN zypper --non-interactive --gpg-auto-import-keys ref
+RUN zypper -n in python3-xml python3-pip python3-CherryPy
+RUN zypper -n in --no-recommends python3-devel make bind-utils gcc-c++ openssh rsync
+RUN zypper -n in -y --force-resolution patch rpmbuild
+RUN useradd -ms /bin/bash nobody
+
+{% endblock preinstall -%}

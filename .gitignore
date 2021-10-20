@@ -67,6 +67,10 @@ develop.zip
 # Sandbox
 sandbox/
 
+# Env variable files
+.envrc
+.direnv/*
+
 # IDEs
-.idea
 .vscode
+.idea

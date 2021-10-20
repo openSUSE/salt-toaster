@@ -1,0 +1,26 @@
+{% extends "sles.jinja" %}
+
+{%- block baserepos -%}
+# Use your credentials for the 'nu.novell' domain within the URL, in case required
+RUN zypper ar -f http://nu.novell.com/repo/\$RCE/SLE11-SDK-SP{{ minor }}-Pool/sle-11-x86_64 "SLE-SDK11 SP{{ minor }} Pool"
+RUN zypper ar -f http://nu.novell.com/repo/\$RCE/SLE11-SDK-SP{{ minor }}-Updates/sle-11-x86_64 "SLE-SDK11 SP{{ minor }} Updates"
+RUN zypper ar -f http://nu.novell.com/repo/\$RCE/SLES11-SP{{ minor }}-Pool/sle-11-x86_64/ "SLES11 SP{{ minor }} Pool"
+RUN zypper ar -f http://nu.novell.com/repo/\$RCE/SLES11-SP{{ minor }}-Updates/sle-11-x86_64/ "SLES11 SP{{ minor }} Updates"
+{% endblock baserepos %}
+
+{%- block preinstall -%}
+RUN zypper --non-interactive --gpg-auto-import-keys ref
+RUN zypper -n in python python-xml git
+
+{% from 'macros.jinja' import add_packages with context %}
+{{ add_packages(major) }}
+
+RUN git config --global user.name "Peter Parker"
+RUN git config --global user.email "pp@dailyplanet.com"
+{% endblock preinstall -%}
+
+{% block postinstall -%}
+RUN rpm -e --quiet python-salt-testing || true
+RUN pip uninstall -y salttesting || true
+{{ super() }}
+{%- endblock postinstall %}

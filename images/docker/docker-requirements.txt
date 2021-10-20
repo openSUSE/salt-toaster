@@ -1,0 +1,5 @@
+-r docker-requirements-common.txt
+pytest-timeout
+pytest
+py==1.4.33
+kubernetes==2.0.0

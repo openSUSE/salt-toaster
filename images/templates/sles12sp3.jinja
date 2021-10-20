@@ -1,0 +1,15 @@
+{% extends "sles.jinja" %}
+
+{%- block baserepos -%}
+{{ super() }}
+{% if flavor in ["products-next-testing", "devel"] %}
+RUN zypper -n ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/next:/sles12-dependencies/SLE_12_SP3/ "sles12-dependencies"
+{% endif %}
+{% endblock baserepos %}
+
+{%- block postinstall %}
+{{ super() }}
+{% if flavor in ["products-next-testing", "devel"] %}
+RUN zypper -n in python-singledispatch
+{% endif %}
+{% endblock postinstall %}

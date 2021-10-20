@@ -1,0 +1,6 @@
+-r docker-requirements-common.txt
+pytest<=4.6.11
+py<=1.10.0
+pytest-timeout<=1.4.2
+ipaddress==1.0.22
+singledispatch==3.4.0.3

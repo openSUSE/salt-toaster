@@ -1,5 +1,5 @@
 DEFAULT_REGISTRY      = salttoaster
-DEFAULT_VERSION       = opensuse151
+DEFAULT_DISTRO       = opensuse151
 DEFAULT_FLAVOR        = devel
 SUSE_DEFAULT_REGISTRY = registry.mgr.suse.de
 SUSE_DEFAULT_VERSION  = sles12sp3
@@ -19,8 +19,8 @@ ifndef ST_JOB_ID
 	export ST_JOB_ID = local-test-run
 endif
 
-ifndef VERSION
-	VERSION = $(DEFAULT_VERSION)
+ifndef DISTRO
+	DISTRO = $(DEFAULT_DISTRO)
 endif
 
 ifneq (,$(findstring sles,$(FLAVOR)))
@@ -33,18 +33,18 @@ else ifndef FLAVOR
 	FLAVOR = $(DEFAULT_FLAVOR)
 endif
 
-ifneq (,$(findstring sles,$(VERSION)))
+ifneq (,$(findstring sles,$(DISTRO)))
 	DOCKER_REGISTRY = $(SUSE_DEFAULT_REGISTRY)
-else ifneq (,$(findstring rhel,$(VERSION)))
+else ifneq (,$(findstring rhel,$(DISTRO)))
 	DOCKER_REGISTRY = $(SUSE_DEFAULT_REGISTRY)
-else ifneq (,$(findstring ubuntu,$(VERSION)))
+else ifneq (,$(findstring ubuntu,$(DISTRO)))
 	DOCKER_REGISTRY = $(SUSE_DEFAULT_REGISTRY)
 else ifndef DOCKER_REGISTRY
 	DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
 endif
 
 # Ubuntu devel images are stored on DockerHub
-ifneq (,$(findstring ubuntu,$(VERSION)))
+ifneq (,$(findstring ubuntu,$(DISTRO)))
 ifneq (,$(findstring devel,$(FLAVOR)))
     DOCKER_REGISTRY = $(DEFAULT_REGISTRY)
 endif
@@ -57,7 +57,7 @@ endif
 endif
 
 ifndef DOCKER_IMAGE
-	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(VERSION)-$(FLAVOR)
+	DOCKER_IMAGE = $(DOCKER_REGISTRY)/toaster-$(DISTRO)-$(FLAVOR)
 endif
 
 ifdef DOCKER_MEM
@@ -78,12 +78,16 @@ else ifeq ("$(FLAVOR)", "products-3000-testing")
 NOX = False
 endif
 
+ifndef DOCKER_FILE
+	DOCKER_FILE = $(DISTRO).$(FLAVOR).dockerfile
+endif
+
 EXPORTS += \
 	-e "SALT_OLDTESTS=$(SALT_OLDTESTS)" \
 	-e "NO_NOX_SALT_TESTS=$(NO_NOX_SALT_TESTS)" \
 	-e "SALT_PYTESTS=$(SALT_PYTESTS)" \
 	-e "NOX=$(NOX)" \
-	-e "VERSION=$(VERSION)" \
+	-e "DISTRO=$(DISTRO)" \
 	-e "FLAVOR=$(FLAVOR)" \
 	-e "DOCKER_IMAGE=$(DOCKER_IMAGE)" \
 	-e "MINION_VERSION=$(MINION_VERSION)" \
@@ -124,6 +128,9 @@ help: title
 	@echo "  saltstack.integration   Run Salt integration tests"
 	@echo "  saltstack.unit          Run Salt unit tests"
 	@echo "  suse.tests              Run SUSE custom integration tests"
+	@echo "  build                   Build the docker images and set the entrypoint to one of the predefined ones."
+	@echo "  build_image             Build the docker images and set the entrypoint to BASH."
+	@echo "  archive-salt            Pack salt into a tarball and archive it"
 	@echo ""
 
 default: help
@@ -133,25 +140,26 @@ set_env:
 
 list_targets: title
 	@echo "Available public targets:"
-	@echo "  openSUSE Leap 15.0      VERSION: opensuse150 - FLAVOR: devel"
-	@echo "  openSUSE Leap 15.1      VERSION: opensuse151 - FLAVOR: devel"
-	@echo "  openSUSE Tumbleweed     VERSION: tumbleweed  - FLAVOR: devel"
-	@echo "  CentOS 7                VERSION: centos7     - FLAVOR: devel"
-	@echo "  Ubuntu 16.04            VERSION: ubuntu1604  - FLAVOR: devel"
-	@echo "  Ubuntu 18.04            VERSION: ubuntu1804  - FLAVOR: devel"
+	@echo "  openSUSE Leap 15.1      DISTRO: leap15.1     - FLAVOR: devel"
+	@echo "  openSUSE Leap 15.2      DISTRO: leap15.2     - FLAVOR: devel"
+	@echo "  openSUSE Leap 15.3      DISTRO: leap15.3     - FLAVOR: devel"
+	@echo "  openSUSE Tumbleweed     DISTRO: tumbleweed   - FLAVOR: devel"
+	@echo "  CentOS 7                DISTRO: centos7      - FLAVOR: devel"
+	@echo "  Ubuntu 16.04            DISTRO: ubuntu16.04  - FLAVOR: devel"
+	@echo "  Ubuntu 18.04            DISTRO: ubuntu18.04  - FLAVOR: devel"
 	@echo
 	@echo "SUSE internal use only:"
-	@echo "  SUSE SLE11SP4           VERSION: sles11sp4   - FLAVOR: products-old, products-old-testing, devel"
-	@echo "  SUSE SLE12SP3           VERSION: sles12sp3   - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  SUSE SLE12SP4           VERSION: sles12sp4   - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  SUSE SLE15              VERSION: sles15      - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  SUSE SLE15SP1           VERSION: sles15sp1   - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  SUSE SLE15SP2           VERSION: sles15sp2   - FLAVOR: products-next, devel"
-	@echo "  RedHat RHEL6            VERSION: rhel6       - FLAVOR: products-old, products-old-testing, devel"
-	@echo "  RedHat RHEL7            VERSION: rhel7       - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  RedHat RHEL8            VERSION: rhel8       - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  Ubuntu 16.04            VERSION: ubuntu1604  - FLAVOR: products, products-testing, products-next, devel"
-	@echo "  Ubuntu 18.04            VERSION: ubuntu1804  - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE11SP4           DISTRO: sles11sp4    - FLAVOR: products-old, products-old-testing, devel"
+	@echo "  SUSE SLE12SP3           DISTRO: sles12sp3    - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE12SP4           DISTRO: sles12sp4    - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE15              DISTRO: sles15       - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE15SP1           DISTRO: sles15sp1    - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  SUSE SLE15SP2           DISTRO: sles15sp2    - FLAVOR: products-next, devel"
+	@echo "  RedHat RHEL6            DISTRO: rhel6        - FLAVOR: products-old, products-old-testing, devel"
+	@echo "  RedHat RHEL7            DISTRO: rhel7        - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  RedHat RHEL8            DISTRO: rhel8        - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  Ubuntu 16.04            DISTRO: ubuntu16.04  - FLAVOR: products, products-testing, products-next, devel"
+	@echo "  Ubuntu 18.04            DISTRO: ubuntu18.04  - FLAVOR: products, products-testing, products-next, devel"
 	@echo
 
 pull_image:
@@ -170,7 +178,7 @@ else
 REQUIREMENTS_FILE=requirements/static/ci/py3.6/linux.txt
 endif
 GOTO_SALT_ROOT=cd $(ROOT_MOUNTPOINT)/salt-*
-PATCH_REQUIREMENTS=sed -i 's/attrs==19.1.0/attrs==19.2.0/' $(REQUIREMENTS_FILE) && echo /root/wheels/saltrepoinspect-1.1.tar.gz >> $(REQUIREMENTS_FILE)
+PATCH_REQUIREMENTS=sed -i 's/attrs==19.1.0/attrs==19.2.0/' $(REQUIREMENTS_FILE)
 NOX_CMD=$(GOTO_SALT_ROOT) && mv ../conftest.py . && $(PATCH_REQUIREMENTS) && nox --session 'pytest-3(coverage=False)' -- $(NOX_PYTEST_ARGS) --junitxml results.xml
 
 ifeq ("$(NOX)", "True")
@@ -196,9 +204,9 @@ endif
 endif
 	$(EXEC)
 
-ifeq ("$(VERSION)", "sles11sp4")
+ifeq ("$(DISTRO)", "sles11sp4")
 saltstack.unit : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.unit/sles11sp4.cfg
-else ifeq ("$(VERSION)", "rhel6")
+else ifeq ("$(DISTRO)", "rhel6")
 saltstack.unit : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.unit/rhel6.cfg
 else
 ifeq ("$(NOX)", "True")
@@ -225,9 +233,9 @@ endif
 endif
 	$(EXEC)
 
-ifeq ("$(VERSION)", "sles11sp4")
+ifeq ("$(DISTRO)", "sles11sp4")
 saltstack.integration : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.integration/sles11sp4.cfg
-else ifeq ("$(VERSION)", "rhel6")
+else ifeq ("$(DISTRO)", "rhel6")
 saltstack.integration : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.integration/rhel6.cfg
 else
 ifeq ("$(NOX)", "True")
@@ -254,7 +262,7 @@ endif
 endif
 	$(EXEC)
 
-suse.tests : PYTEST_CFG=./configs/suse.tests/$(VERSION)/$(FLAVOR).cfg
+suse.tests : PYTEST_CFG=./configs/suse.tests/$(DISTRO)/$(FLAVOR).cfg
 suse.tests : SALT_TESTS=./tests
 suse.tests : PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_TESTS) $(PYTEST_FLAGS)
 suse.tests : CMD=pytest $(PYTEST_ARGS) --junitxml results.xml
@@ -266,7 +274,7 @@ suse.tests : EXEC:=timeout 180m $(EXEC)
 endif
 endif
 
-suse.tests : EXEC:=VERSION=$(VERSION) FLAVOR=$(FLAVOR) $(EXEC)
+suse.tests : EXEC:=DISTRO=$(DISTRO) FLAVOR=$(FLAVOR) $(EXEC)
 suse.tests : title pull_image
 ifeq ("$(FLAVOR)", "devel")
 ifndef SALT_REPO
@@ -275,3 +283,30 @@ ifndef SALT_REPO
 endif
 endif
 	$(EXEC)
+
+archive-salt:
+ifeq ("$(FLAVOR)", "devel")
+ifdef SALT_REPO
+	tar -X .tarexclude -czf images/docker/salt.archive -C $(SALT_REPO) .
+endif
+endif
+
+
+build::
+	@echo "Building images"
+ifeq ("$(NOPULL)", "true")
+	$(eval BUILD_OPTS:=--nopull)
+endif
+
+ifndef VENV
+	DOCKER_IMAGE=$(DOCKER_IMAGE) DOCKER_FILE=$(DOCKER_FILE) python3 images/build.py $(BUILD_OPTS)
+else
+	DOCKER_IMAGE=$(DOCKER_IMAGE) DOCKER_FILE=$(DOCKER_FILE) $(VENV)/bin/python images/build.py $(BUILD_OPTS)
+endif
+	rm -f images/docker/salt.archive
+
+
+build_image : CMD=""
+build_image :: archive-salt build
+	$(EXEC)
+

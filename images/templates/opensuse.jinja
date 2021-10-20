@@ -1,0 +1,23 @@
+{% extends "sles.jinja" %}
+
+{%- block baserepos -%}
+COPY vendors.conf /etc/zypp/vendors.d/vendors.conf
+{% endblock baserepos %}
+
+{%- block salt %}
+RUN zypper -n in python3
+RUN zypper ar -f {{ salt_repo_url }} "salt"
+RUN zypper mr -p 1 salt
+{% endblock salt %}
+
+{%- block preinstall -%}
+RUN zypper --non-interactive --gpg-auto-import-keys ref
+RUN zypper -n in python3-xml python3-pip python3-CherryPy
+RUN zypper -n in --no-recommends python3-devel make bind-utils gcc-c++ openssh rsync
+RUN zypper -n in -y --force-resolution patch rpmbuild
+RUN useradd -ms /bin/bash nobody
+{% endblock preinstall -%}
+
+{%- block postpip -%}
+RUN pip --trusted-host pypi.python.org install --upgrade pytest==3.8.0 pytest-helpers-namespace pytest-timeout mock timelib boto kubernetes==2.0.0 apache-libcloud unittest2 pytest-salt==2019.12.7
+{%- endblock postpip -%}

@@ -3,7 +3,8 @@ import glob
 import pytest
 from functools import partial
 from fnmatch import fnmatch
-from saltrepoinspect import get_salt_version
+
+import salt.version
 
 
 def pytest_addoption(parser):
@@ -502,8 +503,7 @@ def pytest_itemcollected(item):
 
 
 def pytest_configure(config):
-    config.salt_version = get_salt_version(
-        os.environ.get('VERSION'), os.environ.get('FLAVOR'))
+    config.salt_version = salt.version.__version__
     config.xfail_list = get_list(config, 'xfail_list')
     config.ignore_list = get_list(config, 'ignore_list')
     tests_path = '{0}/salt-*/tests'.format(os.environ.get('ROOT_MOUNTPOINT'))

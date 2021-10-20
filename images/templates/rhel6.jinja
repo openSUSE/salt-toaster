@@ -1,0 +1,15 @@
+{% extends "rhel.jinja" %}
+
+{%- block description %}
+# list rhel6 tags
+# curl -L https://registry.hub.docker.com/v1/repositories/rhel6/tags --http1.0 | python -m json.tool
+FROM registry.mgr.suse.de/rhel6:6.8-124
+{% endblock description -%}
+
+{% block pip %}
+{{ super() }}
+RUN pip install setuptools==30.1.0
+{%- if flavor in ["products-next-testing", "products-next", "products-testing", "products", "devel"] %}
+RUN pip install pytest-salt
+{%- endif %}
+{% endblock pip %}

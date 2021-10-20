@@ -1,0 +1,10 @@
+mock
+timelib
+boto
+six
+apache-libcloud
+pyyaml==3.12
+unittest2
+ordereddict==1.0
+python-dateutil==2.6.1
+salttesting==2018.1.16

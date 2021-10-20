@@ -1,0 +1,10 @@
+mock
+boto
+six
+apache-libcloud
+unittest2
+python-dateutil==2.6.1
+salttesting==2018.1.16
+pytest-timeout
+pytest
+py

@@ -1,0 +1,67 @@
+{% extends "base.jinja" %}
+
+{%- block baserepos %}
+####### Install missing dependencies from centos{{ major }} ########
+RUN yum-config-manager --add-repo http://ftp.fau.de/centos/{{ major }}/os/x86_64/
+RUN yum-config-manager --add-repo http://ftp.fau.de/centos/{{ major }}/updates/x86_64/
+RUN yum-config-manager --add-repo http://ftp.fau.de/centos/{{ major }}/extras/x86_64/
+{% if major == '6' -%}
+RUN rpm --import http://vault.centos.org/centos/{{ major }}/os/x86_64/RPM-GPG-KEY-CentOS-{{ major }}
+{% else %}
+RUN rpm --import http://ftp.fau.de/centos/{{ major }}/os/x86_64/RPM-GPG-KEY-CentOS-{{ major }}
+{%- endif %}
+{% endblock baserepos -%}
+
+{%- block testpackages %}
+RUN yum-config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/RHEL_{{ major }}/
+RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/RHEL_{{ major }}/repodata/repomd.xml.key
+{% endblock testpackages %}
+
+{%- block salt %}
+{%- set obs_base_url = "http://download.opensuse.org/repositories/systemsmanagement:/saltstack" -%}
+RUN yum-config-manager --add-repo {{ salt_repo_url }}
+RUN rpm --import {{ salt_repo_url }}repodata/repomd.xml.key
+{% endblock salt %}
+
+{% block preinstall %}
+RUN yum -y --nogpgcheck clean all
+RUN yum -y --nogpgcheck install epel-release # pip is not available in the core repositories
+RUN yum -y --nogpgcheck install python-pip
+RUN yum -y --nogpgcheck install which make gcc-c++ rpm-build quilt tar iproute bind-utils net-tools
+#RUN yum -y --nogpgcheck install test-package-0.0-5.4.noarch
+{% endblock preinstall -%}
+
+{%- block install -%}
+RUN yum -y --nogpgcheck install openssh-clients openssh-server nc tzdata python-devel python-urllib3 vim vim-data libcurl-devel libopenssl-devel install git
+{% if major == '6' %}
+RUN pip install -r /root/py26-docker-requirements.txt
+{% elif major == '7' %}
+RUN pip install -r /root/docker-requirements-py27.txt
+{%- else -%}
+RUN pip install -r /root/docker-requirements.txt
+{% endif %}
+RUN rpm -e --quiet python-salt-testing || true
+RUN pip uninstall -y salttesting || true
+RUN pip install -U --no-deps SaltTesting
+
+{%- if flavor == "devel" %}
+RUN yum -y install curl swig gcc-c++ openssl-devel openssl-libs m2crypto python-cherrypy python-tornado python-jinja2 python-futures python-zmq PyYAML python-msgpack python-mock python-libcloud python-dateutil
+#RUN yum -y install test-package
+RUN yum -y install nmap-ncat || true
+RUN mkdir -p /etc/salt
+RUN touch /etc/salt/master
+RUN touch /etc/salt/minion
+#ADD salt.archive /salt/src/salt-devel
+#RUN pip install -e /salt/src/salt-devel
+{% else %}
+RUN yum -y --nogpgcheck install salt-master salt-minion salt-proxy salt-ssh python-markupsafe
+{% endif -%}
+{% endblock install %}
+
+{%- block postinstall %}
+# RUN yum -y --nogpgcheck install oscap openscap-content
+{% endblock postinstall %}
+
+{% block pip %}
+# Don't install nox because it is Salt 3002 and later
+{% endblock pip %}

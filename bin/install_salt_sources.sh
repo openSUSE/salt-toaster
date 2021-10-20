@@ -3,14 +3,14 @@ set -e
 
 if [ "$FLAVOR" != "devel" ]
     then
-        if [[ "$VERSION" =~ ^rhel ]]
+        if [[ "$DISTRO" =~ ^rhel ]]
             then
                 bin/rhel_unpack_salt.sh
-        elif [[ "$VERSION" =~ ^sles ]]
+        elif [[ "$DISTRO" =~ ^sles ]]
             then
                 /root/bin/install_salt.sh
                 bin/sles_unpack_salt.sh
-        elif [[ "$VERSION" =~ ^ubuntu ]]
+        elif [[ "$DISTRO" =~ ^ubuntu ]]
             then
                 bin/ubuntu_unpack_salt.sh
         fi

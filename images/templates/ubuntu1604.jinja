@@ -1,0 +1,6 @@
+{% extends "ubuntu.jinja" %}
+
+{% block salt %}
+{{ super() }}
+RUN apt-get install -q -y python-distutils-extra
+{% endblock salt %}

@@ -1,0 +1,19 @@
+{% macro add_packages(major) -%}
+# make sure the package repository is up to date
+RUN zypper --non-interactive --gpg-auto-import-keys ref
+RUN zypper -n in --no-recommends make bind-utils gcc-c++ openssh rsync
+{% if major == '11' -%}
+RUN zypper -n in tar patch
+RUN pip install -r /root/py26-docker-requirements.txt
+{%- else -%}
+RUN pip install -r /root/docker-requirements.txt
+{%- endif %}
+{% endmacro %}
+
+{% macro pkg_install(name) -%}
+{%- if vendor == 'sles' -%}
+    RUN zypper -n in {{ name }}
+{%- else -%}
+    RUN yum -y install {{ name }}
+{% endif %}
+{% endmacro %}

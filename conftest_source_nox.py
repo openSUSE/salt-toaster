@@ -35,6 +35,7 @@ import salt.utils.files
 import salt.utils.path
 import salt.utils.platform
 import salt.utils.win_functions
+import salt.version
 import saltfactories.utils.compat
 from salt.serializers import yaml
 from salt.utils.immutabletypes import freeze
@@ -51,7 +52,7 @@ from tests.support.sminion import check_required_sminion_attributes, create_smin
 # Toaster specifics
 import glob
 from fnmatch import fnmatch
-from saltrepoinspect import get_salt_version
+
 
 TESTS_DIR = pathlib.Path.cwd() / "tests"
 PYTESTS_DIR = TESTS_DIR / "pytests"
@@ -257,8 +258,7 @@ def pytest_configure(config):
     os.environ["SLOW_TESTS"] = str(config.getoption("--run-slow"))
 
     # Toaster specific
-    config.salt_version = get_salt_version(
-        os.environ.get('VERSION'), os.environ.get('FLAVOR'))
+    config.salt_version = salt.version.__version__
     config.xfail_list = get_list(config, 'xfail_list')
     config.ignore_list = get_list(config, 'ignore_list')
 
