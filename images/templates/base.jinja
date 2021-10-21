@@ -38,6 +38,7 @@ ARG CACHE_DATE=nocache
 # RUN pip install moto
 
 {% if flavor in ["products", "products-testing", "products-next", "products-next-testing", "devel"] -%}
+RUN pip install virtualenv==20.0.20  # nox dependency - higher versions produces VerboseLogger error
 RUN pip install nox
 {%- endif %}
 {% endblock pip %}
