@@ -1826,7 +1826,7 @@ KNOWN_ISSUES = {
 
 
 def get_list(config, name):
-    version = os.environ.get('VERSION')
+    version = os.environ.get('DISTRO')
     flavor = os.environ.get('FLAVOR')
     tests_type = config.getini('tests_type')
     assert name in ['ignore_list', 'xfail_list']
