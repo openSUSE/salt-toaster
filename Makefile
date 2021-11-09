@@ -184,7 +184,11 @@ NOX_CMD=$(GOTO_SALT_ROOT) && mv ../conftest.py . && $(PATCH_REQUIREMENTS) && nox
 ifeq ("$(NOX)", "True")
 CMD=$(NOX_CMD)
 else
+ifeq ("$(FLAVOR)", "devel")
+CMD=PYTHONPATH=/salt/src/salt-devel/ $(LEGACY_PYTEST_CMD)
+else
 CMD=$(LEGACY_PYTEST_CMD)
+endif
 endif
 
 EXEC=docker run $(EXPORTS) -t -e "CMD=$(CMD)" --label=$(ST_JOB_ID)  --rm $(DOCKER_VOLUMES) $(DOCKER_RES_LIMITS) $(DOCKER_IMAGE) tests
