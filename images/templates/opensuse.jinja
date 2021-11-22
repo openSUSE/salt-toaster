@@ -19,5 +19,5 @@ RUN useradd -ms /bin/bash nobody
 {% endblock preinstall -%}
 
 {%- block postpip -%}
-RUN pip --trusted-host pypi.python.org install --upgrade pytest==3.8.0 pytest-helpers-namespace pytest-timeout mock timelib boto kubernetes==2.0.0 apache-libcloud unittest2 pytest-salt==2019.12.7
+RUN pip --trusted-host pypi.python.org install --upgrade pytest==3.8.0 pytest-helpers-namespace pytest-timeout mock timelib boto kubernetes==2.0.0 apache-libcloud unittest2 pytest-salt==2020.1.27
 {%- endblock postpip -%}

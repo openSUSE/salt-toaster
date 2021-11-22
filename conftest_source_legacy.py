@@ -4,7 +4,12 @@ import pytest
 from functools import partial
 from fnmatch import fnmatch
 
-import salt.version
+try:
+    import salt.version
+except ModuleNotFoundError:
+    import sys
+    sys.path.append("/salt/src/salt-devel/")
+    import salt.version
 
 
 def pytest_addoption(parser):

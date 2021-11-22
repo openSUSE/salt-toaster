@@ -85,7 +85,7 @@ RUN zypper --non-interactive in py26-compat-salt py26-compat-tornado py26-compat
 {% if major == "12" %}
 RUN pip --trusted-host pypi.python.org install rsa==3.4.2
 {% endif -%}
-{% if flavor in ["products-3000", "products-3000-testing"] %}
+{% if flavor in ["products-3000", "products-3000-testing", "devel"] %}
 RUN pip --trusted-host pypi.python.org install pytest==4.6.5 pytest-helpers-namespace pytest-timeout mock timelib boto kubernetes==2.0.0 apache-libcloud unittest2 pytest-salt==2020.1.27 gitpython jmespath
 {% else %}
 RUN pip --trusted-host pypi.python.org install pytest==4.6.5 pytest-helpers-namespace pytest-timeout mock timelib boto kubernetes==2.0.0 apache-libcloud unittest2 pytest-salt==2019.12.7 gitpython
