@@ -172,14 +172,8 @@ LEGACY_PYTEST_CMD=pytest $(LEGACY_PYTEST_ARGS) --junitxml results.xml
 
 # New Toaster with pytest in nox
 NOX_PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_OLDTESTS) $(SALT_PYTESTS) $(PYTEST_FLAGS)
-ifneq (,$(findstring 3000,$(FLAVOR)))
-REQUIREMENTS_FILE=requirements/static/py3.6/linux.txt
-else
-REQUIREMENTS_FILE=requirements/static/ci/py3.6/linux.txt
-endif
 GOTO_SALT_ROOT=cd $(ROOT_MOUNTPOINT)/salt-*
-PATCH_REQUIREMENTS=sed -i 's/attrs==19.1.0/attrs==19.2.0/' $(REQUIREMENTS_FILE)
-NOX_CMD=$(GOTO_SALT_ROOT) && mv ../conftest.py . && $(PATCH_REQUIREMENTS) && nox --session 'pytest-3(coverage=False)' -- $(NOX_PYTEST_ARGS) --junitxml results.xml
+NOX_CMD=$(GOTO_SALT_ROOT) && mv ../conftest.py . && nox --session 'pytest-3(coverage=False)' -- $(NOX_PYTEST_ARGS) --junitxml results.xml
 
 ifeq ("$(NOX)", "True")
 CMD=$(NOX_CMD)
