@@ -1,5 +1,5 @@
 DEFAULT_REGISTRY      = salttoaster
-DEFAULT_DISTRO       = opensuse151
+DEFAULT_DISTRO        = opensuse151
 DEFAULT_FLAVOR        = devel
 SUSE_DEFAULT_REGISTRY = registry.mgr.suse.de
 SUSE_DEFAULT_VERSION  = sles12sp3
@@ -14,6 +14,7 @@ DOCKER_VOLUMES        = -v "$(CURDIR)/:$(TOASTER_MOUNTPOINT)"
 DESTRUCTIVE_TESTS     = False
 EXPENSIVE_TESTS       = False
 NOX                   = True
+EXECUTOR              = docker
 
 ifndef ST_JOB_ID
 	export ST_JOB_ID = local-test-run
@@ -79,7 +80,7 @@ NOX = False
 endif
 
 ifndef DOCKER_FILE
-	DOCKER_FILE = $(DISTRO).$(FLAVOR).dockerfile
+	DOCKER_FILE = ${CURDIR}/images/docker/$(DISTRO).$(FLAVOR).dockerfile
 endif
 
 EXPORTS += \
@@ -164,7 +165,7 @@ list_targets: title
 
 pull_image:
 ifndef NOPULL
-	docker pull $(DOCKER_IMAGE)
+	$(EXECUTOR) pull $(DOCKER_IMAGE)
 endif
 
 LEGACY_PYTEST_ARGS=-c $(PYTEST_CFG) $(NO_NOX_SALT_TESTS) $(PYTEST_FLAGS)
@@ -191,12 +192,12 @@ CMD=$(LEGACY_PYTEST_CMD)
 endif
 endif
 
-EXEC=docker run $(EXPORTS) -t -e "CMD=$(CMD)" --label=$(ST_JOB_ID)  --rm $(DOCKER_VOLUMES) $(DOCKER_RES_LIMITS) $(DOCKER_IMAGE) tests
+EXEC=$(EXECUTOR) run $(EXPORTS) -t -e "CMD=$(CMD)" --label=$(ST_JOB_ID)  --rm $(DOCKER_VOLUMES) $(DOCKER_RES_LIMITS) $(DOCKER_IMAGE) tests
 
 ifndef RPDB_PORT
-docker_shell : EXEC=docker run -it $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_RES_LIMITS) $(DOCKER_IMAGE)
+docker_shell : EXEC=$(EXECUTOR) run -it $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_RES_LIMITS) $(DOCKER_IMAGE)
 else
-docker_shell : EXEC=docker run -p $(RPDB_PORT):4444 -it $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_RES_LIMITS) $(DOCKER_IMAGE)
+docker_shell : EXEC=$(EXECUTOR) run -p $(RPDB_PORT):4444 -it $(EXPORTS) -e "CMD=$(CMD)" --rm $(DOCKER_VOLUMES) $(DOCKER_RES_LIMITS) $(DOCKER_IMAGE)
 endif
 docker_shell : CMD=/bin/bash
 docker_shell :: title pull_image

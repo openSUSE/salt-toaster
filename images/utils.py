@@ -178,7 +178,7 @@ def build_docker_image(nocache=False, pull=True):
     if Client is None:
         return
 
-    docker_client = Client(base_url='unix://var/run/docker.sock')
+    docker_client = Client(base_url='unix://run/podman/podman.sock')
 
     return docker_client.build(
         tag=os.environ['DOCKER_IMAGE'],
