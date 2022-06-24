@@ -6,9 +6,8 @@ if [ "$FLAVOR" != "devel" ]
         if [[ "$DISTRO" =~ ^rhel ]]
             then
                 bin/rhel_unpack_salt.sh
-        elif [[ "$DISTRO" =~ ^sles ]]
+        elif [[ "$DISTRO" =~ ^(sles|leap) ]]
             then
-                /root/bin/install_salt.sh
                 bin/sles_unpack_salt.sh
         elif [[ "$DISTRO" =~ ^ubuntu ]]
             then
