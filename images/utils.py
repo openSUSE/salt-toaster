@@ -150,8 +150,8 @@ def generate_docker_from(distro) -> str:
         parent_image = 'opensuse/tumbleweed'
     elif distro.name == 'centos':
         parent_image = '{0}/{1}:{2}'.format(image_registry, distro.name, distro.major)
-    else:
-        parent_image = '{0}/{1}:{2}.{3}'.format(image_registry, distro.name, distro.major, distro.minor)
+    else: # sles
+        parent_image = '{0}/{1}{2}sp{3}'.format(image_registry, distro.name, distro.major, distro.minor)
     return parent_image
 
 
