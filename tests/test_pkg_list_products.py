@@ -103,6 +103,12 @@ def get_expectations(tags, oem=False):
             'productline': 'Leap',
             'release': '0'
         },
+       'leap15.4': {
+           'name': 'openSUSE',
+           'version': '15.4',
+           'productline': 'Leap',
+           'release': '0'
+       },
         'tumbleweed': {
             'name': 'openSUSE',
             'version': None, # Version changes on each snapshot

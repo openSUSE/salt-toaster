@@ -143,6 +143,7 @@ list_targets: title
 	@echo "  openSUSE Leap 15.1      DISTRO: leap15.1     - FLAVOR: devel"
 	@echo "  openSUSE Leap 15.2      DISTRO: leap15.2     - FLAVOR: devel"
 	@echo "  openSUSE Leap 15.3      DISTRO: leap15.3     - FLAVOR: devel"
+	@echo "  openSUSE Leap 15.4      DISTRO: leap15.4     - FLAVOR: products, products-testing, devel"
 	@echo "  openSUSE Tumbleweed     DISTRO: tumbleweed   - FLAVOR: devel"
 	@echo "  CentOS 7                DISTRO: centos7      - FLAVOR: devel"
 	@echo "  Ubuntu 16.04            DISTRO: ubuntu16.04  - FLAVOR: devel"
