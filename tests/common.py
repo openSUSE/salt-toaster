@@ -129,6 +129,14 @@ GRAINS_EXPECTATIONS = {
         'osrelease': '42.3',
         'osrelease_info': [42, 3],
     },
+    'leap15.4': {
+        'os': 'SUSE',
+        'oscodename': 'openSUSE Leap 15.4',
+        'os_family': 'Suse',
+        'osfullname': 'Leap',
+        'osrelease': '15.4',
+        'osrelease_info': [15, 4],
+    },
     'opensuse150': {
         'os': 'SUSE',
         'oscodename': 'openSUSE Leap 15.0',

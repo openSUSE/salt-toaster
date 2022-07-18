@@ -1,0 +1,45 @@
+{% extends "base.jinja" %}
+{% block baserepos %}
+{% endblock baserepos %}
+
+{%- block testpackages %}
+RUN zypper --non-interactive addrepo --refresh \
+    obs://systemsmanagement:/saltstack:/testing:/testpackages/{{ salt_repo_name }} testpackages
+RUN zypper --non-interactive --gpg-auto-import-keys refresh
+{% endblock testpackages -%}
+
+{%- block salt %}
+{%- if flavor != "devel" %}
+RUN zypper --non-interactive addrepo --refresh {{ salt_repo_url }} salt
+RUN zypper --non-interactive modifyrepo --priority 1 salt
+RUN zypper --non-interactive --gpg-auto-import-keys refresh
+{% endif -%}
+{% endblock salt %}
+
+{%- block preinstall -%}
+# bind-utils: needed for tests that use `dig`
+# libopenssl-devel, libcurl-devel: needed by nox+pip
+RUN zypper --non-interactive install make python3-pip bind-utils libopenssl-devel libcurl-devel
+RUN zypper --non-interactive install --force-resolution patch rpmbuild
+RUN useradd -ms /bin/bash nobody
+{% endblock preinstall -%}
+
+{%- block install %}
+RUN zypper --non-interactive up zypper libzypp
+{%- if flavor == "devel" %}
+RUN zypper --non-interactive install python3-devel swig gcc-c++ libopenssl-devel git \
+    curl python3-pytest python3-PyYAML python3-Jinja2 python3-pyzmq python3-M2Crypto python3-mock\
+    python3-apache-libcloud python3-six python3-dateutil python3-pyOpenSSL
+RUN mkdir -p /etc/salt
+RUN touch /etc/salt/master
+RUN touch /etc/salt/minion
+{% else %}
+RUN zypper --non-interactive in salt-master salt-minion salt-proxy salt-ssh git curl
+{% endif -%}
+{% endblock install %}
+
+{%- block postinstall %}
+{%- endblock postinstall %}
+
+{% block postpip %}
+{% endblock postpip %}

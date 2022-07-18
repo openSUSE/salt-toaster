@@ -103,6 +103,8 @@ def get_salt_repo_name(distro):
         return 'CentOS_{0}'.format(version_major)
     elif vendor == 'fedora':
         return 'Fedora_{0}'.format(version_major)
+    elif vendor in ['sles', 'leap'] and (int(version_major), int(version_minor or "0")) >= (15, 3):
+        return '{}.{}'.format(version_major, version_minor)
     elif vendor == 'sles':
         return 'SLE_{0}_SP{1}'.format(version_major, version_minor)
     elif vendor == 'leap':
@@ -150,8 +152,8 @@ def generate_docker_from(distro) -> str:
         parent_image = 'opensuse/tumbleweed'
     elif distro.name == 'centos':
         parent_image = '{0}/{1}:{2}'.format(image_registry, distro.name, distro.major)
-    else:
-        parent_image = '{0}/{1}:{2}.{3}'.format(image_registry, distro.name, distro.major, distro.minor)
+    else: # sles
+        parent_image = '{0}/{1}{2}sp{3}'.format(image_registry, distro.name, distro.major, distro.minor)
     return parent_image
 
 
