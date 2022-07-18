@@ -1701,7 +1701,11 @@ KNOWN_ISSUES_UNIT = {
             'transport/test_tcp.py',
 
             # Errors in 3003.3
-            'cloud/test_map.py'
+            'cloud/test_map.py',
+
+            # Problem running in Docker in SUSE Jenkins
+            'tests/pytests/unit/grains/test_core.py::test_xen_virtual'
+
         ],
         'sles11sp4': [
             # SSLError: [Errno 1] _ssl.c:492: error:1409442E:SSL routines:SSL3_READ_BYTES:tlsv1 alert protocol version
