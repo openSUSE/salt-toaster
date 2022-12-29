@@ -13,8 +13,6 @@ RUN rpm --import http://ftp.fau.de/centos/{{ major }}/os/x86_64/RPM-GPG-KEY-Cent
 {% endblock baserepos -%}
 
 {%- block testpackages %}
-RUN yum-config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/RHEL_{{ major }}/
-RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/RHEL_{{ major }}/repodata/repomd.xml.key
 {% endblock testpackages %}
 
 {%- block salt %}

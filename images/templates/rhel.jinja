@@ -28,13 +28,9 @@ RUN rpm --import http://ftp.fau.de/centos/{{ major }}/os/x86_64/RPM-GPG-KEY-Cent
 
 {%- block testpackages %}
 {% if major == '8' %}
-RUN dnf config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/CentOS_{{ major }}/
-RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/CentOS_{{ major }}/repodata/repomd.xml.key
 RUN dnf config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/testing:/res8-dependencies/CentOS_{{ major }}/
 RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/products:/testing:/res8-dependencies/CentOS_{{ major }}/repodata/repomd.xml.key
 {%- else -%}
-RUN yum-config-manager --add-repo http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/RHEL_{{ major }}/
-RUN rpm --import http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/RHEL_{{ major }}/repodata/repomd.xml.key
 {% endif %}
 {% endblock testpackages %}
 

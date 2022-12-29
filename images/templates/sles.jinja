@@ -11,8 +11,6 @@ RUN zypper -n ar -f http://nu.novell.com/SUSE/Updates/SLE-Manager-Tools/{{ major
 {% endblock baserepos %}
 
 {%- block testpackages %}
-RUN zypper -n ar -f obs://systemsmanagement:/saltstack:/testing:/testpackages/{{ salt_repo_name }} "testpackages"
-RUN zypper --non-interactive --gpg-auto-import-keys ref
 {% endblock testpackages -%}
 
 {%- block salt %}

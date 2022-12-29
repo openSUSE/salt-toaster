@@ -7,7 +7,6 @@ RUN zypper ar -f http://download.suse.de/ibs/SUSE:/SLE-12-SP2:/Update/standard/ 
 {% endblock baserepos %}
 
 {%- block testpackages %}
-RUN zypper ar -f http://download.opensuse.org/repositories/systemsmanagement:/saltstack:/testing:/testpackages/SLE_12_SP2/ "testpackages"
 {% endblock testpackages -%}
 
 {%- block salt %}
