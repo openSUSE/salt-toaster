@@ -3,9 +3,6 @@
 {% endblock baserepos %}
 
 {%- block testpackages %}
-RUN zypper --non-interactive addrepo --refresh \
-    obs://systemsmanagement:/saltstack:/testing:/testpackages/{{ salt_repo_name }} testpackages
-RUN zypper --non-interactive --gpg-auto-import-keys refresh
 {% endblock testpackages -%}
 
 {%- block salt %}
