@@ -1986,6 +1986,9 @@ KNOWN_ISSUES_UNIT = {
             'tests/unit/test_config.py::ConfigTestCase::test_sha256_is_default_for_master',
             'tests/unit/test_config.py::ConfigTestCase::test_sha256_is_default_for_minion',
             'tests/unit/test_fileclient.py::FileClientTest::test_get_file_client',
+
+            # Flaky test on 3005 - not failing when triggered in isolation
+            'tests/unit/netapi/rest_tornado/test_saltnado.py::TestDisbatchLocal::test_when_min_wait_time_has_not_passed_then_disbatch_should_not_return_expected_data_until_time_has_passed',
         ],
         'sles12sp1': [
             'cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
