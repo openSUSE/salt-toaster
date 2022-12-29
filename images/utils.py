@@ -103,7 +103,7 @@ def get_salt_repo_name(distro):
         return 'CentOS_{0}'.format(version_major)
     elif vendor == 'fedora':
         return 'Fedora_{0}'.format(version_major)
-    elif vendor in ['sles', 'leap'] and (int(version_major), int(version_minor or "0")) >= (15, 3):
+    elif vendor in ['sles', 'leap'] and (int(version_major), int(version_minor or "0")) > (15, 3):
         return '{}.{}'.format(version_major, version_minor)
     elif vendor == 'sles':
         return 'SLE_{0}_SP{1}'.format(version_major, version_minor)
