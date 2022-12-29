@@ -17,7 +17,7 @@ jobs:
         # We can't build Tumbleweed due to the GH Runners not being updated to a version which has a fix for the
         # broken glibc 2.34 for docker.
         # distro: ["leap15.1", "leap15.2", "leap15.3", "tumbleweed", "centos7", "ubuntu16.04", "ubuntu18.04"]
-        distro: ["leap15.1", "leap15.2", "leap15.3", "centos7", "ubuntu16.04", "ubuntu18.04"]
+        distro: ["leap15.1", "leap15.2", "leap15.3", "leap15.4", "centos7", "ubuntu16.04", "ubuntu18.04"]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
