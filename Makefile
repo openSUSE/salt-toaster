@@ -126,7 +126,7 @@ help: title
 	@echo "  list_targets            List available versions and flavors targets"
 	@echo "  docker_shell            Start Docker shell"
 	@echo "  saltstack.integration   Run Salt integration tests"
-	@echo "  saltstack.functional    Run Salt integration tests"
+	@echo "  saltstack.functional    Run Salt functional tests"
 	@echo "  saltstack.unit          Run Salt unit tests"
 	@echo "  suse.tests              Run SUSE custom integration tests"
 	@echo "  build                   Build the docker images and set the entrypoint to one of the predefined ones."
