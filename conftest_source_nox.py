@@ -41,7 +41,7 @@ from tests.support.sminion import check_required_sminion_attributes, create_smin
 # Toaster specifics
 from fnmatch import fnmatch
 
-TESTS_DIR = pathlib.Path(__file__).resolve().parent
+TESTS_DIR = pathlib.Path.cwd() / "tests"
 PYTESTS_DIR = TESTS_DIR / "pytests"
 CODE_DIR = TESTS_DIR.parent
 
