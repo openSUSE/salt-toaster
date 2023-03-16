@@ -174,7 +174,7 @@ LEGACY_PYTEST_CMD=pytest $(LEGACY_PYTEST_ARGS) --junitxml results.xml
 # New Toaster with pytest in nox
 NOX_PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_OLDTESTS) $(SALT_PYTESTS) $(PYTEST_FLAGS)
 GOTO_SALT_ROOT=cd $(ROOT_MOUNTPOINT)/salt-*
-NOX_CMD=$(GOTO_SALT_ROOT) && mv ../conftest.py . && nox --session 'pytest-3(coverage=False)' -- $(NOX_PYTEST_ARGS) --junitxml results.xml
+NOX_CMD=$(GOTO_SALT_ROOT) && mv ../conftest.py tests && nox --session 'pytest-3(coverage=False)' -- $(NOX_PYTEST_ARGS) --junitxml results.xml
 
 ifeq ("$(NOX)", "True")
 CMD=$(NOX_CMD)
