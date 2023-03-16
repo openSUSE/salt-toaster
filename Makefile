@@ -126,6 +126,7 @@ help: title
 	@echo "  list_targets            List available versions and flavors targets"
 	@echo "  docker_shell            Start Docker shell"
 	@echo "  saltstack.integration   Run Salt integration tests"
+	@echo "  saltstack.functional    Run Salt integration tests"
 	@echo "  saltstack.unit          Run Salt unit tests"
 	@echo "  suse.tests              Run SUSE custom integration tests"
 	@echo "  build                   Build the docker images and set the entrypoint to one of the predefined ones."
@@ -260,6 +261,26 @@ ifndef SALT_REPO
 endif
 endif
 	$(EXEC)
+
+ifeq ("$(NOX)", "True")
+saltstack.functional : PYTEST_CFG=$(TOASTER_MOUNTPOINT)/configs/saltstack.integration/common.cfg
+saltstack.functional : SALT_OLDTESTS:=""
+saltstack.functional : SALT_PYTESTS:=$(SALT_PYTESTS)/functional
+ifneq ("$(FLAVOR)", "devel")
+ifdef JENKINS_HOME
+saltstack.functional : PYTEST_ARGS:=$(PYTEST_ARGS) --timeout=500
+saltstack.functional : CMD:=timeout 180m sh -c \"$(CMD)\"
+endif
+endif
+saltstack.functional :: title pull_image
+ifeq ("$(FLAVOR)", "devel")
+ifndef SALT_REPO
+	@echo "ERROR: Using 'devel' FLAVOR requires SALT_REPO"
+	exit 1
+endif
+endif
+	$(EXEC)
+endif
 
 suse.tests : PYTEST_CFG=./configs/suse.tests/$(DISTRO)/$(FLAVOR).cfg
 suse.tests : SALT_TESTS=./tests
