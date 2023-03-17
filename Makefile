@@ -1,8 +1,8 @@
 DEFAULT_REGISTRY      = salttoaster
-DEFAULT_DISTRO       = opensuse151
+DEFAULT_DISTRO        = leap15.4
 DEFAULT_FLAVOR        = devel
 SUSE_DEFAULT_REGISTRY = registry.mgr.suse.de
-SUSE_DEFAULT_VERSION  = sles12sp3
+SUSE_DEFAULT_VERSION  = sles15sp2
 SUSE_DEFAULT_FLAVOR   = products
 TOASTER_MOUNTPOINT    = /salt-toaster
 ROOT_MOUNTPOINT       = /salt/src
