@@ -1811,8 +1811,6 @@ KNOWN_ISSUES_INTEGRATION = {
             'modules/test_saltutil.py::SaltUtilSyncPillarTest::test_pillar_refresh', # sles12sp2
             '*::test_issue_7754',
 
-            '*test_fileserver.py::FileserverTest::test_symlink_list',
-            '*test_fileserver.py::FileserverTest::test_empty_dir_list',
             '*test_timezone.py::TimezoneLinuxModuleTest::test_get_hwclock',
             '*test_file.py::FileTest::test_managed_check_cmd',
             'modules/test_network.py::NetworkTest::test_network_ping', # Bad test implementation
@@ -1826,19 +1824,9 @@ KNOWN_ISSUES_INTEGRATION = {
             'netapi/rest_cherrypy/test_app.py::TestAuth::test_webhook_auth',
             'modules/test_saltutil.py::SaltUtilModuleTest::test_wheel_just_function',
             'modules/test_network.py::NetworkTest::test_network_netstat',
-            'modules/test_cp.py::CPModuleTest::test_get_dir_templated_paths',
-            'modules/test_cmdmod.py::CMDModuleTest::test_script_retcode',
-            'modules/test_cmdmod.py::CMDModuleTest::test_script_cwd_with_space',
-            'modules/test_cmdmod.py::CMDModuleTest::test_script_cwd',
-            'modules/test_cmdmod.py::CMDModuleTest::test_script',
-            'modules/test_cmdmod.py::CMDModuleTest::test_has_exec',
-            'modules/test_cmdmod.py::CMDModuleTest::test_exec_code_with_single_arg',
-            'modules/test_cmdmod.py::CMDModuleTest::test_exec_code_with_multiple_args',
-            'modules/test_cmdmod.py::CMDModuleTest::test_exec_code',
 
             # Failing in 3003.3
             'modules/saltutil/test_wheel.py::test_wheel_just_function',
-            'modules/test_pip.py::PipModuleTest::test_pip_install_multiple_editables',
             'states/test_pip_state.py::PipStateTest::test_issue_2028_pip_installed_state',
             'cli/test_matcher.py::test_ipcidr',
         ],
@@ -2053,7 +2041,6 @@ KNOWN_ISSUES_UNIT = {
 
             # Needs investigation. Setting them to xfail to have a "new green start" on March 12th
             # https://github.com/SUSE/spacewalk/issues/14263
-            'states/test_network.py::NetworkTestCase::test_managed',
             'modules/test_zypperpkg.py::ZypperTestCase::test_add_repo_key_path',
             'modules/test_state.py::StateTestCase::test_show_sls',
             'modules/test_dpkg_lowpkg.py::DpkgTestCase::test_info',
@@ -2074,56 +2061,9 @@ KNOWN_ISSUES_UNIT = {
             'beacons/test_telegram_bot_msg.py::TelegramBotMsgBeaconTestCase::test_call_no_updates',
             'beacons/test_telegram_bot_msg.py::TelegramBotMsgBeaconTestCase::test_call_telegram_return_no_updates_for_user',
             'beacons/test_telegram_bot_msg.py::TelegramBotMsgBeaconTestCase::test_call_telegram_returning_updates',
-            'modules/test_zcbuildout.py::BuildoutTestCase::test_get_bootstrap_url',
-            'modules/test_zcbuildout.py::BuildoutTestCase::test_get_buildout_ver',
             'modules/test_zfs.py::ZfsTestCase::test_bookmark_success',
             'modules/test_aptpkg.py::AptPkgTestCase::test_expand_repo_def',
-            'modules/test_cmdmod.py::test_run_cwd_in_combination_with_runas', # Fails on docker container
             'states/test_pkgrepo.py::test_migrated_wrong_method',
-
-            # Failing on 3004 (FileNotFoundError)
-            'tests/unit/test_auth.py::MasterACLTestCase::test_args_empty_spec',
-            'tests/unit/test_auth.py::MasterACLTestCase::test_args_kwargs_match',
-            'tests/unit/test_auth.py::MasterACLTestCase::test_args_kwargs_mismatch',
-            'tests/unit/test_auth.py::MasterACLTestCase::test_args_mixed_match',
-            'tests/unit/test_auth.py::MasterACLTestCase::test_args_mixed_mismatch',
-            'tests/unit/test_auth.py::MasterACLTestCase::test_args_more_args',
-            'tests/unit/test_auth.py::MasterACLTestCase::test_args_simple_forbidden',
-            'tests/unit/test_auth.py::MasterACLTestCase::test_args_simple_match',
-            'tests/unit/test_auth.py::MasterACLTestCase::test_master_function_glob',
-            'tests/unit/test_auth.py::MasterACLTestCase::test_master_minion_glob',
-            'tests/unit/test_auth.py::MasterACLTestCase::test_master_not_user_glob_all',
-            'tests/unit/test_auth.py::MasterACLTestCase::test_master_publish_group',
-            'tests/unit/test_auth.py::MasterACLTestCase::test_master_publish_name',
-            'tests/unit/test_auth.py::MasterACLTestCase::test_master_publish_some_minions',
-            'tests/unit/test_auth.py::AuthACLTestCase::test_acl_simple_allow',
-            'tests/unit/test_auth.py::AuthACLTestCase::test_acl_simple_deny',
-            'tests/unit/test_config.py::ConfigTestCase::test_backend_rename',
-            'tests/unit/test_config.py::ConfigTestCase::test_common_prefix_stripping',
-            'tests/unit/test_config.py::ConfigTestCase::test_conf_file_strings_are_unicode_for_master',
-            'tests/unit/test_config.py::ConfigTestCase::test_conf_file_strings_are_unicode_for_minion',
-            'tests/unit/test_config.py::ConfigTestCase::test_default_root_dir_included_in_config_root_dir',
-            'tests/unit/test_config.py::ConfigTestCase::test_deploy_search_path_as_string',
-            'tests/unit/test_config.py::ConfigTestCase::test_issue_5970_minion_confd_inclusion',
-            'tests/unit/test_config.py::ConfigTestCase::test_load_client_config_from_environ_var',
-            'tests/unit/test_config.py::ConfigTestCase::test_load_cloud_config_from_environ_var',
-            'tests/unit/test_config.py::ConfigTestCase::test_load_master_config_from_environ_var',
-            'tests/unit/test_config.py::ConfigTestCase::test_load_minion_config_from_environ_var',
-            'tests/unit/test_config.py::ConfigTestCase::test_master_confd_inclusion',
-            'tests/unit/test_config.py::ConfigTestCase::test_master_file_roots_glob',
-            'tests/unit/test_config.py::ConfigTestCase::test_master_pillar_roots_glob',
-            'tests/unit/test_config.py::ConfigTestCase::test_minion_config_role_master',
-            'tests/unit/test_config.py::ConfigTestCase::test_minion_file_roots_glob',
-            'tests/unit/test_config.py::ConfigTestCase::test_minion_pillar_roots_glob',
-            'tests/unit/test_config.py::ConfigTestCase::test_mminion_config_cache_path',
-            'tests/unit/test_config.py::ConfigTestCase::test_mminion_config_cache_path_overrides',
-            'tests/unit/test_config.py::ConfigTestCase::test_proper_path_joining',
-            'tests/unit/test_config.py::ConfigTestCase::test_sha256_is_default_for_master',
-            'tests/unit/test_config.py::ConfigTestCase::test_sha256_is_default_for_minion',
-            'tests/unit/test_fileclient.py::FileClientTest::test_get_file_client',
-
-            # Flaky test on 3005 - not failing when triggered in isolation
-            'tests/unit/netapi/rest_tornado/test_saltnado.py::TestDisbatchLocal::test_when_min_wait_time_has_not_passed_then_disbatch_should_not_return_expected_data_until_time_has_passed',
         ],
         'sles12sp1': [
             'cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
