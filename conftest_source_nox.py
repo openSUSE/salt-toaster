@@ -1829,6 +1829,8 @@ KNOWN_ISSUES_INTEGRATION = {
             'modules/saltutil/test_wheel.py::test_wheel_just_function',
             'states/test_pip_state.py::PipStateTest::test_issue_2028_pip_installed_state',
             'cli/test_matcher.py::test_ipcidr',
+
+            'modules/state/test_state.py::test_retry_option_success', # Flaky: passed only in isolation
         ],
         'rhel6': [
             'cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
@@ -2064,6 +2066,10 @@ KNOWN_ISSUES_UNIT = {
             'modules/test_zfs.py::ZfsTestCase::test_bookmark_success',
             'modules/test_aptpkg.py::AptPkgTestCase::test_expand_repo_def',
             'states/test_pkgrepo.py::test_migrated_wrong_method',
+
+            # Flaky in 3006.0rc1 - tests pass in isolation
+            'tests/pytests/unit/spm/test_spm.py::test_repo_paths',
+
         ],
         'sles12sp1': [
             'cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
