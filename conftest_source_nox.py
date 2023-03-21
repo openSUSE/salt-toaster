@@ -1765,6 +1765,29 @@ KNOWN_ISSUES_INTEGRATION = {
 
             # After switch to M2Crypto
             'cloud/clouds/test_digitalocean.py', # ModuleNotFoundError: No module named 'Crypto'
+
+            # Salt 3006.0rc1
+
+            # Failing when running on containers. dbus not available
+            'tests/pytests/functional/modules/test_system.py',
+
+            # ping and netstat are not available in containers
+            'tests/pytests/functional/modules/test_network.py::test_network_ping',
+            'tests/pytests/functional/modules/test_network.py::test_network_netstat',
+
+            # pytestshellutils.downgraded.exceptions.ProcessFailed: Command failed return code check
+            # these tests try to download a non-compatible version of looseverion with Python 3.6
+            'tests/pytests/functional/test_version.py::test_salt_extensions_absent_in_versions_report',
+            'tests/pytests/functional/test_version.py::test_salt_extensions_in_versions_report',
+            'tests/pytests/functional/loader/test_loader.py::test_new_entry_points_passing_module',
+            'tests/pytests/functional/loader/test_loader.py::test_new_entry_points_passing_func_returning_a_dict',
+            'tests/pytests/functional/loader/test_loader.py::test_old_entry_points_yielding_paths',
+            'tests/pytests/functional/loader/test_loader.py::test_utils_loader_does_not_load_extensions',
+
+            # Flaky tests: # Exitcode 1 - Extension was already installed # assert 1 == 0
+            'tests/pytests/functional/loader/test_loader.py::test_extension_discovery_without_reload_with_importlib_metadata_installed',
+            'tests/pytests/functional/loader/test_loader.py::test_extension_discovery_without_reload_with_importlib_metadata_5_installed',
+            'tests/pytests/functional/loader/test_loader.py::test_extension_discovery_without_reload_with_bundled_importlib_metadata',
         ],
         'rhel6': [
             # Avoid error due:
@@ -2069,6 +2092,11 @@ KNOWN_ISSUES_UNIT = {
 
             # Flaky in 3006.0rc1 - tests pass in isolation
             'tests/pytests/unit/spm/test_spm.py::test_repo_paths',
+            'tests/unit/utils/test_pydsl.py::PyDSLRendererTestCase::test_pipe_through_stateconf',
+            'tests/unit/transport/test_ipc.py::IPCMessagePubSubCase::test_async_reading_streamclosederror',
+
+            # Failing in 3006.0rc1 - /usr/bin/man not available in container
+            'tests/pytests/unit/modules/test_zfs.py::test_bookmark_success',
 
         ],
         'sles12sp1': [
