@@ -1768,26 +1768,8 @@ KNOWN_ISSUES_INTEGRATION = {
 
             # Salt 3006.0rc1
 
-            # Failing when running on containers. dbus not available
+            # Produce errors when running on containers. dbus not available
             'tests/pytests/functional/modules/test_system.py',
-
-            # ping and netstat are not available in containers
-            'tests/pytests/functional/modules/test_network.py::test_network_ping',
-            'tests/pytests/functional/modules/test_network.py::test_network_netstat',
-
-            # pytestshellutils.downgraded.exceptions.ProcessFailed: Command failed return code check
-            # these tests try to download a non-compatible version of looseverion with Python 3.6
-            'tests/pytests/functional/test_version.py::test_salt_extensions_absent_in_versions_report',
-            'tests/pytests/functional/test_version.py::test_salt_extensions_in_versions_report',
-            'tests/pytests/functional/loader/test_loader.py::test_new_entry_points_passing_module',
-            'tests/pytests/functional/loader/test_loader.py::test_new_entry_points_passing_func_returning_a_dict',
-            'tests/pytests/functional/loader/test_loader.py::test_old_entry_points_yielding_paths',
-            'tests/pytests/functional/loader/test_loader.py::test_utils_loader_does_not_load_extensions',
-
-            # Flaky tests: # Exitcode 1 - Extension was already installed # assert 1 == 0
-            'tests/pytests/functional/loader/test_loader.py::test_extension_discovery_without_reload_with_importlib_metadata_installed',
-            'tests/pytests/functional/loader/test_loader.py::test_extension_discovery_without_reload_with_importlib_metadata_5_installed',
-            'tests/pytests/functional/loader/test_loader.py::test_extension_discovery_without_reload_with_bundled_importlib_metadata',
         ],
         'rhel6': [
             # Avoid error due:
@@ -1853,7 +1835,33 @@ KNOWN_ISSUES_INTEGRATION = {
             'states/test_pip_state.py::PipStateTest::test_issue_2028_pip_installed_state',
             'cli/test_matcher.py::test_ipcidr',
 
-            'modules/state/test_state.py::test_retry_option_success', # Flaky: passed only in isolation
+            # Flaky tests in 3006.0rc1 - passed only in isolation
+            'tests/pytests/functional/modules/state/test_state.py::test_retry_option_success',
+            'tests/integration/renderers/test_pydsl.py::PyDSLRendererIncludeTestCase::test_rendering_includes',
+
+            # Failing when running on containers. dbus not available
+            'tests/pytests/integration/ssh/test_master.py::test_service',
+
+            # This test makes no sense with new locking mechanism for Salt SSH
+            'tests/integration/ssh/test_state.py::SSHStateTest::test_state_running',
+
+            # ping and netstat are not available in containers
+            'tests/pytests/functional/modules/test_network.py::test_network_ping',
+            'tests/pytests/functional/modules/test_network.py::test_network_netstat',
+
+            # pytestshellutils.downgraded.exceptions.ProcessFailed: Command failed return code check
+            # these tests try to download a non-compatible version of looseverion with Python 3.6
+            'tests/pytests/functional/test_version.py::test_salt_extensions_absent_in_versions_report',
+            'tests/pytests/functional/test_version.py::test_salt_extensions_in_versions_report',
+            'tests/pytests/functional/loader/test_loader.py::test_new_entry_points_passing_module',
+            'tests/pytests/functional/loader/test_loader.py::test_new_entry_points_passing_func_returning_a_dict',
+            'tests/pytests/functional/loader/test_loader.py::test_old_entry_points_yielding_paths',
+            'tests/pytests/functional/loader/test_loader.py::test_utils_loader_does_not_load_extensions',
+
+            # Flaky tests: # Exitcode 1 - Extension was already installed # assert 1 == 0
+            'tests/pytests/functional/loader/test_loader.py::test_extension_discovery_without_reload_with_importlib_metadata_installed',
+            'tests/pytests/functional/loader/test_loader.py::test_extension_discovery_without_reload_with_importlib_metadata_5_installed',
+            'tests/pytests/functional/loader/test_loader.py::test_extension_discovery_without_reload_with_bundled_importlib_metadata',
         ],
         'rhel6': [
             'cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
@@ -2097,7 +2105,6 @@ KNOWN_ISSUES_UNIT = {
 
             # Failing in 3006.0rc1 - /usr/bin/man not available in container
             'tests/pytests/unit/modules/test_zfs.py::test_bookmark_success',
-
         ],
         'sles12sp1': [
             'cloud/clouds/dimensiondata_test.py::DimensionDataTestCase::test_avail_sizes',
