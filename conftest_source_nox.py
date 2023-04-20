@@ -1930,6 +1930,15 @@ KNOWN_ISSUES_INTEGRATION = {
             'tests/pytests/functional/loader/test_loader.py::test_extension_discovery_without_reload_with_importlib_metadata_installed',
             'tests/pytests/functional/loader/test_loader.py::test_extension_discovery_without_reload_with_importlib_metadata_5_installed',
             'tests/pytests/functional/loader/test_loader.py::test_extension_discovery_without_reload_with_bundled_importlib_metadata',
+
+            # Flaky test: it fails only from time to time - TypeError: string indices must be integers
+            'tests/integration/modules/test_saltcheck.py::SaltcheckModuleTest::test_saltcheck_checkall_saltenv',
+
+            # Failing tests as testing URL is not returning expected values
+            'tests/integration/modules/test_cp.py::CPModuleTest::test_get_file_str_https',
+            'tests/integration/modules/test_cp.py::CPModuleTest::test_get_url_https',
+            'tests/integration/modules/test_cp.py::CPModuleTest::test_get_url_https_dest_empty',
+            'tests/integration/modules/test_cp.py::CPModuleTest::test_get_url_https_no_dest',
         ],
         'rhel6': [
             'cloud/providers/virtualbox.py::CreationDestructionVirtualboxTests::test_vm_creation_and_destruction',
