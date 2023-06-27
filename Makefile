@@ -1,6 +1,7 @@
 DEFAULT_REGISTRY      = salttoaster
 DEFAULT_DISTRO        = leap15.4
 DEFAULT_FLAVOR        = devel
+DEVEL_SALT_VERSION    = 3006.0
 SUSE_DEFAULT_REGISTRY = registry.mgr.suse.de
 SUSE_DEFAULT_VERSION  = sles15sp2
 SUSE_DEFAULT_FLAVOR   = products
@@ -175,7 +176,11 @@ LEGACY_PYTEST_CMD=pytest $(LEGACY_PYTEST_ARGS) --junitxml results.xml
 # New Toaster with pytest in nox
 NOX_PYTEST_ARGS=-c $(PYTEST_CFG) $(SALT_OLDTESTS) $(SALT_PYTESTS) $(PYTEST_FLAGS)
 GOTO_SALT_ROOT=cd $(ROOT_MOUNTPOINT)/salt-*
-NOX_CMD=$(GOTO_SALT_ROOT) && mv ../conftest.py tests && nox --session 'pytest-3(coverage=False)' -- $(NOX_PYTEST_ARGS) --junitxml results.xml
+PREFLIGHT=mv ../conftest.py tests
+ifeq ("$(FLAVOR)", "devel")
+	PREFLIGHT:=$(PREFLIGHT) && echo $(DEVEL_SALT_VERSION) > salt/_version.txt
+endif
+NOX_CMD=$(GOTO_SALT_ROOT) && $(PREFLIGHT) && nox --session 'pytest-3(coverage=False)' -- $(NOX_PYTEST_ARGS) --junitxml results.xml
 
 ifeq ("$(NOX)", "True")
 CMD=$(NOX_CMD)

@@ -2070,8 +2070,6 @@ KNOWN_ISSUES_UNIT = {
             'utils/test_thin.py::SSHThinTestCase::test_gen_thin_compression_fallback_py3',
 
             # contain NO_MOCK which does not exist anymore (throws ImportError)
-            'cli/test_support.py',
-            'modules/test_saltsupport.py',
             'utils/test_pkg.py',
 
             # duplicated test file, should be removed in favor of the one in tests/pytests/
