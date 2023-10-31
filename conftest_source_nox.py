@@ -1838,8 +1838,6 @@ KNOWN_ISSUES_INTEGRATION = {
 
             # Produce errors when running on containers. dbus not available
             'tests/pytests/functional/modules/test_system.py',
-            # interferes with tests/pytests/unit/client/ssh/*
-            'tests/unit/utils/test_vmware.py',
         ],
         'rhel6': [
             # Avoid error due:
@@ -2085,8 +2083,10 @@ KNOWN_ISSUES_UNIT = {
             'cloud/test_map.py',
 
             # Problem running in Docker in SUSE Jenkins
-            'tests/pytests/unit/grains/test_core.py::test_xen_virtual'
+            'tests/pytests/unit/grains/test_core.py::test_xen_virtual',
 
+            # interferes with tests/pytests/unit/client/ssh/*
+            'tests/unit/utils/test_vmware.py',
         ],
         'sles11sp4': [
             # SSLError: [Errno 1] _ssl.c:492: error:1409442E:SSL routines:SSL3_READ_BYTES:tlsv1 alert protocol version
