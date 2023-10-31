@@ -1838,6 +1838,8 @@ KNOWN_ISSUES_INTEGRATION = {
 
             # Produce errors when running on containers. dbus not available
             'tests/pytests/functional/modules/test_system.py',
+            # interferes with tests/pytests/unit/client/ssh/*
+            'tests/unit/utils/test_vmware.py',
         ],
         'rhel6': [
             # Avoid error due:
